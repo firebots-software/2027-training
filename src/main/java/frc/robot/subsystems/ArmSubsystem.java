@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -15,11 +16,28 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 
 public class ArmSubsystem extends SubsystemBase {
     private TalonFX armMotor, rollerMotor;
+    
+    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0.0);
+    private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
+    private final TorqueCurrentFOC m_torqueRequest = new TorqueCurrentFOC(0.0);
 
     public ArmSubsystem() {
-
+        armMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
+        rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
     }
-    
+
+    public void setRollerDutyCycle(double voltage) {
+        rollerMotor.setControl(m_dutyCycleRequest.withOutput(voltage));
+    }
+
+    public void setRollerVoltage(double voltage) {
+        rollerMotor.setControl(m_voltageRequest.withOutput(voltage));
+    }
+
+    public void setArmTorqueCurrent(double current) {
+        armMotor.setControl(m_torqueRequest.withOutput(current));
+    }
+
 
     @Override
     public void periodic() {
