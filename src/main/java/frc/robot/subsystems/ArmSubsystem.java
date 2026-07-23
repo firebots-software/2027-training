@@ -27,10 +27,6 @@ public class ArmSubsystem extends SubsystemBase {
     private final TorqueCurrentFOC m_torqueRequest = new TorqueCurrentFOC(0.0);
 
     public ArmSubsystem() {
-        armMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
-        rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
-        m_dutyCycleRequest = new DutyCycleOut(0.0);
-        m_voltageRequest = new VoltageOut(0.0);
         armMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
         rollerMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
 
@@ -80,7 +76,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setArmTorqueCurrent(double current) {
         armMotor.setControl(m_torqueRequest.withOutput(current));
-        m_torqueRequest = new TorqueCurrentFOC(0.0);
     }
 
     @Override
@@ -91,17 +86,5 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
-    }
-
-    public void setRollerDutyCycle(double voltagePercent) {
-        rollerMotor.setControl(m_dutyCycleRequest.withOutput(voltagePercent));
-    }
-
-    public void setRollerVoltage(double voltageAmount) {
-        rollerMotor.setControl(m_voltageRequest.withOutput(voltageAmount));
-    }
-
-    public void setArmTorqueCurrent(double statorCurrent) {
-        armMotor.setControl(m_torqueRequest.withOutput(statorCurrent));
     }
 }
