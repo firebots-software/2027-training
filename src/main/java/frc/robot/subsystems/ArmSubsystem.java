@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -49,7 +48,7 @@ public class ArmSubsystem extends SubsystemBase {
         MotorOutputConfigs rollerMotorOutputConfigs =
             new MotorOutputConfigs()
                 .withInverted(InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+                .withNeutralMode(NeutralModeValue.Coast);
 
         MotorOutputConfigs armMotorOutputConfigs =
             new MotorOutputConfigs()
@@ -63,8 +62,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         TalonFXConfiguration armConfig =
             new TalonFXConfiguration()
-                .withCurrentLimits(rollerClc)
-                .withMotorOutput(rollerMotorOutputConfigs);
+                .withCurrentLimits(armClc)
+                .withMotorOutput(armMotorOutputConfigs);
 
         TalonFXConfigurator rollerConfigurator = rollerMotor.getConfigurator();
         TalonFXConfigurator armConfigurator = armMotor.getConfigurator();
