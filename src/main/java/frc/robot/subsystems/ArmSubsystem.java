@@ -48,9 +48,9 @@ public class ArmSubsystem extends SubsystemBase {
         CurrentLimitsConfigs rollerClc = 
             new CurrentLimitsConfigs()
             .withStatorCurrentLimit(50)
-            .withStatorCurrentLimitEnable(false)
+            .withStatorCurrentLimitEnable(true)
             .withSupplyCurrentLimit(30)
-            .withSupplyCurrentLimitEnable(false);
+            .withSupplyCurrentLimitEnable(true);
         
         CurrentLimitsConfigs armClc =
             new CurrentLimitsConfigs()
@@ -62,7 +62,7 @@ public class ArmSubsystem extends SubsystemBase {
         MotorOutputConfigs rollerMotorOutputConfigs =
             new MotorOutputConfigs()
                 .withInverted(InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+                .withNeutralMode(NeutralModeValue.Coast);
 
         MotorOutputConfigs armMotorOutputConfigs =
             new MotorOutputConfigs()
@@ -76,8 +76,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         TalonFXConfiguration armConfig =
             new TalonFXConfiguration()
-                .withCurrentLimits(rollerClc)
-                .withMotorOutput(rollerMotorOutputConfigs);
+                .withCurrentLimits(armClc)
+                .withMotorOutput(armMotorOutputConfigs);
 
         TalonFXConfigurator rollerConfigurator = rollerMotor.getConfigurator();
         TalonFXConfigurator armConfigurator = armMotor.getConfigurator();
@@ -86,14 +86,3 @@ public class ArmSubsystem extends SubsystemBase {
         armConfigurator.apply(armConfig);
 
     }
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
-    }
-}
