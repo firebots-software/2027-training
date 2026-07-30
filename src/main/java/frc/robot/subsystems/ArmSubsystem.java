@@ -24,16 +24,16 @@ public class ArmSubsystem extends SubsystemBase {
         rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
     }
     
-    public void setRollerDutyCycle (double num) {
-        rollerMotor.setControl(m_dutyCycleRequest.withOutput(num));
+    public void setRollerDutyCycle (double voltage) {
+        rollerMotor.setControl(m_dutyCycleRequest.withOutput(voltage));
     }
 
-    public void setRollerVoltage (double num) {
-        rollerMotor.setControl(m_voltageRequest.withOutput(num));
+    public void setRollerVoltage (double voltage) {
+        rollerMotor.setControl(m_voltageRequest.withOutput(voltage));
     }
 
-    public void setArmTorqueCurrent (double num) {
-        armMotor.setControl(m_torqueRequest.withOutput(num));
+    public void setArmTorqueCurrent (double current) {
+        armMotor.setControl(m_torqueRequest.withOutput(current));
     }
 
     @Override
