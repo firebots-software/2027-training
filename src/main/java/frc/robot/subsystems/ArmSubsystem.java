@@ -4,8 +4,22 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+
+
 
 public class ArmSubsystem extends SubsystemBase {
     private TalonFX armMotor, rollerMotor;
@@ -19,6 +33,12 @@ public class ArmSubsystem extends SubsystemBase {
         m_torqueRequest = new TorqueCurrentFOC(0.0);
         armMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
         rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
+        CurrentLimitsConfigs rollerCurrentConfig = new CurrentLimitsConfigs().withStatorCurrentLimit(50).withSupplyCurrentLimit(30);
+        MotorOutputConfigs rollerMotorConfig = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive).withNeutralMode(NeutralModeValue.Coast);
+
+        CurrentLimitsConfigs armCurrentConfig = new CurrentLimitsConfigs().withStatorCurrentLimit(100).withSupplyCurrentLimit(50);
+        MotorOutputConfigs armMotorConfig = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive).withNeutralMode(NeutralModeValue.Brake);
+        
     }
 
     public void setRollerDutyCycle(double val){
