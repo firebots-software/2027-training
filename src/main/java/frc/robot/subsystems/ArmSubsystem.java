@@ -4,16 +4,29 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+
+
 
 public class ArmSubsystem extends SubsystemBase {
     private TalonFX armMotor, rollerMotor;
+    
+    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0.0);
+    private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
+    private final TorqueCurrentFOC m_torqueRequest = new TorqueCurrentFOC(0.0);
     private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0.0);
     private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
     private final TorqueCurrentFOC m_torqueRequest = new TorqueCurrentFOC(0.0);
