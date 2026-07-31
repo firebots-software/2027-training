@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -18,10 +17,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-
 
 
 public class ArmSubsystem extends SubsystemBase {
@@ -30,26 +25,12 @@ public class ArmSubsystem extends SubsystemBase {
     private VoltageOut m_voltageRequest;
     private TorqueCurrentFOC m_torqueRequest;
 
-    public void setRollerDutyCycle(double x) {
-        rollerMotor.setControl(m_dutyCycleRequest.withOutput(x));
-    }
-
-    public void setRollerVoltage(double x) {
-        rollerMotor.setControl(m_voltageRequest.withOutput(x));
-    }
-
-    public void setArmTorqueCurrent(double x) {
-        armMotor.setControl(m_torqueRequest.withOutput(x));
-    }
-
     public ArmSubsystem() {
         m_dutyCycleRequest = new DutyCycleOut(0.0);
         m_voltageRequest = new VoltageOut(0.0);
         m_torqueRequest = new TorqueCurrentFOC(0.0);
         armMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
         rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
-        armMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
-        rollerMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
 
         CurrentLimitsConfigs rollerClc = 
             new CurrentLimitsConfigs()
@@ -68,7 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
         MotorOutputConfigs rollerMotorOutputConfigs =
             new MotorOutputConfigs()
                 .withInverted(InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+                .withNeutralMode(NeutralModeValue.Coast);
 
         MotorOutputConfigs armMotorOutputConfigs =
             new MotorOutputConfigs()
@@ -82,8 +63,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         TalonFXConfiguration armConfig =
             new TalonFXConfiguration()
-                .withCurrentLimits(rollerClc)
-                .withMotorOutput(rollerMotorOutputConfigs);
+                .withCurrentLimits(armClc)
+                .withMotorOutput(armMotorOutputConfigs);
 
         TalonFXConfigurator rollerConfigurator = rollerMotor.getConfigurator();
         TalonFXConfigurator armConfigurator = armMotor.getConfigurator();
