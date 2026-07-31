@@ -28,8 +28,8 @@ public class ArmSubsystem extends SubsystemBase {
     private final TorqueCurrentFOC m_torqueRequest = new TorqueCurrentFOC(0.0);
 
     public ArmSubsystem() {
-        armMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
-        rollerMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
+        armMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
+        rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
 
         CurrentLimitsConfigs rollerClc = 
             new CurrentLimitsConfigs()
