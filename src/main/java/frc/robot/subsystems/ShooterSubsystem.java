@@ -33,6 +33,10 @@ public class ShooterSubsystem extends SubsystemBase {
          * hood angle
          */
 
+        private final VelocityVoltage m_velocityVoltageRequest = new VelocityVoltage(0.0);
+        private final PositionVoltage m_positionVoltageRequest = new PositionVoltage(0.0);
+        private final double target_roller_speed, target_hood_angle;
+
         public ShooterSubsystem() {
                 // The canbus is a communication system that can connect devices like the
                 // roboRIO, pdh, and motors.
