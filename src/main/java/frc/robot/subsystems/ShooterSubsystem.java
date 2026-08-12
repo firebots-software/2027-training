@@ -10,6 +10,8 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -35,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         private final VelocityVoltage m_velocityVoltageRequest = new VelocityVoltage(0.0);
         private final PositionVoltage m_positionVoltageRequest = new PositionVoltage(0.0);
-        private final double target_roller_speed, target_hood_angle;
+        private double target_roller_speed, target_hood_angle;
 
         public ShooterSubsystem() {
                 // The canbus is a communication system that can connect devices like the
