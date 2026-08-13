@@ -3,13 +3,20 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +28,10 @@ public class ShooterSubsystem extends SubsystemBase {
     
     private final LoggedTalonFX warmup1, warmup2, warmup3, shooter, hood;
     private final CANcoder hoodEncoder;
-
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
+    private final PositionVoltage positionRequest = new PositionVoltage(0.0);
+    private double targetRollerSpeed;
+    private double targetHoodAngle;
 
     /*
      * make instance variables for necessary closed loop control requests: VelocityVoltage, PositionVoltage. Initialize them with value 0.0.
@@ -31,7 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem() {
         // The canbus is a communication system that can connect devices like the roboRIO, pdh, and motors.
         CANBus canbus = Constants.Swerve.CAN_BUS;
-         
+
         // LoggedTalonFX is our version of the existing TalonFX class, which automatically logs some motor information
         warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.Rollers.WARMUP_1_ID, canbus);
         warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.Rollers.WARMUP_2_ID, canbus);
@@ -40,29 +50,62 @@ public class ShooterSubsystem extends SubsystemBase {
         shooter = warmup3; // warmup1 and warmup2 will be set as "followers" of the "lead" warmup3, so later we can just reference the `shooter` variable
 
         // Initialize the hood motor just like the warmup motors. You can find the necessary ID in Constants.
+        hood = new LoggedTalonFX("ShooterHood", Constants.Shooter.Hood.HOOD_ID, canbus);
 
         // Create a variable of type Slot0Configs called rollersSlot0Configs, and initialize it with the pid and feedforward gains found in Constants
-
+        Slot0Configs rollersSlot0Configs = new Slot0Configs();
+        rollersSlot0Configs.kV = Constants.Shooter.Rollers.KV;
+        rollersSlot0Configs.kP = Constants.Shooter.Rollers.KP;
+        rollersSlot0Configs.kI = Constants.Shooter.Rollers.KI;
+        rollersSlot0Configs.kD = Constants.Shooter.Rollers.KD;
+    
         // Create a variable of type CurrentLimitsConfigs called rollersClConfigs, and initialize it with the stator and supply limits found in Constants
+        CurrentLimitsConfigs rollersClConfigs = new CurrentLimitsConfigs();
+        rollersClConfigs.StatorCurrentLimit = Constants.Shooter.Rollers.STATOR_CURRENT_LIMIT;
+        rollersClConfigs.SupplyCurrentLimit = Constants.Shooter.Rollers.SUPPLY_CURRENT_LIMIT;
 
         // Create a variable of type MotorOutputConifigs called rollersOutputConfigs, and initialize it to treat clockwise as positive, and neutral mode as coast
+        MotorOutputConfigs rollersOutputConfigs = new MotorOutputConfigs();
+        rollersOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+        rollersOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+
 
         TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
         // Set the Slot0, CurrentLimits, and MotorOutput parameters of `rollersConfig` to the configs you just created.
+        rollersConfig.Slot0 = rollersSlot0Configs;
+        rollersConfig.CurrentLimits = rollersClConfigs;
+        rollersConfig.MotorOutput = rollersOutputConfigs;
 
         warmup1.getConfigurator().apply(rollersConfig);
         // I just applied the configuration that you just created to warmup1. Apply it to warmup2 and warmup3 as well.
+        warmup2.getConfigurator().apply(rollersConfig);
+        warmup3.getConfigurator().apply(rollersConfig);
 
         Follower follower = new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
         // use the `setControl` method of warmup1 and 2 to configure them to use this follower configuration.
+        warmup1.setControl(follower);
+        warmup2.setControl(follower);
 
         hoodEncoder = new CANcoder(Constants.Shooter.Hood.ENCODER_PORT, Constants.Swerve.CAN_BUS);
 
         // Create a variable of type Slot0Configs called hoodSlot0Configs, and initialize it with the pid and feedforward gains found in Constants
+        Slot0Configs hoodSlot0Configs = new Slot0Configs();
+        hoodSlot0Configs.kP = Constants.Shooter.Hood.KP;
+        hoodSlot0Configs.kI = Constants.Shooter.Hood.KI;
+        hoodSlot0Configs.kD = Constants.Shooter.Hood.KD;
+        hoodSlot0Configs.kV = Constants.Shooter.Hood.KV;
+        hoodSlot0Configs.kS = Constants.Shooter.Hood.KS;
+        hoodSlot0Configs.kG = Constants.Shooter.Hood.KG;
 
         // Create a variable of type CurrentLimitsConfigs called hoodClConfigs, and initialize it with the stator and supply limits found in Constants
+        CurrentLimitsConfigs hoodCLConfigs = new CurrentLimitsConfigs();
+        hoodCLConfigs.StatorCurrentLimit = Constants.Shooter.Hood.STATOR_CURRENT_LIMIT;
+        hoodCLConfigs.SupplyCurrentLimit = Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT;
 
         // Create a variable of type MotorOutputConifigs called hoodOutputConfigs, and initialize it to treat counterclockwise as positive, and neutral mode as coast
+        MotorOutputConfigs hoodOutputConfigs = new MotorOutputConfigs();
+        hoodOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+        hoodOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
         FeedbackConfigs hoodFeedbackConfigs =
         new FeedbackConfigs()
@@ -72,9 +115,16 @@ public class ShooterSubsystem extends SubsystemBase {
             .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
         // Create a TalonFXConfiguration called hoodConfig
+        TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+
         // Set the Slot0, CurrentLimits, MotorOutput, and Feedback parameters to the device configs above
+        hoodConfig.Slot0 = hoodSlot0Configs;
+        hoodConfig.CurrentLimits = hoodCLConfigs;
+        hoodConfig.MotorOutput = hoodOutputConfigs;
+        hoodConfig.Feedback = hoodFeedbackConfigs;
 
         // Apply the created configuration to the hood motor
+        hood.getConfigurator().apply(hoodConfig);
 
         MagnetSensorConfigs hoodCANcoderConfig =
         new CANcoderConfiguration()
@@ -83,6 +133,6 @@ public class ShooterSubsystem extends SubsystemBase {
                 .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
 
         // Apply this config to the `hoodEncoder`. Notice how applying a device configuration is similar between motors and other devices
-
+        hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
     }
 }
