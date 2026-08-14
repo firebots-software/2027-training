@@ -23,17 +23,13 @@ import java.util.function.DoubleSupplier;
 
 // spotless is clapping out
 public class HopperSubsystem extends SubsystemBase {
-  private final CommandSwerveDrivetrain drivetrain;
-  private final BooleanSupplier redside;
 
   private final LoggedTalonFX hopperMotor1, hopperMotor2, hopper;
   private double targetSurfaceSpeedMps = 0.0;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
-  public HopperSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
-    this.drivetrain = drivetrain;
-    this.redside = redside;
+  public HopperSubsystem() {
 
     CurrentLimitsConfigs currentLimitConfigs =
         new CurrentLimitsConfigs()
