@@ -64,7 +64,8 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 80.0;
       public static final double SUPPLY_CURRENT_LIMIT = 60.0;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROT = (12.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROT =
+          (12.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
       public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
       public static final double ARM_DEGREES_PER_MOTOR_ROT = 360.0 / MOTOR_ROTS_PER_ARM_ROT;
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
@@ -93,8 +94,10 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 2.0; // 8.0 / 3.0;
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
-      public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC = DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
-      public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC = DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
+      public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
+      public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
       // public static final double TARGET_ROLLER_RPM =
       // (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
@@ -110,7 +113,8 @@ public final class Constants {
     public static final double FF_RADIUS_M2 = 0.1;
     public static final double MAX_TRANSLATIONAL_MOVEMENT_SQUARED = 0.0625;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
-    public static final CANBus CAN_BUS = new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
+    public static final CANBus CAN_BUS =
+        new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
 
     public static final double TARGET_POS_ERROR = 0.07;
@@ -121,7 +125,6 @@ public final class Constants {
       L2(6.75, 21.428571428571427),
       L3(6.12, 21.428571428571427),
       FIVEN_L3(5.2734375, 26.09090909091);
-
       public final double DRIVE_GEAR_RATIO, STEER_GEAR_RATIO;
 
       SwerveLevel(double drive, double steer) {
@@ -137,7 +140,6 @@ public final class Constants {
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
       COBRA(0.25, 0d, 0d, 0.2d, 0.124, 0d); // 0.041539 //0.12301
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -155,7 +157,6 @@ public final class Constants {
       PROTO(20d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(38.982d, 2.4768d, 0d, 0.23791d, 0d, 0.1151d),
       COBRA(100d, 0d, 0.5, 0.1, 2.49, 0d);
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveSteerPIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -211,7 +212,6 @@ public final class Constants {
       PROTO(0.5, 0.5, 0.2, 0.2),
       JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
       COBRA(5, 8, 1.9, 10);
-
       public final double maxVelocityLinear,
           maxAccelerationLinear,
           maxVelocityAngular,
@@ -234,7 +234,6 @@ public final class Constants {
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       COBRA(3.467, 0, 0, 3.567, 0, 0, 2.5, 0, 0); // 3.75 m/s^2 max accel while turning max,
-
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -264,7 +263,6 @@ public final class Constants {
       PROTO(Inches.of(22.52), Inches.of(22.834)), // length, width
       JAMES_HARDEN(Inches.of(26.75), Inches.of(22.75)), // length, width
       COBRA(Inches.of(29.0), Inches.of(26.0)); // length, width
-
       public final Distance length, width;
 
       RobotDimensions(Distance length, Distance width) {
@@ -351,7 +349,6 @@ public final class Constants {
           BumperThickness.COBRA,
           3.5714285714285716,
           false);
-
       public final Angle FRONT_LEFT_ENCODER_OFFSET,
           FRONT_RIGHT_ENCODER_OFFSET,
           BACK_LEFT_ENCODER_OFFSET,
@@ -410,10 +407,11 @@ public final class Constants {
     public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND = 8;
-    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE = (TELE_DRIVE_FAST_MODE_SPEED_PERCENT
-        - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
+    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
+        (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
-    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND = 26.971;
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
+        26.971;
 
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
@@ -438,8 +436,7 @@ public final class Constants {
         RightShoot
       }
 
-      public static enum ClimbPos {
-      }
+      public static enum ClimbPos {}
 
       public static enum Depot {
         DepotStart,
@@ -467,7 +464,8 @@ public final class Constants {
     public static final int MOTOR_2_PORT = 13;
 
     // TODO: subject to change, ask Jeff
-    public static final double TARGET_SURFACE_SPEED_MPS = 2.63; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+    public static final double TARGET_SURFACE_SPEED_MPS =
+        2.63; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
     public static final double kP = 0.8;
@@ -485,7 +483,8 @@ public final class Constants {
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
-    public static final InterpolatingDoubleTreeMap HOPPER_SPEED_MAP = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap HOPPER_SPEED_MAP =
+        new InterpolatingDoubleTreeMap();
   }
 
   public static class Vision {
@@ -511,7 +510,8 @@ public final class Constants {
 
     public static final double DISTANCE_COEFFICIENT_THETA = 0.9;
 
-    public static final double ANGLE_COEFFICIENT_X = 0.5; // noise growth per radian of viewing angle
+    public static final double ANGLE_COEFFICIENT_X =
+        0.5; // noise growth per radian of viewing angle
     public static final double ANGLE_COEFFICIENT_Y = 0.5;
     public static final double ANGLE_COEFFICIENT_THETA = 0.5;
 
@@ -721,7 +721,8 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_DEGREE = 1.0 / HOOD_DEGREES_PER_MOTOR_ROT;
 
       public static final double MOTOR_ROTS_PER_ENCODER_ROT = 12.0;
-      public static final double ENCODER_ROTS_PER_HOOD_ROT = MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
+      public static final double ENCODER_ROTS_PER_HOOD_ROT =
+          MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
       public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
 
       public static final double HOOD_TOLERANCE_DEG = 0.5;
@@ -761,7 +762,6 @@ public final class Constants {
       public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
       public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     }
-
   }
 
   public static class OI {
@@ -812,13 +812,19 @@ public final class Constants {
   }
 
   public static class Landmarks {
-    public static Pose2d BLUE_HUB = new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
-    public static Pose2d RED_HUB = new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
+    public static Pose2d BLUE_HUB =
+        new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
+    public static Pose2d RED_HUB =
+        new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
 
-    public static Pose2d RED_TOWER_R = new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
-    public static Pose2d RED_TOWER_L = new Pose2d(14.871597290039062, 3.892498254776001, new Rotation2d(0));
-    public static Pose2d BLUE_TOWER_R = new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
-    public static Pose2d BLUE_TOWER_L = new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
+    public static Pose2d RED_TOWER_R =
+        new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
+    public static Pose2d RED_TOWER_L =
+        new Pose2d(14.871597290039062, 3.892498254776001, new Rotation2d(0));
+    public static Pose2d BLUE_TOWER_R =
+        new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
+    public static Pose2d BLUE_TOWER_L =
+        new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
 
     // public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
     // new Pose2d(
@@ -836,31 +842,39 @@ public final class Constants {
     // new Pose2d(
     // new Translation2d(5.624283313751221, 2.4593770503997803),
     // new Rotation2d(1.57873264137917));
-    public static Pose2d RED_LEFT_INTAKE_TO_BUMP = new Pose2d(
-        new Translation2d(10.908942222595215, 2.2220301628112793),
-        new Rotation2d(1.5707963267948966));
-    public static Pose2d RED_RIGHT_INTAKE_TO_BUMP = new Pose2d(
-        new Translation2d(10.921140670776367, 5.914291858673096),
-        new Rotation2d(-1.5707963267948966));
-    public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP = new Pose2d(
-        new Translation2d(5.6342058181762695, 5.8613409996032715),
-        new Rotation2d(-1.5649821399611368));
-    public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP = new Pose2d(
-        new Translation2d(5.624283313751221, 2.281606435775757),
-        new Rotation2d(1.57873264137917));
+    public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.908942222595215, 2.2220301628112793),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.921140670776367, 5.914291858673096),
+            new Rotation2d(-1.5707963267948966));
+    public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.6342058181762695, 5.8613409996032715),
+            new Rotation2d(-1.5649821399611368));
+    public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.624283313751221, 2.281606435775757),
+            new Rotation2d(1.57873264137917));
 
-    public static Pose2d RED_LEFT_SHOOT_TO_BUMP = new Pose2d(
-        new Translation2d(12.9309492111206055, 2.3620588779449463),
-        new Rotation2d(1.5707963267948966));
-    public static Pose2d RED_RIGHT_SHOOT_TO_BUMP = new Pose2d(
-        new Translation2d(12.951465606689453, 5.671574592590332),
-        new Rotation2d(-1.5707963267948966));
-    public static Pose2d BLUE_LEFT_SHOOT_TO_BUMP = new Pose2d(
-        new Translation2d(3.60064959526062, 5.671574592590332),
-        new Rotation2d(-1.5649821399611368));
-    public static Pose2d BLUE_RIGHT_SHOOT_TO_BUMP = new Pose2d(
-        new Translation2d(3.60064959526062, 2.3620588779449463),
-        new Rotation2d(1.57873264137917));
+    public static Pose2d RED_LEFT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(12.9309492111206055, 2.3620588779449463),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d RED_RIGHT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(12.951465606689453, 5.671574592590332),
+            new Rotation2d(-1.5707963267948966));
+    public static Pose2d BLUE_LEFT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(3.60064959526062, 5.671574592590332),
+            new Rotation2d(-1.5649821399611368));
+    public static Pose2d BLUE_RIGHT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(3.60064959526062, 2.3620588779449463),
+            new Rotation2d(1.57873264137917));
 
     public static Pose2d BLUE_PASSING_L = new Pose2d(2.111, 6.003, new Rotation2d());
     public static Pose2d BLUE_PASSING_R = new Pose2d(2.111, 2.007, new Rotation2d());
