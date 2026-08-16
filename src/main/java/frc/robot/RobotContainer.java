@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -34,76 +35,69 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-  //   private Field2d field = new Field2d();
-  private final Telemetry logger =
-      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+  // private Field2d field = new Field2d();
+  private final Telemetry logger = new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CustomController secondController = new CustomController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  public final HopperSubsystem hopperSubsystem =
-      Constants.hopperOnRobot ? new HopperSubsystem() : null;
-  public final IntakeSubsystem intakeSubsystem =
-      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+  public final HopperSubsystem hopperSubsystem = Constants.hopperOnRobot ? new HopperSubsystem() : null;
+  public final IntakeSubsystem intakeSubsystem = Constants.intakeOnRobot ? new IntakeSubsystem() : null;
 
+  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
-//   private final AutoRoutines autoRoutines;
-//   private final AutoChooser autoChooser;
+  // private final AutoRoutines autoRoutines;
+  // private final AutoChooser autoChooser;
 
-  public final VisionSubsystem visionFrontRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionFrontLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionRearRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionRearLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, drivetrain)
-          : null;
+  public final VisionSubsystem visionFrontRight = Constants.visionOnRobot
+      ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, drivetrain)
+      : null;
+  public final VisionSubsystem visionFrontLeft = Constants.visionOnRobot
+      ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, drivetrain)
+      : null;
+  public final VisionSubsystem visionRearRight = Constants.visionOnRobot
+      ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, drivetrain)
+      : null;
+  public final VisionSubsystem visionRearLeft = Constants.visionOnRobot
+      ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, drivetrain)
+      : null;
 
-  public final FuelGaugeDetection visionFuelGauge =
-      Constants.fuelGaugeOnRobot
-          ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
-          : null;
-  public final IntakeVisionDetection visionIntake =
-      Constants.intakeVisionOnRobot
-          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
-          : null;
+  public final FuelGaugeDetection visionFuelGauge = Constants.fuelGaugeOnRobot
+      ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
+      : null;
+  public final IntakeVisionDetection visionIntake = Constants.intakeVisionOnRobot
+      ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
+      : null;
 
   // * KEEP FOR INTERMAP TESTING
-  //   private double hoodAngle = 18.369;
-  //   private double shooterSpeed = 58.0;
+  // private double hoodAngle = 18.369;
+  // private double shooterSpeed = 58.0;
 
   public RobotContainer() {
-    // autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
+    // autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem,
+    // drivetrain, redside);
     // autoChooser = autoRoutines.getAutoChooser();
     // SmartDashboard.putData("Auto Chooser", autoChooser);
     // SmartDashboard.putData("Elastic/Field2d", field);
     configureBindings();
   }
 
-  //   public void doTelemetry() {
-  //     logger.telemeterize(drivetrain.getCurrentState());
+  // public void doTelemetry() {
+  // logger.telemeterize(drivetrain.getCurrentState());
 
-  //     String commandName = "nah";
+  // String commandName = "nah";
 
-  //     if (drivetrain.getCurrentCommand() != null) {
-  //       commandName = drivetrain.getCurrentCommand().getName();
-  //     }
-  //     DogLog.log("Robot/SwerveDriveCommand", commandName);
-  //   }
+  // if (drivetrain.getCurrentCommand() != null) {
+  // commandName = drivetrain.getCurrentCommand().getName();
+  // }
+  // DogLog.log("Robot/SwerveDriveCommand", commandName);
+  // }
 
-  //   public CommandSwerveDrivetrain getDrivetrain() {
-  //     return drivetrain;
-  //   }
+  // public CommandSwerveDrivetrain getDrivetrain() {
+  // return drivetrain;
+  // }
 
   private void configureBindings() {
     // Swerve
@@ -112,19 +106,18 @@ public class RobotContainer {
     DoubleSupplier rotationFunction = () -> -joystick.getRightX();
     DoubleSupplier speedFunction = () -> 1d;
 
-    SwerveJoystickCommand swerveJoystickDefaultCommand =
-        new SwerveJoystickCommand(
-            frontBackFunction,
-            leftRightFunction,
-            rotationFunction,
-            speedFunction,
-            () -> true,
-            joystick.leftTrigger()::getAsBoolean,
-            () -> false,
-            redside,
-            drivetrain,
-            () -> false,
-            () -> false);
+    SwerveJoystickCommand swerveJoystickDefaultCommand = new SwerveJoystickCommand(
+        frontBackFunction,
+        leftRightFunction,
+        rotationFunction,
+        speedFunction,
+        () -> true,
+        joystick.leftTrigger()::getAsBoolean,
+        () -> false,
+        redside,
+        drivetrain,
+        () -> false,
+        () -> false);
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
@@ -144,33 +137,33 @@ public class RobotContainer {
 
     // * KEEP FOR WIN COMMAND
     // joystick
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToAndShoot(
-    //             () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             drivetrain,
-    //             redside));
+    // .a()
+    // .whileTrue(
+    // new DriveToAndShoot(
+    // () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
+    // lebron,
+    // intakeSubsystem,
+    // hopperSubsystem,
+    // drivetrain,
+    // redside));
 
     // joystick
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drivetrain,
-    //             () ->
-    //                 new Pose2d(
-    //                     new Translation2d(2.462480068206787, 2.26101016998291), new
+    // .a()
+    // .whileTrue(
+    // new DriveToPose(
+    // drivetrain,
+    // () ->
+    // new Pose2d(
+    // new Translation2d(2.462480068206787, 2.26101016998291), new
     // Rotation2d())));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         lebron
-    //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
-    //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
+    // .rightTrigger()
+    // .whileTrue(
+    // lebron
+    // .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
+    // .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
     //
     // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
 
@@ -184,6 +177,12 @@ public class RobotContainer {
     // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
     // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
     // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
+
+    shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
+    joystick.rightBumper().whileTrue(new ShootBasicHood(44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem,
+        intakeSubsystem, hopperSubsystem));
+    joystick.rightTrigger().whileTrue(new ShootBasicHood(58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem,
+        intakeSubsystem, hopperSubsystem));
   }
 
   public static boolean isRedAlliance() {
@@ -213,7 +212,7 @@ public class RobotContainer {
         : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
   }
 
-//   public Command getAutonomousCommand() {
-//     return autoChooser.selectedCommand();
-//   }
+  // public Command getAutonomousCommand() {
+  // return autoChooser.selectedCommand();
+  // }
 }

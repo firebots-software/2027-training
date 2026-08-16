@@ -19,6 +19,8 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -37,7 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         private final VelocityVoltage m_velocityVoltageRequest = new VelocityVoltage(0.0);
         private final PositionVoltage m_positionVoltageRequest = new PositionVoltage(0.0);
-        private double target_roller_speed, target_hood_angle;
+        private double target_roller_speed = 0.0, target_hood_angle = 0.0;
 
         public ShooterSubsystem() {
                 // The canbus is a communication system that can connect devices like the
@@ -150,4 +152,38 @@ public class ShooterSubsystem extends SubsystemBase {
                 hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
         }
+
+        public void setHoodAngle(double degrees) {
+                target_hood_angle = degrees;
+                hood.setControl(m_positionVoltageRequest
+                                .withPosition(MathUtil.clamp(degrees / 360.0, Constants.Shooter.Hood.MIN_HOOD_ANGLE,
+                                                Constants.Shooter.Hood.MAX_HOOD_ANGLE)));
+        }
+
+        public void setShooterSpeed(double velocityRps) {
+                target_roller_speed = velocityRps;
+                shooter.setControl(m_velocityVoltageRequest
+                                .withVelocity(velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
+        }
+
+        public void stopShooter() {
+                target_roller_speed = 0.0;
+                shooter.stopMotor();
+        }
+
+        public boolean isShooterAtSpeed() {
+                double currentVelocity = shooter.getCachedVelocityRps()
+                                / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+                return Math.abs(currentVelocity - target_roller_speed) <= 1.0;
+        }
+
+        public Command shootWithHood(double targetShooterSpeed, double targetHoodAngle) {
+                return runEnd(
+                                () -> {
+                                        setShooterSpeed(targetShooterSpeed);
+                                        setHoodAngle(targetHoodAngle);
+                                },
+                                this::stopShooter);
+        }
+
 }
