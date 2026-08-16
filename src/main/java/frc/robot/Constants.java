@@ -761,7 +761,6 @@ public final class Constants {
       public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
       public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     }
-
   }
 
   public static class OI {
