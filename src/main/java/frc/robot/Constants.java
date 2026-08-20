@@ -92,7 +92,6 @@ public final class Constants {
 
       public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
       public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 2.0; // 8.0 / 3.0;
-      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
       public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
@@ -759,6 +758,7 @@ public final class Constants {
 
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
     }
   }
 
