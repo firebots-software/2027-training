@@ -92,6 +92,7 @@ public final class Constants {
 
       public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
       public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 2.0; // 8.0 / 3.0;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
       public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
@@ -705,12 +706,12 @@ public final class Constants {
     public static final class Hood {
       public static final int HOOD_ID = 12;
 
-      public static final double KP = 0.0;
+      public static final double KP = 2000;
       public static final double KI = 0.0;
-      public static final double KD = 0.0;
+      public static final double KD = 80.0;
       public static final double KV = 0.0;
-      public static final double KS = 0.0;
-      public static final double KG = 0.0;
+      public static final double KS = 0.124;
+      public static final double KG = 0.4;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
@@ -729,6 +730,8 @@ public final class Constants {
 
       public static final double MIN_HOOD_POSITION = 3.8;
       public static final double MAX_HOOD_POSITION = 18.369;
+      public static final double MIN_HOOD_ANGLE = 3.8;
+      public static final double MAX_HOOD_ANGLE = 18.369;
 
       public static double ENCODER_OFFSET = 0.296; // TODO
       public static final int ENCODER_PORT = 18;
@@ -748,10 +751,10 @@ public final class Constants {
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.0;
+      public static final double KP = 0.85;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KV = 0.0;
+      public static final double KV = 0.124;
       public static final double KS = 0.0;
 
       public static final double STATOR_CURRENT_LIMIT = 120.0;

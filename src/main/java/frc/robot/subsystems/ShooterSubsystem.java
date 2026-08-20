@@ -5,12 +5,21 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -122,5 +131,43 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Apply this config to the `hoodEncoder`. Notice how applying a device configuration is similar between motors and other devices
         hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
+    }
+
+    public void setHoodAngle(double degrees) {
+        targethoodangle = degrees;
+        double clampedAngle = clamp(
+            degrees,
+            Constants.Shooter.Hood.MIN_HOOD_ANGLE,
+            Constants.Shooter.Hood.MAX_HOOD_ANGLE
+        );
+        hood.setControl(position.withPosition(clampedAngle / 360));
+    }
+
+    public void setShooterSpeed(double velocityRps) {
+        targetrollerspeed = velocityRps;
+        shooter.setControl(velocity.withVelocity(velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
+    }
+
+    public void stopShooter() {
+        targetrollerspeed = 0.0;
+        shooter.stopMotor();
+    }
+
+    public boolean isShooterAtSpeed() {
+        double currentVelocity =
+            shooter.getCachedVelocityRps()
+                / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+
+        return Math.abs(currentVelocity - targetrollerspeed) <= 1.0;
+}
+
+    public Command shootWithHood(double shooterSpeed, double hoodAngle) {
+        return runEnd(
+            () -> {
+                setShooterSpeed(shooterSpeed);
+                setHoodAngle(hoodAngle);
+            },
+            this::stopShooter
+        );
     }
 }
