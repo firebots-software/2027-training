@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Create a variable of type CurrentLimitsConfigs called rollersClConfigs, and initialize it with the stator and supply limits found in Constants
 
-        // Create a variable of type MotorOutputConifigs called rollersOutputConfigs, and initialize it to treat clockwise as positive, and neutral mode as coast
+        // Create a variable of type MotorOutputConfigs called rollersOutputConfigs, and initialize it to treat clockwise as positive, and neutral mode as coast
 
         TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
         // Set the Slot0, CurrentLimits, and MotorOutput parameters of `rollersConfig` to the configs you just created.
@@ -62,7 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Create a variable of type CurrentLimitsConfigs called hoodClConfigs, and initialize it with the stator and supply limits found in Constants
 
-        // Create a variable of type MotorOutputConifigs called hoodOutputConfigs, and initialize it to treat counterclockwise as positive, and neutral mode as coast
+        // Create a variable of type MotorOutputConfigs called hoodOutputConfigs, and initialize it to treat counterclockwise as positive, and neutral mode as coast
 
         FeedbackConfigs hoodFeedbackConfigs =
         new FeedbackConfigs()
