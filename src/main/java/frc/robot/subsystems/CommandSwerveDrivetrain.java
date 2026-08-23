@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MathUtils.MiscMath;
-import frc.robot.util.Targeting;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -215,7 +214,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       return target;
     }
     if (virtualTarget == null || !virtualTargetComputedThisLoop) {
-      virtualTarget = Targeting.computeVirtualTarget(Targeting.getHub(redside), this);
+      virtualTarget = getPose().getTranslation();
       virtualTargetComputedThisLoop = true;
     }
     DogLog.log("VirtualTarget", new Pose2d(virtualTarget, new Rotation2d()));
