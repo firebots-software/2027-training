@@ -64,6 +64,7 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 80.0;
       public static final double SUPPLY_CURRENT_LIMIT = 60.0;
 
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
       public static final double MOTOR_ROTS_PER_ARM_ROT =
           (12.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
       public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;

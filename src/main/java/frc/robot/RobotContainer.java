@@ -11,6 +11,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
@@ -70,6 +72,8 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
+  public final ShooterSubsystem shooterSubsystem = 
+      Constants.Shooter
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
@@ -100,6 +104,11 @@ public class RobotContainer {
   //   }
 
   private void configureBindings() {
+    //Shooter
+    shooter.setDefaultCommand(shooter.runOnce(shooter::stopShooter));
+    joystick.rightBumper().whileTrue(ShootBasicHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION));
+    joystick.rightTrigger().whileTrue(ShootBasicHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITIONX));
+    
     // Swerve
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
