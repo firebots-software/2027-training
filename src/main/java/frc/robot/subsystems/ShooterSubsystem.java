@@ -10,12 +10,16 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -32,10 +36,36 @@ public class ShooterSubsystem extends SubsystemBase {
      * make instance variables for necessary closed loop control requests: VelocityVoltage, PositionVoltage. Initialize them with value 0.0.
      * make instance variables of type double for the target roller speed and target hood angle
      */
-    double VelocityVoltage = 0.0;
-    double PositionVoltage = 0.0;
-    double targetRollerSpeed;
-    double targetHoodAngle;
+    VelocityVoltage velocityVoltage = new VelocityVoltage(0.0);
+    PositionVoltage positionVoltage = new PositionVoltage(0.0);
+    double targetShooterSpeed = 0.0;
+    double targetHoodAngle = 0.0;
+
+public void setHoodAngle(double degrees){
+    targetHoodAngle = degrees;
+    hood.setControl(positionVoltage.withPosition(MathUtil.clamp(degrees, Constants.Shooter.Hood.MIN_HOOD_ANGLE, Constants.Shooter.Hood.MAX_HOOD_ANGLE)/360.0));
+
+}
+
+public void setShooterSpeed(double velocityRps){
+    targetShooterSpeed = velocityRps;
+    shooter.setControl(velocityVoltage.withVelocity(velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
+}
+
+
+public void stopShooter(){
+    targetShooterSpeed = 0.0;
+    shooter.stopMotor();
+}
+
+public boolean isShooterAtSpeed(){
+    double currentWheelSpeed = shooter.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+    return MathUtil.isNear(targetShooterSpeed, currentWheelSpeed, 1.0);
+}
+
+public Command shootWithHood(double shooterSpeedRps, double hoodAngle){
+    return runEnd(() -> { setShooterSpeed(shooterSpeedRps); setHoodAngle(hoodAngle); }, this::stopShooter);
+}
 
     public ShooterSubsystem() {
         // The canbus is a communication system that can connect devices like the roboRIO, pdh, and motors.
