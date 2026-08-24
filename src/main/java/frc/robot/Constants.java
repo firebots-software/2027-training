@@ -472,7 +472,10 @@ public final class Constants {
     public static final double kV = 0.124;
 
     // TODO: Do we want stator limit to still be this high?
-    public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
+    public static final double 
+    
+    
+    _LIMIT_AMPS = 150.0; // 50.0
     public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
     public static final double MOTOR_ROTS_PER_AGITATOR_ROT = 3.57142857;
