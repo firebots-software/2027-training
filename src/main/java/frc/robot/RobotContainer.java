@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
+import frc.robot.commandGroups.ShootCommandGroups.ShootBasicHood;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
@@ -42,6 +44,7 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
 
+  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   //   private final AutoRoutines autoRoutines;
   //   private final AutoChooser autoChooser;
 
@@ -100,6 +103,7 @@ public class RobotContainer {
   //   }
 
   private void configureBindings() {
+
     // Swerve
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
@@ -135,6 +139,30 @@ public class RobotContainer {
                 .alongWith(
                     hopperSubsystem.runHopperUntilInterruptedCommand(
                         -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+
+    hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
+
+    shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
+
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootBasicHood(
+                44.2,
+                Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                shooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem));
+
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ShootBasicHood(
+                58.2,
+                Constants.Shooter.Hood.MAX_HOOD_POSITION,
+                shooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem));
 
     // * KEEP FOR WIN COMMAND
     // joystick
@@ -194,7 +222,7 @@ public class RobotContainer {
   public void doTelemetry() {
     logger.telemeterize(drivetrain.getCurrentState());
 
-    String commandName = "nah";
+    String commandName = "nah"; // crazy work
 
     if (drivetrain.getCurrentCommand() != null) {
       commandName = drivetrain.getCurrentCommand().getName();
