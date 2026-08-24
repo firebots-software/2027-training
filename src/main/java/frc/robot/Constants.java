@@ -705,12 +705,12 @@ public final class Constants {
     public static final class Hood {
       public static final int HOOD_ID = 12;
 
-      public static final double KP = 0.0;
+      public static final double KP = 2000;
       public static final double KI = 0.0;
-      public static final double KD = 0.0;
-      public static final double KV = 0.0;
+      public static final double KD = 80.0;
       public static final double KS = 0.0;
-      public static final double KG = 0.0;
+      public static final double KV = 0.124;
+      public static final double KG = 0.4;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
@@ -739,6 +739,9 @@ public final class Constants {
       public static final double ZERO_MAX_SUPPLY = 0;
       public static final double ZERO_MAX_STATOR = 0;
       public static final int MAX_TIMES_EXCEEDED = 10;
+
+      public static final double MIN_HOOD_ANGLE = 3.8;
+      public static final double MAX_HOOD_ANGLE = 18.369;
     }
 
     public static final class Rollers {
@@ -748,14 +751,16 @@ public final class Constants {
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.0;
+      public static final double KP = 0.85;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KV = 0.0;
+      public static final double KV = 0.124;
       public static final double KS = 0.0;
 
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
     }
   }
 
