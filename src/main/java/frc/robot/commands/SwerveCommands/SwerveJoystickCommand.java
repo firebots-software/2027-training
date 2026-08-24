@@ -3,12 +3,9 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -132,16 +129,7 @@ public class SwerveJoystickCommand extends Command {
             ? fieldCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
             : robotCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn);
 
-    boolean isPointed =
-        Targeting.pointingAtTarget(
-            swerveDrivetrain
-                    .travelAngleTo(
-                        new Pose2d(
-                            swerveDrivetrain.getVirtualTarget(redsideIfPointing, () -> false),
-                            new Rotation2d()))
-                    .getRadians()
-                + Math.PI,
-            swerveDrivetrain);
+    boolean isPointed = true;
     boolean intentionallyStationary =
         (xSpdFunction.getAsDouble() < 0.1)
             && (ySpdFunction.getAsDouble() < 0.1)
