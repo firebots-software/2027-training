@@ -97,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
         CurrentLimitsConfigs hoodConfigs = new CurrentLimitsConfigs();
         hoodConfigs.StatorCurrentLimit = Constants.Shooter.Hood.STATOR_CURRENT_LIMIT;
         hoodConfigs.SupplyCurrentLimit = Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT;
-        // Create a variable of type MotorOutputConifigs called hoodOutputConfigs, and initialize it to treat counterclockwise as positive, and neutral mode as coast
+        // Create a variable of type MotorOutputConfigs called hoodOutputConfigs, and initialize it to treat counterclockwise as positive, and neutral mode as coast
         MotorOutputConfigs hoodOutputConfigs = new MotorOutputConfigs();
         hoodOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         hoodOutputConfigs.NeutralMode = NeutralModeValue.Coast;

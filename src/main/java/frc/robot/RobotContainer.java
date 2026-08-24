@@ -4,19 +4,14 @@
 
 package frc.robot;
 
-import choreo.auto.AutoChooser;
 // * KEEP FOR WIN COMMAND TESTING
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
-import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
-import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -24,12 +19,8 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
-import frc.robot.util.MiscUtils;
-import frc.robot.util.Targeting;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -47,13 +38,12 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   public final HopperSubsystem hopperSubsystem =
-      Constants.hopperOnRobot ? new HopperSubsystem(drivetrain, redside) : null;
+      Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
 
-
-//   private final AutoRoutines autoRoutines;
-//   private final AutoChooser autoChooser;
+  //   private final AutoRoutines autoRoutines;
+  //   private final AutoChooser autoChooser;
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
@@ -81,19 +71,13 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-  public final LEDSubsystem leds =
-      new LEDSubsystem(
-          () -> MiscUtils.areWeActive(2.0),
-          () ->
-              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.47
-                  && inAllianceSide());
-
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
   //   private double shooterSpeed = 58.0;
 
   public RobotContainer() {
-    // autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
+    // autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain,
+    // redside);
     // autoChooser = autoRoutines.getAutoChooser();
     // SmartDashboard.putData("Auto Chooser", autoChooser);
     // SmartDashboard.putData("Elastic/Field2d", field);
@@ -205,7 +189,6 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-    leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
   public void doTelemetry() {
@@ -224,7 +207,7 @@ public class RobotContainer {
         : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
   }
 
-//   public Command getAutonomousCommand() {
-//     return autoChooser.selectedCommand();
-//   }
+  //   public Command getAutonomousCommand() {
+  //     return autoChooser.selectedCommand();
+  //   }
 }
