@@ -8,6 +8,7 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.commandGroups.ShootCommandGroups.ShootBasicHood;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -19,14 +20,19 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+
 public class RobotContainer {
+
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
+
+  private final ShooterSubsystem shooter = new ShooterSubsystem();
 
   //   private Field2d field = new Field2d();
   private final Telemetry logger =
@@ -172,6 +178,10 @@ public class RobotContainer {
 
     // Hopper
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
+
+    shooter.setDefaultCommand(shooter.runOnce(shooter::stopShooter));
+    joystick.rightBumper().whileTrue(new ShootBasicHood(44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooter));
+    joystick.rightTrigger().whileTrue(new ShootBasicHood(58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooter));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));

@@ -472,7 +472,10 @@ public final class Constants {
     public static final double kV = 0.124;
 
     // TODO: Do we want stator limit to still be this high?
-    public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
+    public static final double STATOR_LIMIT_AMPS = 150.0;
+    
+    
+    // _LIMIT_AMPS = 150.0; // 50.0
     public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
     public static final double MOTOR_ROTS_PER_AGITATOR_ROT = 3.57142857;
@@ -705,12 +708,16 @@ public final class Constants {
     public static final class Hood {
       public static final int HOOD_ID = 12;
 
-      public static final double KP = 0.0;
+      public static final double MIN_HOOD_ANGLE = 3.8;
+      public static final double MAX_HOOD_ANGLE = 18.369;
+
+      public static final double KP = 2000;
       public static final double KI = 0.0;
-      public static final double KD = 0.0;
-      public static final double KV = 0.0;
+      public static final double KD = 80.0;
       public static final double KS = 0.0;
-      public static final double KG = 0.0;
+      public static final double KV = 0.124;
+      public static final double KG = 0.4;
+
 
       public static final double STATOR_CURRENT_LIMIT = 40.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
@@ -744,15 +751,18 @@ public final class Constants {
     public static final class Rollers {
       public static final double TOLERANCE_RPS = 1.0;
 
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
+
       public static final int WARMUP_1_ID = 10;
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.0;
+      public static final double KP = 0.85;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KV = 0.0;
+      public static final double KV = 0.124;
       public static final double KS = 0.0;
+
 
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
