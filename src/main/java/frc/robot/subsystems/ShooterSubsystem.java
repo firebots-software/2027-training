@@ -19,25 +19,26 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
-
 public class ShooterSubsystem extends SubsystemBase {
-    
+
     private final LoggedTalonFX warmup1, warmup2, warmup3, shooter, hood;
     private final CANcoder hoodEncoder;
 
     VelocityVoltage mVelocityVoltage = new VelocityVoltage(0.0);
     PositionVoltage mPositionVoltage = new PositionVoltage(0.0);
 
-    double targetRoller;
-    double targetAngle;
+    double targetShooterSpeed = 0;
+    double targetHoodAngle = 0;
 
     public ShooterSubsystem() {
         CANBus canbus = Constants.Swerve.CAN_BUS;
-         
+
         warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.Rollers.WARMUP_1_ID, canbus);
         warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.Rollers.WARMUP_2_ID, canbus);
         warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.Rollers.WARMUP_3_ID, canbus);
@@ -92,12 +93,11 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         hoodOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
-        FeedbackConfigs hoodFeedbackConfigs =
-        new FeedbackConfigs()
-            .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
-            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-            .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT)
-            .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
+        FeedbackConfigs hoodFeedbackConfigs = new FeedbackConfigs()
+                .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
+                .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+                .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT)
+                .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
         TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
         hoodConfig.Slot0 = hoodSlot0Configs;
@@ -106,13 +106,34 @@ public class ShooterSubsystem extends SubsystemBase {
 
         hood.getConfigurator().apply(hoodConfig);
 
-        MagnetSensorConfigs hoodCANcoderConfig =
-        new CANcoderConfiguration()
-            .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
+        MagnetSensorConfigs hoodCANcoderConfig = new CANcoderConfiguration().MagnetSensor
+                .withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
                 .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
                 .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
-                
-        hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
+        hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
     }
+
+    public void setHoodAngle(double degrees) {
+        targetHoodAngle = degrees;
+        hood.setControl(mPositionVoltage.withPosition(MathUtil.clamp(degrees, Constants.Shooter.Hood.MIN_HOOD_ANGLE, Constants.Shooter.Hood.MAX_HOOD_ANGLE)/360));
+    }
+    public void setShooterSpeed(double velocityRps){
+        targetShooterSpeed = velocityRps;
+        shooter.setControl(mVelocityVoltage.withVelocity(velocityRps/360));
+    }
+    public void stopShooter(){
+        targetShooterSpeed = 0.0;
+        shooter.stopMotor();
+    }
+    public boolean isShooterAtSpeed(){
+        if(Math.abs((shooter.getCachedVelocityRps()/360) - targetShooterSpeed) <= 1.0){
+            return true;
+        }
+        return false;
+    }
+    public Command shootWithHood(double targetSpeed, double targetAngle){
+        return runEnd(() -> {setShooterSpeed(targetSpeed); setHoodAngle(targetAngle);}, this::stopShooter);
+    }
+    
 }
