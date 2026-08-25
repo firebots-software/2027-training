@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commandGroups.ShootBasicHood;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
@@ -127,8 +127,16 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
-    joystick.rightBumper().whileTrue(new ShootBasicHood(44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
-    joystick.rightTrigger().whileTrue(new ShootBasicHood(58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootBasicHood(
+                44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ShootBasicHood(
+                58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());

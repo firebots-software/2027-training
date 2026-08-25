@@ -705,7 +705,7 @@ public final class Constants {
     public static final class Hood {
       public static final double MIN_HOOD_ANGLE = 3.8;
       public static final double MAX_HOOD_ANGLE = 18.369;
-    
+
       public static final int HOOD_ID = 12;
 
       public static final double KP = 2000;
@@ -745,7 +745,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0/12.0;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
 
       public static final double TOLERANCE_RPS = 1.0;
 
