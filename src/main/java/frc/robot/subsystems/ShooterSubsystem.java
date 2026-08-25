@@ -150,7 +150,8 @@ public class ShooterSubsystem extends SubsystemBase {
             new TalonFXConfiguration()
                 .withSlot0(hoodSlot0Configs)
                 .withCurrentLimits(hoodClConfigs)
-                .withMotorOutput(hoodOutputConfigs));
+                .withMotorOutput(hoodOutputConfigs)
+                .withFeedback(hoodFeedbackConfigs));
 
     MagnetSensorConfigs hoodCANcoderConfig =
         new CANcoderConfiguration()
