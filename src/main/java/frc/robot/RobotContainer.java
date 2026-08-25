@@ -72,8 +72,7 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
-  public final ShooterSubsystem shooterSubsystem = 
-      Constants.Shooter
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
@@ -104,11 +103,27 @@ public class RobotContainer {
   //   }
 
   private void configureBindings() {
-    //Shooter
+    // Shooter
     shooter.setDefaultCommand(shooter.runOnce(shooter::stopShooter));
-    joystick.rightBumper().whileTrue(ShootBasicHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION));
-    joystick.rightTrigger().whileTrue(ShootBasicHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITIONX));
-    
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootBasicHood(
+                () -> 44.2,
+                () -> Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                shooter,
+                intakeSubsystem,
+                hopperSubsystem));
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ShootBasicHood(
+                () -> 58.2,
+                () -> Constants.Shooter.Hood.MAX_HOOD_POSITION,
+                shooter,
+                intakeSubsystem,
+                hopperSubsystem));
+
     // Swerve
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();

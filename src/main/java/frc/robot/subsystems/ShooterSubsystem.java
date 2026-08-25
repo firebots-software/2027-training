@@ -19,6 +19,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -149,5 +151,47 @@ public class ShooterSubsystem extends SubsystemBase {
     // Apply this config to the `hoodEncoder`. Notice how applying a device configuration is similar
     // between motors and other devices
     hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
+  }
+
+  public void setHoodAngle(double degrees) {
+    this.targetHoodAngle = degrees;
+    hood.setControl(positionRequest);
+    double clampedDegrees =
+        MathUtil.clamp(
+            degrees,
+            Constants.Shooter.Hood.MIN_HOOD_POSITION,
+            Constants.Shooter.Hood.MAX_HOOD_POSITION);
+    double targetRotations = clampedDegrees / 360;
+  }
+
+  public void setShooterSpeed(double velocityRps) {
+    this.targetRollerSpeed = velocityRps;
+    shooter.setControl(
+        velocityRequest.withVelocity(
+            velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
+  }
+
+  public void stopShooter() {
+    targetRollerSpeed = 0.0;
+    shooter.stopMotor();
+  }
+
+  public boolean isShooterAtSpeed() {
+    double currentShooterSpeed =
+        shooter.getCachedVelocityRps() * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+    if (currentShooterSpeed - 1 <= targetRollerSpeed
+        || currentShooterSpeed + 1 >= targetRollerSpeed) {
+      return false;
+    }
+    return true;
+  }
+
+  public Command shootWithHood(Double targetRollerSpeed, Double targetHoodAngle) {
+    return runEnd(
+        () -> {
+          setShooterSpeed(targetRollerSpeed);
+          setHoodAngle(targetHoodAngle);
+        },
+        this::stopShooter);
   }
 }
