@@ -8,9 +8,13 @@ import java.util.function.DoubleSupplier;
 
 public class ShootBasicHood extends ParallelCommandGroup {
   public ShootBasicHood(
-      DoubleSupplier hoodAngle, DoubleSupplier shooterVelocity, ShooterSubsystem shooterSubsystem, HopperSubsystem hopperSubsystem) {
+      DoubleSupplier hoodAngle,
+      DoubleSupplier shooterVelocity,
+      ShooterSubsystem shooterSubsystem,
+      HopperSubsystem hopperSubsystem) {
     addCommands(
         shooterSubsystem.shootWithHood(hoodAngle.getAsDouble(), shooterVelocity.getAsDouble()),
-        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed).andThen(hopperSubsystem.runHopperUntilInterruptedCommand()));
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand()));
   }
 }
