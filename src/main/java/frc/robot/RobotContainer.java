@@ -45,8 +45,8 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
-//   private final AutoRoutines autoRoutines;
-//   private final AutoChooser autoChooser;
+  //   private final AutoRoutines autoRoutines;
+  //   private final AutoChooser autoChooser;
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
@@ -146,13 +146,13 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             new ShootBasicHood(
-                44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem));
+                44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
 
     joystick
         .rightTrigger()
         .whileTrue(
             new ShootBasicHood(
-                58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem));
+                58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 

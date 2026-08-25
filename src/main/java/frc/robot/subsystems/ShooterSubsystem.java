@@ -19,7 +19,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,21 +44,17 @@ public class ShooterSubsystem extends SubsystemBase {
     hood.setControl(
         positionVoltage.withPosition(
             MathUtil.clamp(
-                degrees, 
-                Constants.Shooter.Hood.MIN_HOOD_ANGLE, 
-                Constants.Shooter.Hood.MAX_HOOD_ANGLE
-            ) / 360.0
-        )
-    );
+                    degrees,
+                    Constants.Shooter.Hood.MIN_HOOD_ANGLE,
+                    Constants.Shooter.Hood.MAX_HOOD_ANGLE)
+                / 360.0));
   }
 
   public void setShooterSpeed(double velocityRps) {
     targetShooterSpeed = velocityRps;
     shooter.setControl(
         velocityVoltage.withVelocity(
-            velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT
-        )
-    );
+            velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
   }
 
   public void stopShooter() {
@@ -68,7 +63,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterAtSpeed() {
-    double currentWheelSpeed = shooter.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+    double currentWheelSpeed =
+        shooter.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
     return MathUtil.isNear(targetShooterSpeed, currentWheelSpeed, 1.0);
   }
 
@@ -78,13 +74,12 @@ public class ShooterSubsystem extends SubsystemBase {
           setShooterSpeed(shooterSpeedRps);
           setHoodAngle(hoodAngle);
         },
-        this::stopShooter
-    );
+        this::stopShooter);
   }
 
   public ShooterSubsystem() {
     CANBus canbus = Constants.Swerve.CAN_BUS;
-     
+
     warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.Rollers.WARMUP_1_ID, canbus);
     warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.Rollers.WARMUP_2_ID, canbus);
     warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.Rollers.WARMUP_3_ID, canbus);
@@ -92,7 +87,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shooter = warmup3;
     hood = new LoggedTalonFX("Hood", Constants.Shooter.Hood.HOOD_ID, canbus);
 
-    Follower follower = new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
+    Follower follower =
+        new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
     warmup1.setControl(follower);
     warmup2.setControl(follower);
 
@@ -111,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollersCLConfigs.StatorCurrentLimitEnable = true;
     rollersCLConfigs.SupplyCurrentLimit = Constants.Shooter.Rollers.SUPPLY_CURRENT_LIMIT;
     rollersCLConfigs.SupplyCurrentLimitEnable = true;
-    
+
     MotorOutputConfigs rollersOutputConfigs = new MotorOutputConfigs();
     rollersOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     rollersOutputConfigs.NeutralMode = NeutralModeValue.Coast;
@@ -143,11 +139,12 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     hoodOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
-    FeedbackConfigs hoodFeedbackConfigs = new FeedbackConfigs()
-        .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
-        .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-        .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT)
-        .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
+    FeedbackConfigs hoodFeedbackConfigs =
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT)
+            .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
     hoodConfig.Slot0 = hoodSlot0Configs;
@@ -157,10 +154,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     hood.getConfigurator().apply(hoodConfig);
 
-    MagnetSensorConfigs hoodCANcoderConfig = new CANcoderConfiguration()
-        .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
-            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-            .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
+    MagnetSensorConfigs hoodCANcoderConfig =
+        new CANcoderConfiguration()
+            .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
+                .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+                .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
 
     hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
   }
