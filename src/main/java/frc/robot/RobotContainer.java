@@ -188,19 +188,17 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             new ShootBasicHood(
-                44.2,
-                Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                () -> 44.2,
+                () -> Constants.Shooter.Hood.MIN_HOOD_POSITION,
                 shooterSubsystem,
-                intakeSubsystem,
                 hopperSubsystem));
     joystick
         .rightTrigger()
         .whileTrue(
             new ShootBasicHood(
-                58.2,
-                Constants.Shooter.Hood.MAX_HOOD_POSITION,
+                () -> 58.2,
+                () -> Constants.Shooter.Hood.MAX_HOOD_POSITION,
                 shooterSubsystem,
-                intakeSubsystem,
                 hopperSubsystem));
   }
 

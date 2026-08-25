@@ -85,12 +85,13 @@ public class ShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
-    TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
+    TalonFXConfiguration rollersConfig =
+        new TalonFXConfiguration()
+            .withSlot0(rollersSlot0Configs)
+            .withCurrentLimits(rollersCLConfigs)
+            .withMotorOutput(rollersMotorOutputConfigs);
     // Set the Slot0, CurrentLimits, and MotorOutput parameters of `rollersConfig` to the configs
     // you just created.
-    rollersConfig.withSlot0(rollersSlot0Configs);
-    rollersConfig.withCurrentLimits(rollersCLConfigs);
-    rollersConfig.withMotorOutput(rollersMotorOutputConfigs);
 
     warmup1.getConfigurator().apply(rollersConfig);
     // I just applied the configuration that you just created to warmup1. Apply it to warmup2 and
@@ -140,12 +141,14 @@ public class ShooterSubsystem extends SubsystemBase {
             .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
     // Create a TalonFXConfiguration called hoodConfig
-    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+    TalonFXConfiguration hoodConfig =
+        new TalonFXConfiguration()
+            .withSlot0(hoodSlot0Configs)
+            .withCurrentLimits(hoodCLConfigs)
+            .withMotorOutput(hoodOutputConfigs) 
+            .withFeedback(hoodFeedbackConfigs);
     // Set the Slot0, CurrentLimits, MotorOutput, and Feedback parameters to the device configs
     // above
-    hoodConfig.withSlot0(hoodSlot0Configs);
-    hoodConfig.withCurrentLimits(hoodCLConfigs);
-    hoodConfig.withMotorOutput(hoodOutputConfigs);
 
     // Apply the created configuration to the hood motor
     hood.getConfigurator().apply(hoodConfig);
@@ -168,26 +171,26 @@ public class ShooterSubsystem extends SubsystemBase {
             Constants.Shooter.Hood.MIN_HOOD_POSITION,
             Constants.Shooter.Hood.MAX_HOOD_POSITION);
     targetHoodAngle = degrees;
-    hood.setControl(positionRequest.withPosition(degrees / 360));
+    hood.setControl(positionRequest.withPosition(degrees / 360.0));
   }
 
   public void setShooterSpeed(double velocityRps) {
     targetShooterSpeed = velocityRps;
-    warmup3.setControl(
+    shooter.setControl(
         velocityRequest.withVelocity(
             velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS));
   }
 
   public boolean isShooterAtSpeed() {
     return Math.abs(
-            (warmup3.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS)
+            (shooter.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS)
                 - targetShooterSpeed)
         <= Constants.Shooter.Rollers.TOLERANCE_RPS;
   }
 
   public void stopShooter() {
     targetShooterSpeed = 0;
-    warmup3.stopMotor();
+    shooter.stopMotor();
   }
 
   // Commands
@@ -195,8 +198,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command shootWithHood(double shooterSpeed, double hoodAngle) {
     return Commands.runEnd(
         () -> {
-          setHoodAngle(hoodAngle);
           setShooterSpeed(shooterSpeed);
+          setHoodAngle(hoodAngle);
         },
         this::stopShooter);
   }
