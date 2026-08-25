@@ -730,6 +730,9 @@ public final class Constants {
       public static final double MIN_HOOD_POSITION = 3.8;
       public static final double MAX_HOOD_POSITION = 18.369;
 
+      public static final double MIN_HOOD_ANGLE = 3.8;
+      public static final double MAX_HOOD_ANGLE = 18.369;
+
       public static double ENCODER_OFFSET = 0.296; // TODO
       public static final int ENCODER_PORT = 18;
 
