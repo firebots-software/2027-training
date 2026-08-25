@@ -149,12 +149,12 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             new ShootBasicHood(
-                () -> Constants.Shooter.Hood.MIN_HOOD_POSITION, () -> 44.2, shooterSubsystem));
+                () -> Constants.Shooter.Hood.MIN_HOOD_POSITION, () -> 44.2, shooterSubsystem, hopperSubsystem));
     joystick
         .rightTrigger()
         .whileTrue(
             new ShootBasicHood(
-                () -> Constants.Shooter.Hood.MAX_HOOD_POSITION, () -> 58.2, shooterSubsystem));
+                () -> Constants.Shooter.Hood.MAX_HOOD_POSITION, () -> 58.2, shooterSubsystem, hopperSubsystem));
   }
 
   public static boolean isRedAlliance() {
