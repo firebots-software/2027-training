@@ -751,16 +751,16 @@ public final class Constants {
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.0;
+      public static final double KP = 0.85;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KV = 0.0;
+      public static final double KV = 0.124;
       public static final double KS = 0.0;
 
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
-      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 0;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 5.0 / 12.0;;
     }
   }
 
