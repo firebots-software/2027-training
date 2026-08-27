@@ -30,7 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final CANcoder hoodEncoder;
     private double VelocityVoltage = 0.0;
     private double PositionVoltage = 0.0;
-    private double targetRollerSpeed, targetHoodAngle;
+    private double targetRollerSpeed;
+    private double targetHoodAngle;
 
     public ShooterSubsystem() {
         CANBus canbus = Constants.Swerve.CAN_BUS;
@@ -118,6 +119,14 @@ public class ShooterSubsystem extends SubsystemBase {
         
         hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
+        
 
     }
+
+    public void setHoodAngle(double degrees) {
+        targetHoodAngle = degrees;
+        // PositionVoltage = 
+    
+    }
+
 }
