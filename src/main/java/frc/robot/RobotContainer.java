@@ -10,8 +10,8 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -26,7 +26,6 @@ import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -195,10 +194,14 @@ public class RobotContainer {
     //             shooterSubsystem,
     //             hopperSubsystem));
 
-    joystick.rightBumper()
-            .whileTrue(shooterSubsystem.shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION)
-                    .alongWith(Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
-                            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            shooterSubsystem
+                .shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
     // joystick
     //     .rightTrigger()
     //     .whileTrue(
@@ -208,11 +211,14 @@ public class RobotContainer {
     //             shooterSubsystem,
     //             hopperSubsystem));
 
-    joystick.rightTrigger()
-            .whileTrue(shooterSubsystem.shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION)
-                    .alongWith(Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
-                            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
-
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            shooterSubsystem
+                .shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
   }
 
   public static boolean isRedAlliance() {

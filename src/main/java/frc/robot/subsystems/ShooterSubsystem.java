@@ -21,7 +21,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -31,21 +30,23 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX warmup1, warmup2, warmup3, shooter, hood;
   private final CANcoder hoodEncoder;
 
-  private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
-  private final PositionVoltage positionRequest = new PositionVoltage(0.0);
-
-  private double targetShooterSpeed = 0;
-  private double targetHoodAngle = 0;
-
   /*
    * make instance variables for necessary closed loop control requests: VelocityVoltage, PositionVoltage. Initialize them with value 0.0.
    * make instance variables of type double for the target roller speed and target hood angle
    */
 
+  private VelocityVoltage m_velocityReq = new VelocityVoltage(0.0);
+  private PositionVoltage m_positionReq = new PositionVoltage(0.0);
+
+  private double targetShooterSpeed, targetHoodAngle;
+
   public ShooterSubsystem() {
     // The canbus is a communication system that can connect devices like the roboRIO, pdh, and
     // motors.
     CANBus canbus = Constants.Swerve.CAN_BUS;
+
+    targetShooterSpeed = 0;
+    targetHoodAngle = 0;
 
     // LoggedTalonFX is our version of the existing TalonFX class, which automatically logs some
     // motor information
@@ -73,14 +74,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Create a variable of type CurrentLimitsConfigs called rollersClConfigs, and initialize it
     // with the stator and supply limits found in Constants
-    CurrentLimitsConfigs rollersCLConfigs =
+    CurrentLimitsConfigs rollersClConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Shooter.Rollers.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Shooter.Rollers.SUPPLY_CURRENT_LIMIT);
 
     // Create a variable of type MotorOutputConifigs called rollersOutputConfigs, and initialize it
     // to treat clockwise as positive, and neutral mode as coast
-    MotorOutputConfigs rollersMotorOutputConfigs =
+    MotorOutputConfigs rollersOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
@@ -88,16 +89,16 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFXConfiguration rollersConfig =
         new TalonFXConfiguration()
             .withSlot0(rollersSlot0Configs)
-            .withCurrentLimits(rollersCLConfigs)
-            .withMotorOutput(rollersMotorOutputConfigs);
+            .withCurrentLimits(rollersClConfigs)
+            .withMotorOutput(rollersOutputConfigs);
     // Set the Slot0, CurrentLimits, and MotorOutput parameters of `rollersConfig` to the configs
     // you just created.
 
     warmup1.getConfigurator().apply(rollersConfig);
-    // I just applied the configuration that you just created to warmup1. Apply it to warmup2 and
-    // warmup3 as well.
     warmup2.getConfigurator().apply(rollersConfig);
     warmup3.getConfigurator().apply(rollersConfig);
+    // I just applied the configuration that you just created to warmup1. Apply it to warmup2 and
+    // warmup3 as well.
 
     Follower follower =
         new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
@@ -116,12 +117,12 @@ public class ShooterSubsystem extends SubsystemBase {
             .withKI(Constants.Shooter.Hood.KI)
             .withKD(Constants.Shooter.Hood.KD)
             .withKS(Constants.Shooter.Hood.KS)
-            .withKV(Constants.Shooter.Hood.KV)
-            .withKG(Constants.Shooter.Hood.KG);
+            .withKG(Constants.Shooter.Hood.KG)
+            .withKV(Constants.Shooter.Hood.KV);
 
     // Create a variable of type CurrentLimitsConfigs called hoodClConfigs, and initialize it with
     // the stator and supply limits found in Constants
-    CurrentLimitsConfigs hoodCLConfigs =
+    CurrentLimitsConfigs hoodClConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
@@ -141,17 +142,16 @@ public class ShooterSubsystem extends SubsystemBase {
             .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
     // Create a TalonFXConfiguration called hoodConfig
-    TalonFXConfiguration hoodConfig =
-        new TalonFXConfiguration()
-            .withSlot0(hoodSlot0Configs)
-            .withCurrentLimits(hoodCLConfigs)
-            .withMotorOutput(hoodOutputConfigs) 
-            .withFeedback(hoodFeedbackConfigs);
     // Set the Slot0, CurrentLimits, MotorOutput, and Feedback parameters to the device configs
     // above
-
     // Apply the created configuration to the hood motor
-    hood.getConfigurator().apply(hoodConfig);
+    hood.getConfigurator()
+        .apply(
+            new TalonFXConfiguration()
+                .withSlot0(hoodSlot0Configs)
+                .withCurrentLimits(hoodClConfigs)
+                .withMotorOutput(hoodOutputConfigs)
+                .withFeedback(hoodFeedbackConfigs));
 
     MagnetSensorConfigs hoodCANcoderConfig =
         new CANcoderConfiguration()
@@ -165,41 +165,39 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setHoodAngle(double degrees) {
-    degrees =
-        MathUtil.clamp(
-            degrees,
-            Constants.Shooter.Hood.MIN_HOOD_POSITION,
-            Constants.Shooter.Hood.MAX_HOOD_POSITION);
     targetHoodAngle = degrees;
-    hood.setControl(positionRequest.withPosition(degrees / 360.0));
+    hood.setControl(
+        m_positionReq.withPosition(
+            MathUtil.clamp(
+                    targetHoodAngle,
+                    Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                    Constants.Shooter.Hood.MAX_HOOD_POSITION)
+                / 360.0));
   }
 
   public void setShooterSpeed(double velocityRps) {
     targetShooterSpeed = velocityRps;
     shooter.setControl(
-        velocityRequest.withVelocity(
-            velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS));
-  }
-
-  public boolean isShooterAtSpeed() {
-    return Math.abs(
-            (shooter.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS)
-                - targetShooterSpeed)
-        <= Constants.Shooter.Rollers.TOLERANCE_RPS;
+        m_velocityReq.withVelocity(
+            targetShooterSpeed * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS));
   }
 
   public void stopShooter() {
-    targetShooterSpeed = 0;
+    targetShooterSpeed = 0.0;
     shooter.stopMotor();
   }
 
-  // Commands
+  public boolean isShooterAtSpeed() {
+    double currentVelocity =
+        shooter.getCachedVelocityRps() / Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROTS;
+    return Math.abs(currentVelocity - targetShooterSpeed) <= 1.0;
+  }
 
-  public Command shootWithHood(double shooterSpeed, double hoodAngle) {
-    return Commands.runEnd(
+  public Command shootWithHood(double hoodAngleDegrees, double shooterVelocityRps) {
+    return runEnd(
         () -> {
-          setShooterSpeed(shooterSpeed);
-          setHoodAngle(hoodAngle);
+          setShooterSpeed(shooterVelocityRps);
+          setHoodAngle(hoodAngleDegrees);
         },
         this::stopShooter);
   }
