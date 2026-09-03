@@ -10,6 +10,7 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootCommandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
@@ -145,14 +146,16 @@ public class RobotContainer {
     joystick
         .rightBumper()
         .whileTrue(
-            new ShootBasicHood(
-                44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
+            shooterSubsystem.shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION).alongWith(
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootBasicHood(
-                58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
+            shooterSubsystem.shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION).alongWith(
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
