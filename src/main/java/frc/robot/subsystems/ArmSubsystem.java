@@ -16,36 +16,29 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 
 public class ArmSubsystem extends SubsystemBase {
     private TalonFX armMotor, rollerMotor;
-    
-    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0.0);
-    private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
-    private final TorqueCurrentFOC m_torqueRequest = new TorqueCurrentFOC(0.0);
+    private final DutyCycleOut m_DutyCycleRequest = new DutyCycleOut(0);
+    private final VoltageOut m_VoltageRequest = new VoltageOut(0);
+    private final TorqueCurrentFOC m_TorqueRequest = new TorqueCurrentFOC(0);
 
+    // initializing class
     public ArmSubsystem() {
+
         armMotor = new TalonFX(Constants.Arm.ARM_MOTOR_ID);
         rollerMotor = new TalonFX(Constants.Arm.ROLLER_MOTOR_ID);
+        
     }
 
-    public void setRollerDutyCycle(double voltage) {
-        rollerMotor.setControl(m_dutyCycleRequest.withOutput(voltage));
+    public void setRollerDutyCycle(Double prcnt) {
+        prcnt = Math.min(1, prcnt);
+        rollerMotor.setControl(m_DutyCycleRequest.withOutput(prcnt));
     }
 
-    public void setRollerVoltage(double voltage) {
-        rollerMotor.setControl(m_voltageRequest.withOutput(voltage));
+    public void setRollerVoltage(Double vltge) {
+        rollerMotor.setControl(m_VoltageRequest.withOutput(vltge));
     }
 
-    public void setArmTorqueCurrent(double current) {
-        armMotor.setControl(m_torqueRequest.withOutput(current));
+    public void setArmTorqueCurrent (Double current) {
+        armMotor.setControl(m_TorqueRequest.withOutput(current));
     }
 
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
-    }
 }
