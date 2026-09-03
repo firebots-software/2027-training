@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootCommandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -146,16 +145,20 @@ public class RobotContainer {
     joystick
         .rightBumper()
         .whileTrue(
-            shooterSubsystem.shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION).alongWith(
-        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
-            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
+            shooterSubsystem
+                .shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     joystick
         .rightTrigger()
         .whileTrue(
-            shooterSubsystem.shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION).alongWith(
-        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
-            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
+            shooterSubsystem
+                .shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 

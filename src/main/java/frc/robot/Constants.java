@@ -760,7 +760,8 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
-      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 5.0 / 12.0;;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 5.0 / 12.0;
+      ;
     }
   }
 
