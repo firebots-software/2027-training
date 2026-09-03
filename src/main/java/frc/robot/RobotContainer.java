@@ -10,6 +10,7 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
@@ -41,6 +43,7 @@ public class RobotContainer {
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   //   private final AutoRoutines autoRoutines;
   //   private final AutoChooser autoChooser;
@@ -136,48 +139,31 @@ public class RobotContainer {
                     hopperSubsystem.runHopperUntilInterruptedCommand(
                         -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
 
-    // * KEEP FOR WIN COMMAND
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToAndShoot(
-    //             () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             drivetrain,
-    //             redside));
+    // Shooter
+    shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
 
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drivetrain,
-    //             () ->
-    //                 new Pose2d(
-    //                     new Translation2d(2.462480068206787, 2.26101016998291), new
-    // Rotation2d())));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            shooterSubsystem
+                .shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
-    // * KEEP FOR INTERMAP TESTING
-    // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         lebron
-    //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
-    //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
-    //
-    // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            shooterSubsystem
+                .shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // Hopper
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
-
-    // * KEEP FOR INTERMAP TESTING
-    // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
-    // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
-    // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
-    // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
 
   public static boolean isRedAlliance() {
