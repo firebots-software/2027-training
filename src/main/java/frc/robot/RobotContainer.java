@@ -10,6 +10,8 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootBasicHood;
@@ -28,79 +30,71 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-  private BooleanSupplier redside = RobotContainer::isRedAlliance;
+    private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-  //   private Field2d field = new Field2d();
-  private final Telemetry logger =
-      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+    // private Field2d field = new Field2d();
+    private final Telemetry logger = new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CustomController secondController = new CustomController(4);
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CustomController secondController = new CustomController(4);
 
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  public final HopperSubsystem hopperSubsystem =
-      Constants.hopperOnRobot ? new HopperSubsystem() : null;
-  public final IntakeSubsystem intakeSubsystem =
-      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    public final HopperSubsystem hopperSubsystem = Constants.hopperOnRobot ? new HopperSubsystem() : null;
+    public final IntakeSubsystem intakeSubsystem = Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
-  //   private final AutoRoutines autoRoutines;
-  //   private final AutoChooser autoChooser;
+    // private final AutoRoutines autoRoutines;
+    // private final AutoChooser autoChooser;
 
-  public final VisionSubsystem visionFrontRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionFrontLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionRearRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionRearLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, drivetrain)
-          : null;
+    public final VisionSubsystem visionFrontRight = Constants.visionOnRobot
+            ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, drivetrain)
+            : null;
+    public final VisionSubsystem visionFrontLeft = Constants.visionOnRobot
+            ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, drivetrain)
+            : null;
+    public final VisionSubsystem visionRearRight = Constants.visionOnRobot
+            ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, drivetrain)
+            : null;
+    public final VisionSubsystem visionRearLeft = Constants.visionOnRobot
+            ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, drivetrain)
+            : null;
 
-  public final FuelGaugeDetection visionFuelGauge =
-      Constants.fuelGaugeOnRobot
-          ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
-          : null;
-  public final IntakeVisionDetection visionIntake =
-      Constants.intakeVisionOnRobot
-          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
-          : null;
+    public final FuelGaugeDetection visionFuelGauge = Constants.fuelGaugeOnRobot
+            ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
+            : null;
+    public final IntakeVisionDetection visionIntake = Constants.intakeVisionOnRobot
+            ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
+            : null;
 
-  // * KEEP FOR INTERMAP TESTING
-  //   private double hoodAngle = 18.369;
-  //   private double shooterSpeed = 58.0;
+    // * KEEP FOR INTERMAP TESTING
+    // private double hoodAngle = 18.369;
+    // private double shooterSpeed = 58.0;
 
-  public RobotContainer() {
-    // autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain,
-    // redside);
-    // autoChooser = autoRoutines.getAutoChooser();
-    // SmartDashboard.putData("Auto Chooser", autoChooser);
-    // SmartDashboard.putData("Elastic/Field2d", field);
-    configureBindings();
-  }
+    public RobotContainer() {
+        // autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem,
+        // drivetrain,
+        // redside);
+        // autoChooser = autoRoutines.getAutoChooser();
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Elastic/Field2d", field);
+        configureBindings();
+    }
 
-  //   public void doTelemetry() {
-  //     logger.telemeterize(drivetrain.getCurrentState());
+    // public void doTelemetry() {
+    // logger.telemeterize(drivetrain.getCurrentState());
 
-  //     String commandName = "nah";
+    // String commandName = "nah";
 
-  //     if (drivetrain.getCurrentCommand() != null) {
-  //       commandName = drivetrain.getCurrentCommand().getName();
-  //     }
-  //     DogLog.log("Robot/SwerveDriveCommand", commandName);
-  //   }
+    // if (drivetrain.getCurrentCommand() != null) {
+    // commandName = drivetrain.getCurrentCommand().getName();
+    // }
+    // DogLog.log("Robot/SwerveDriveCommand", commandName);
+    // }
 
-  //   public CommandSwerveDrivetrain getDrivetrain() {
-  //     return drivetrain;
-  //   }
+    // public CommandSwerveDrivetrain getDrivetrain() {
+    // return drivetrain;
+    // }
 
   private void configureBindings() {
     // Swerve
@@ -129,14 +123,15 @@ public class RobotContainer {
     shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
     joystick
         .rightBumper()
-        .whileTrue(
-            new ShootBasicHood(
-                44.2, Constants.Shooter.Hood.MIN_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
+        .whileTrue(shooterSubsystem.shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION).alongWith(
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootBasicHood(
-                58.2, Constants.Shooter.Hood.MAX_HOOD_ANGLE, shooterSubsystem, hopperSubsystem));
+            shooterSubsystem.shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION).alongWith(
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -195,34 +190,34 @@ public class RobotContainer {
     // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
 
-  public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
-        ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
-  }
-
-  public void visionPeriodic() {
-    VisionUtils.visionPeriodic(
-        visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-  }
-
-  public void doTelemetry() {
-    logger.telemeterize(drivetrain.getCurrentState());
-
-    String commandName = "nah";
-
-    if (drivetrain.getCurrentCommand() != null) {
-      commandName = drivetrain.getCurrentCommand().getName();
+    public static boolean isRedAlliance() {
+        return DriverStation.getAlliance().isEmpty()
+                ? false
+                : DriverStation.getAlliance().get() == Alliance.Red;
     }
-  }
 
-  public boolean inAllianceSide() {
-    return redside.getAsBoolean()
-        ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()
-        : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
-  }
+    public void visionPeriodic() {
+        VisionUtils.visionPeriodic(
+                visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
+    }
 
-  //   public Command getAutonomousCommand() {
-  //     return autoChooser.selectedCommand();
-  //   }
+    public void doTelemetry() {
+        logger.telemeterize(drivetrain.getCurrentState());
+
+        String commandName = "nah";
+
+        if (drivetrain.getCurrentCommand() != null) {
+            commandName = drivetrain.getCurrentCommand().getName();
+        }
+    }
+
+    public boolean inAllianceSide() {
+        return redside.getAsBoolean()
+                ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()
+                : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
+    }
+
+    // public Command getAutonomousCommand() {
+    // return autoChooser.selectedCommand();
+    // }
 }
