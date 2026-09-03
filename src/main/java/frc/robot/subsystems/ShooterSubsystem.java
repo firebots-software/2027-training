@@ -18,7 +18,9 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -31,7 +33,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private double VelocityVoltage = 0.0;
     private double PositionVoltage = 0.0;
     private double targetRollerSpeed;
-    private double targetHoodAngle;
+    private double targetHoodAngle = 0.0;
+    private double targetShooterSpeed = 0.0;
 
     public ShooterSubsystem() {
         CANBus canbus = Constants.Swerve.CAN_BUS;
@@ -118,15 +121,41 @@ public class ShooterSubsystem extends SubsystemBase {
 
         
         hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
-
-        
-
     }
 
     public void setHoodAngle(double degrees) {
         targetHoodAngle = degrees;
-        // PositionVoltage = 
-    
+        double requestedPosition = MathUtil.clamp(targetHoodAngle, Constants.Shooter.Hood.MIN_HOOD_ANGLE, Constants.Shooter.Hood.MAX_HOOD_ANGLE) / 360.0;
+        hood.setPosition(requestedPosition);
     }
 
-}
+
+    public void setShooterSpeed(double velocityRps) {
+        targetShooterSpeed = velocityRps;
+        double requestedVelocity = velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+        shooter.set(requestedVelocity);
+    }
+
+    public void stopShooter() {
+        shooter.set(0.0);
+        shooter.stopMotor();
+    }
+
+    public boolean isShooterAtSpeed() {
+        double currentVelocity = shooter.getCachedVelocityRps() / 360;
+        if(Math.abs(currentVelocity - targetShooterSpeed) <= 1.0) return true;
+        return false;
+    }
+
+    public Command shootWithHood(double targetShooterSpeed, double targetHoodAngle) {
+        return runEnd(
+            () -> {
+                setShooterSpeed(targetShooterSpeed);
+                setHoodAngle(targetHoodAngle);
+            },
+            this::stopShooter
+            );
+        }
+    }
+
+    

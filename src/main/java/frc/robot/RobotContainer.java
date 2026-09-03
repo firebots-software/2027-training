@@ -10,8 +10,10 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
+import frc.robot.commandGroups.ShootBasicHood;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -19,6 +21,7 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
@@ -41,6 +44,7 @@ public class RobotContainer {
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   //   private final AutoRoutines autoRoutines;
   //   private final AutoChooser autoChooser;
@@ -123,6 +127,20 @@ public class RobotContainer {
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
+    shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            shooterSubsystem.shootWithHood(44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION).alongWith( 
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
+            
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            shooterSubsystem.shootWithHood(58.2, Constants.Shooter.Hood.MAX_HOOD_POSITION).alongWith( 
+        Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
