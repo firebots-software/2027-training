@@ -187,7 +187,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void stopShooter() {
+
     targetRollerSpeed = 0.0;
+
+    shooter.stopMotor();
   }
 
   public boolean isShooterAtSpeed() {
