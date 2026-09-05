@@ -11,6 +11,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
@@ -41,6 +43,7 @@ public class RobotContainer {
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   //   private final AutoRoutines autoRoutines;
   //   private final AutoChooser autoChooser;
@@ -172,6 +175,28 @@ public class RobotContainer {
 
     // Hopper
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
+
+    // Shooter
+
+    shooterSubsystem.setDefaultCommand(shooterSubsystem.runOnce(shooterSubsystem::stopShooter));
+
+    // Right Bumper
+    DoubleSupplier spd1 = () -> 44.2;
+    DoubleSupplier ang1 = () -> Constants.Shooter.Hood.MIN_HOOD_ANGLE;
+
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootBasicHood(spd1, ang1, shooterSubsystem, intakeSubsystem, hopperSubsystem));
+
+    // Right Trigger
+    DoubleSupplier spd2 = () -> 58.2;
+    DoubleSupplier ang2 = () -> Constants.Shooter.Hood.MAX_HOOD_ANGLE;
+
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ShootBasicHood(spd2, ang2, shooterSubsystem, intakeSubsystem, hopperSubsystem));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
