@@ -182,8 +182,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     targetRollerSpeed = velocityRps * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
 
-    m_PositionVoltageRequest.Position =
-        targetHoodAngle * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+    m_VelocityVoltageRequest.Velocity =
+        targetRollerSpeed * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
   }
 
   public void stopShooter() {
