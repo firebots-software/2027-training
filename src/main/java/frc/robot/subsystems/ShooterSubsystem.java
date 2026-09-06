@@ -60,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Initialize the hood motor just like the warmup motors. You can find the necessary ID in
     // Constants.
-    hood = new LoggedTalonFX(12);
+    hood = new LoggedTalonFX("Hood", 12, canbus);
 
     // Create a variable of type Slot0Configs called rollersSlot0Configs, and initialize it with the
     // pid and feedforward gains found in Constants
