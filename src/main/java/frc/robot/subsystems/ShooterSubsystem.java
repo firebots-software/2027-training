@@ -173,7 +173,7 @@ public class ShooterSubsystem extends SubsystemBase {
         MathUtil.clamp(
             degrees, Constants.Shooter.Hood.MIN_HOOD_ANGLE, Constants.Shooter.Hood.MAX_HOOD_ANGLE);
 
-    m_PositionVoltageRequest.Position = targetHoodAngle / 360.0;
+    hood.setControl(m_PositionVoltageRequest.withPosition(targetHoodAngle));
   }
 
   // Roller
@@ -182,8 +182,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     targetRollerSpeed = velocityRps;
 
-    m_VelocityVoltageRequest.Velocity =
-        targetRollerSpeed * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT;
+    shooter.setControl(
+        m_VelocityVoltageRequest.withVelocity(
+            targetRollerSpeed * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
   }
 
   public void stopShooter() {
