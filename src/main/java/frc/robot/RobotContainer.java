@@ -10,8 +10,8 @@ package frc.robot;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootBasicHood;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -187,7 +187,11 @@ public class RobotContainer {
     joystick
         .rightBumper()
         .whileTrue(
-            new ShootBasicHood(spd1, ang1, shooterSubsystem, intakeSubsystem, hopperSubsystem));
+            shooterSubsystem
+                .shootWithHood(spd1, ang1)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     // Right Trigger
     DoubleSupplier spd2 = () -> 58.2;
@@ -196,7 +200,11 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootBasicHood(spd2, ang2, shooterSubsystem, intakeSubsystem, hopperSubsystem));
+            shooterSubsystem
+                .shootWithHood(spd2, ang2)
+                .alongWith(
+                    Commands.waitUntil(shooterSubsystem::isShooterAtSpeed)
+                        .andThen(hopperSubsystem.runHopperUntilInterruptedCommand())));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
