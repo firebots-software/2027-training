@@ -51,12 +51,12 @@ public final class Constants {
       public static final double POWER_RETRACT_TORQUE_CURRENT = 45.0;
       public static final double POWER_RETRACT_DELAY = 0.2;
 
-      public static final double kV = 0.124;
-      public static final double kP = 63.0; // 63.0;
-      public static final double kI = 0.1; // 0.1;
+      public static final double kV = 0.0;
+      public static final double kP = 0.0; 
+      public static final double kI = 0.0; 
       public static final double kD = 0.0;
-      public static final double kG = 1.15; // 1.15; // 0.69 recalc
-      public static final double kS = 0.4; // 0.4;
+      public static final double kG = 0.0; // 1.15; // 0.69 recalc
+      public static final double kS = 0.0; // 0.4;
 
       public static final double mmcV = 6.0;
       public static final double mmcA = 14.0;
@@ -81,7 +81,8 @@ public final class Constants {
 
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 2.0;
 
-      public static final double kV = 0.1167;
+      public static final double kV = 0.0;
+      
       public static final double kP = 0.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
