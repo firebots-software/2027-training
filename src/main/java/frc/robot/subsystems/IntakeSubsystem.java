@@ -157,7 +157,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void runRollers() {
-    runRollers(1);
+    runRollersWithVelocity(6.7);
   }
 
   public void runRollersInReverse() {
