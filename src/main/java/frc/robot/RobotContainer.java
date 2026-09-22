@@ -1,259 +1,157 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import choreo.auto.AutoChooser;
-// * KEEP FOR WIN COMMAND TESTING
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-// * KEEP FOR WIN COMMAND TESTING
-import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
-import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandGroups.BundtShot;
+import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.FuelGaugeDetection;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeVisionDetection;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.CustomController;
-import frc.robot.util.MiscUtils;
-import frc.robot.util.Targeting;
-import frc.robot.util.VisionUtils;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.JoystickSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.OtherXBoxController;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
+import dev.doglog.DogLog;
+
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
 public class RobotContainer {
-  private BooleanSupplier redside = RobotContainer::isRedAlliance;
-
-  //   private Field2d field = new Field2d();
+  // OI
+  private final OtherXBoxController joystick =
+      new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
+  // Subsystems
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystick.getHID());
+  // Logging
   private final Telemetry logger =
       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CustomController secondController = new CustomController(4);
-
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
-  public final HopperSubsystem hopperSubsystem =
-      Constants.hopperOnRobot ? new HopperSubsystem(drivetrain, redside) : null;
-  public final IntakeSubsystem intakeSubsystem =
-      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem lebron =
-      Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
-
-  private final AutoRoutines autoRoutines;
-  private final AutoChooser autoChooser;
-
-  public final VisionSubsystem visionFrontRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionFrontLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionRearRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, drivetrain)
-          : null;
-  public final VisionSubsystem visionRearLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, drivetrain)
-          : null;
-
-  public final FuelGaugeDetection visionFuelGauge =
-      Constants.fuelGaugeOnRobot
-          ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
-          : null;
-  public final IntakeVisionDetection visionIntake =
-      Constants.intakeVisionOnRobot
-          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
-          : null;
-
-  public final LEDSubsystem leds =
-      new LEDSubsystem(
-          () -> MiscUtils.areWeActive(2.0),
-          () ->
-              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.47
-                  && inAllianceSide());
-
-  // * KEEP FOR INTERMAP TESTING
-  //   private double hoodAngle = 18.369;
-  //   private double shooterSpeed = 58.0;
-
   public RobotContainer() {
-    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
-    autoChooser = autoRoutines.getAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    // SmartDashboard.putData("Elastic/Field2d", field);
     configureBindings();
   }
 
-  //   public void doTelemetry() {
-  //     logger.telemeterize(drivetrain.getCurrentState());
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    logger.telemeterize(driveTrain.getState());
+    DogLog.log("drivetrain/heading", driveTrain.getState().RawHeading.getDegrees() * 360);
+    
+    double x = driveTrain.getState().Speeds.vxMetersPerSecond;
+    double y = driveTrain.getState().Speeds.vyMetersPerSecond;
 
-  //     String commandName = "nah";
+    double speed = Math.sqrt(x*x + y*y);
 
-  //     if (drivetrain.getCurrentCommand() != null) {
-  //       commandName = drivetrain.getCurrentCommand().getName();
-  //     }
-  //     DogLog.log("Robot/SwerveDriveCommand", commandName);
-  //   }
-
-  //   public CommandSwerveDrivetrain getDrivetrain() {
-  //     return drivetrain;
-  //   }
+    DogLog.log("drivetrain/speed(fps)", speed * 3.2808);
+  }
 
   private void configureBindings() {
-    // Swerve
-    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
-    DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
-    DoubleSupplier rotationFunction = () -> -joystick.getRightX();
-    DoubleSupplier speedFunction = () -> 1d;
+    // For outreach, we only want
+    // 1. drive
+    // 2. intake
+    // 3. fire at set angle
 
-    SwerveJoystickCommand swerveJoystickDefaultCommand =
+    // Driving
+    //     * Left joystick = translation
+    //     * Right joystick = rotation
+    //     * Right shoulder = speed increase
+    // Speed is determined by
+    // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
+    // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
+    // Trigger rightShoulderTrigger = joystick.rightBumper();
+    // Supplier<Double> frontBackFunction = () -> -joystick.getLeftY(),
+    //     leftRightFunction = () -> -joystick.getLeftX(),
+    //     rotationFunction = () -> -joystick.getRightX(),
+    //     speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
+    // Supplier<Boolean> fieldRelative = () -> false;
+    // SwerveJoystickCommand swerveJoystickCommand =
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction,
+    //         fieldRelative,
+    //         driveTrain);
+
+    joystick.a().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ShootSlow", !SmartDashboard.getBoolean("ShootSlow", true))));
+
+    Trigger leftTrigger = joystick.leftTrigger();
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+        leftRightFunction = () -> -joystick.getLeftX(),
+        rotationFunction = () -> -joystick.getRightX(),
+        speedFunction =
+            () ->
+                leftTrigger.getAsBoolean() || SmartDashboard.getBoolean("DriveSlowDefault", true)
+                    ? 0d
+                    : 1.5d; // slowmode when left shoulder is pressed, otherwise fast
+    SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
-            speedFunction,
-            () -> true,
-            joystick.leftTrigger()::getAsBoolean,
-            () -> false,
-            redside,
-            drivetrain,
-            () -> false,
-            () -> false);
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> false, 
+            driveTrain);
+    
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
+    driveTrain.registerTelemetry(logger::telemeterize);
 
-    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
+    // left trigger - intake
 
-    // Intake
-    intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
-    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    // right trigger - bundtshot
+   
+
+    // When no Commands are being issued, Peter motors should not be moving
+    peterSubsystem.setDefaultCommand(
+        new InstantCommand(
+            () -> {
+              peterSubsystem.stopIntake();
+              peterSubsystem.stopLeftShooter();
+              peterSubsystem.stopRightShooter();
+              peterSubsystem.stopPreShooterMotor();
+            },
+            peterSubsystem));
+
+    // Outtake - left shoulder
+    joystick
+        .leftBumper()
+        .whileTrue(
+            new ParallelCommandGroup(
+                    new RunCommand(
+                        () -> {
+                          peterSubsystem.reverseMechanism();
+                        },
+                        peterSubsystem),
+                    ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
+                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     joystick
-        .b()
-        .whileTrue(
-            intakeSubsystem
-                .outtakeUntilInterruptedCommand()
-                .alongWith(
-                    hopperSubsystem.runHopperUntilInterruptedCommand(
-                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
-
-    // * KEEP FOR WIN COMMAND
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToAndShoot(
-    //             () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             drivetrain,
-    //             redside));
-
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drivetrain,
-    //             () ->
-    //                 new Pose2d(
-    //                     new Translation2d(2.462480068206787, 2.26101016998291), new
-    // Rotation2d())));
-
-    // * KEEP FOR INTERMAP TESTING
-    // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         lebron
-    //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
-    //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
-    //
-    // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
-
-    secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
-
-    // Hopper
-    hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
-
-    // Shooter
-    lebron.setDefaultCommand(lebron.runOnce(lebron::stopShooter));
-    joystick
-        .rightTrigger()
-        .whileTrue(
-            new ShootWithAim(
-                frontBackFunction,
-                leftRightFunction,
-                lebron,
-                intakeSubsystem,
-                hopperSubsystem,
-                drivetrain,
-                redside,
-                secondController.visionShootingLockout()));
-
-    joystick
-        .rightBumper()
-        .whileTrue(
-            new ShootPassing(
-                frontBackFunction,
-                leftRightFunction,
-                lebron,
-                intakeSubsystem,
-                hopperSubsystem,
-                drivetrain,
-                redside));
-    secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
-
-    // * KEEP FOR INTERMAP TESTING
-    // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
-    // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
-    // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
-    // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
-  }
-
-  public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
-        ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
-  }
-
-  public void visionPeriodic() {
-    VisionUtils.visionPeriodic(
-        visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-    leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
-  }
-
-  public void doTelemetry() {
-    logger.telemeterize(drivetrain.getCurrentState());
-
-    String commandName = "nah";
-
-    if (drivetrain.getCurrentCommand() != null) {
-      commandName = drivetrain.getCurrentCommand().getName();
-    }
-  }
-
-  public boolean inAllianceSide() {
-    return redside.getAsBoolean()
-        ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()
-        : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
+        .y()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.resetPose(
+                        new Pose2d(driveTrain.getPose().getTranslation(), new Rotation2d(0)))));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.selectedCommand();
+    return new WaitCommand(1);
   }
 }
