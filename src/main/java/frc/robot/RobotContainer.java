@@ -113,9 +113,9 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
     driveTrain.registerTelemetry(logger::telemeterize);
 
-    // left trigger - intake
+    // BIND: left trigger - intake
 
-    // right trigger - bundtshot
+    // BIND: right trigger - bundtshot
    
 
     // When no Commands are being issued, Peter motors should not be moving
