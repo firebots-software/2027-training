@@ -93,7 +93,7 @@ public class PeterSubsystem extends SubsystemBase {
     mocintakeMotor.withInverted(InvertedValue.Clockwise_Positive);
     intakeMotor.getConfigurator().apply(mocintakeMotor);
 
-    noteSensor = new DigitalInput(Constants.Pooer.NOTE_DETECTOR_PORT);
+    // TODO: initialize noteSensor from the constant NOTE_DETECTOR_PORT
   }
 
   public static PeterSubsystem getInstance() {
@@ -228,10 +228,7 @@ public class PeterSubsystem extends SubsystemBase {
    * }
    */
 
-  // SENSOR FUNCTIONS:
-  public boolean notePresent() {
-    return !noteSensor.get();
-  }
+  // TODO: Create a boolean function to get the noteSensor state
 
   // PRE-SHOOTER FUNCTIONS:
 

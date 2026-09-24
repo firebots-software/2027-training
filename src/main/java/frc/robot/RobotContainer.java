@@ -113,10 +113,15 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
     driveTrain.registerTelemetry(logger::telemeterize);
 
-    // BIND: left trigger - intake
+    // Intake - left trigger
+    // Angle controlled by Constants.Arm.INTAKE_ANGLE
+    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
 
-    // BIND: right trigger - bundtshot
-   
+    // Shoot - right trigger
+    // Angle controlled by Constants.Arm.BUNDT_ANGLE
+    joystick
+        .rightTrigger()
+        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
