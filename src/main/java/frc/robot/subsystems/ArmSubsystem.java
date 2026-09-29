@@ -6,6 +6,8 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
+import edu.wpi.first.math.MathUtil;
 
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
@@ -24,6 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
   private MotionMagicConfigs mmc;
 
   private boolean initialized = false;
+  private double targetDegrees;
   private double armHorizontalOffset;
 
   public ArmSubsystem() {
@@ -94,6 +98,33 @@ public class ArmSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to control the arm's position.
   // Consider what your arm commands will need to function properly (e.g., setting angles, reading current angles, checking tolerances).
+
+  // set arm pos
+
+  public void setArmPosition(double ang) {
+    ang = MathUtil.clamp(ang, 3, 110);
+
+    master.setControl(
+      new MotionMagicVoltage(calculateIntegratedTargetRots(ang))
+    );
+  }
+
+  private double calculateIntegratedTargetRots(double ang) {
+    return Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * (ang / 360d + armHorizontalOffset);
+  }
+
+
+  public void setTargetDegrees(double ang) {
+    targetDegrees = ang;
+  }
+
+  public double getCorrectedDegrees() {
+    return (360d * (master.getPosition().getValueAsDouble() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR)) - armHorizontalOffset * 360d;
+  }
+
+  public boolean atTarget(double tolerance) {
+    return Math.abs(targetDegrees - getCorrectedDegrees()) <= tolerance;
+  }
 
   @Override
   public void periodic() {

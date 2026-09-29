@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,7 @@ public class PeterSubsystem extends SubsystemBase {
   private DigitalInput noteSensor;
   private LoggedTalonFX shooter1, shooter2, preShooterMotor, intakeMotor;
   private MotionMagicConfigs mmcPreShooter;
+  private VelocityVoltage m_VelocityRequest;
 
   public PeterSubsystem() {
     // === Shooter Setup ===
@@ -72,6 +74,77 @@ public class PeterSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
+
+
+  // Speed setters
+
+  public void runPreshooter(double rps) {
+    preShooterMotor.setControl(m_VelocityRequest
+      .withVelocity(
+        rps * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO
+      )
+    );
+  }
+
+  public void runIntake(double rps) {
+    intakeMotor.setControl(m_VelocityRequest
+        .withVelocity(
+          rps * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO
+        )
+    );
+  }
+
+
+  public void runRightShooter(double rps) {
+    shooter1.setControl(m_VelocityRequest
+      .withVelocity(
+        rps * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO
+      )
+    );
+  }
+  
+  public void runLeftShooter(double rps) {
+    shooter2.setControl(m_VelocityRequest
+      .withVelocity(
+        rps * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO
+      )
+    );
+  }
+
+
+  // Speed checkers
+  public boolean isShooter1AtSpeed(double rps, double tolerance) {
+    return Math.abs(rps - shooter1.getVelocity().getValueAsDouble()) <= tolerance;
+  }
+
+  public boolean isShooter2AtSpeed(double rps, double tolerance) {
+    return Math.abs(rps - shooter2.getVelocity().getValueAsDouble()) <= tolerance;
+  }
+
+  public boolean isIntakeAtSpeed(double rps, double tolerance) {
+    return Math.abs(rps - intakeMotor.getVelocity().getValueAsDouble()) <= tolerance;
+  }
+
+
+  // stoppers
+
+  public void stopShooter() {
+    shooter1.stopMotor();
+    shooter2.stopMotor();
+  }
+
+  public void stopIntake() {
+    intakeMotor.stopMotor();
+  }
+
+  public void stopPreshooter() {
+    preShooterMotor.stopMotor();
+  }
+  
+  // note sensor
+  public boolean noteDetected() {
+    return !noteSensor.get();
+  }
 
   @Override
   public void periodic() {
