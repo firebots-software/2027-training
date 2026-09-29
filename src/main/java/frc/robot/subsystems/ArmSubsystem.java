@@ -18,6 +18,7 @@ import frc.robot.util.LoggedTalonFX;
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
 
+  private double targetDeg;
   private LoggedTalonFX rt, rb, lt, lb;
   private LoggedTalonFX master;
   private DutyCycleEncoder revEncoder;
@@ -108,9 +109,27 @@ public class ArmSubsystem extends SubsystemBase {
   // Consider what your arm commands will need to function properly (e.g., setting
   // angles, reading current angles, checking tolerances).
   public void setPosition(double angleDeg) {
-
-    PositionVoltage m_PositionVoltage = new PositionVoltage(pos);
+    PositionVoltage m_PositionVoltage = new PositionVoltage(calculateIntegratedTargetRots(angleDeg));
     master.setControl(m_PositionVoltage);
+  }
+
+  public void resetPosition() {
+    master.setPosition(getAbsolutePosition() * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+  }
+
+  private double calculateIntegratedTargetRots(double angleDegrees) {
+    double armRots = angleDegrees / 360d + armHorizontalOffset;
+    return armRots * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+  }
+
+  public void setTargetDegrees(double deg) {
+    this.targetDeg = deg;
+  }
+
+  public boolean atTarget(double tol) {
+    return Math.abs(
+        targetDeg - (master.getPosition().getValueAsDouble() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * 360d
+            - armHorizontalOffset * 360d)) < tol;
   }
 
   @Override

@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -113,6 +114,23 @@ public class PeterSubsystem extends SubsystemBase {
   public boolean isShooterAtTarget() {
     return Math.abs(shooter1.getVelocity().getValueAsDouble()
         - Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO) < 10;
+  }
+
+  public void resetPreshooterPos() {
+    preShooterMotor.setPosition(0);
+  }
+
+  public void reversePreshooter(double count) {
+    preShooterMotor.setControl(new PositionVoltage(-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+  }
+
+  public void stopPreshooter() {
+    preShooterMotor.stopMotor();
+  }
+
+  public boolean isBackedUp(double count) {
+    return Math.abs(preShooterMotor.getPosition().getValueAsDouble()
+        - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;
   }
 
   @Override
