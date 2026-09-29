@@ -1,14 +1,17 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -94,6 +97,14 @@ public class ArmSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to control the arm's position.
   // Consider what your arm commands will need to function properly (e.g., setting angles, reading current angles, checking tolerances).
+
+  public void resetArm() {
+    master.setControl(new MotionMagicVoltage(Constants.Arm.DEFAULT_ARM_ANGLE));
+  }
+
+  public void setArmToPos(double deg) {
+    master.setControl(new MotionMagicVoltage(deg));
+  }
 
   @Override
   public void periodic() {

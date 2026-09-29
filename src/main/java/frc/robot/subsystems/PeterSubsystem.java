@@ -4,6 +4,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -72,6 +74,39 @@ public class PeterSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
+  public void shootAtRPM(double RPM) {
+    shooter1.setControl(new VelocityVoltage(RPM * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    shooter2.setControl(new VelocityVoltage(RPM * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO));
+  }
+
+  public boolean isShooterAtSpeed() {
+    return true;
+  }
+
+  public void stopShooter() {
+    shooter1.stopMotor();
+    shooter2.stopMotor();
+  }
+
+  public void spinUpIntake() {
+    intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO * Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS));
+  }
+
+  public void stopIntake() {
+    intakeMotor.stopMotor();
+  }
+
+  public void preshootAtRPM(double RPM) {
+    preShooterMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO * RPM));
+  }
+
+  public void stopPreshooter() {
+    preShooterMotor.stopMotor();
+  }
+
+  public boolean noteDetected() {
+    return !noteSensor.get();
+  }
 
   @Override
   public void periodic() {
