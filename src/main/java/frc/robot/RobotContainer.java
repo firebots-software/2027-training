@@ -1,0 +1,134 @@
+package frc.robot;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.JoystickSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.OtherXBoxController;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import dev.doglog.DogLog;
+
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
+public class RobotContainer {
+  // OI
+  private final OtherXBoxController joystick =
+      new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
+  // Subsystems
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystick.getHID());
+  // Logging
+  private final Telemetry logger =
+      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+
+  public RobotContainer() {
+    configureBindings();
+  }
+
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    logger.telemeterize(driveTrain.getState());
+    DogLog.log("drivetrain/heading", driveTrain.getState().RawHeading.getDegrees() * 360);
+    
+    double x = driveTrain.getState().Speeds.vxMetersPerSecond;
+    double y = driveTrain.getState().Speeds.vyMetersPerSecond;
+
+    double speed = Math.sqrt(x*x + y*y);
+
+    DogLog.log("drivetrain/speed(fps)", speed * 3.2808);
+  }
+
+  private void configureBindings() {
+    // For outreach, we only want
+    // 1. drive
+    // 2. intake
+    // 3. fire at set angle
+
+    // Driving
+    //     * Left joystick = translation
+    //     * Right joystick = rotation
+    //     * Right shoulder = speed increase
+    // Speed is determined by
+    // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
+    // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
+    // Trigger rightShoulderTrigger = joystick.rightBumper();
+    // Supplier<Double> frontBackFunction = () -> -joystick.getLeftY(),
+    //     leftRightFunction = () -> -joystick.getLeftX(),
+    //     rotationFunction = () -> -joystick.getRightX(),
+    //     speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
+    // Supplier<Boolean> fieldRelative = () -> false;
+    // SwerveJoystickCommand swerveJoystickCommand =
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction,
+    //         fieldRelative,
+    //         driveTrain);
+
+    joystick.a().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ShootSlow", !SmartDashboard.getBoolean("ShootSlow", true))));
+
+    Trigger leftTrigger = joystick.leftTrigger();
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+        leftRightFunction = () -> -joystick.getLeftX(),
+        rotationFunction = () -> -joystick.getRightX(),
+        speedFunction =
+            () ->
+                leftTrigger.getAsBoolean() || SmartDashboard.getBoolean("DriveSlowDefault", true)
+                    ? 0d
+                    : 1.5d; // slowmode when left shoulder is pressed, otherwise fast
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> false, 
+            driveTrain);
+    
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
+    driveTrain.registerTelemetry(logger::telemeterize);
+
+    // TODO: Bind your intake to the left trigger of the joystick
+
+    // TODO: Bind your shot to the right trigger of the joystick
+    
+
+    // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
+  
+
+    joystick
+        .y()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.resetPose(
+                        new Pose2d(driveTrain.getPose().getTranslation(), new Rotation2d(0)))));
+  }
+
+  public Command getAutonomousCommand() {
+    return new WaitCommand(1);
+  }
+}
