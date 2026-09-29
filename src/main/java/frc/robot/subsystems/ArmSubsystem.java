@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -28,13 +29,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   public ArmSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
-            .withStatorCurrentLimit(Constants.Arm.ARM_STATOR_CURRENT_LIMIT_AMPS);
+        .withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimit(Constants.Arm.ARM_STATOR_CURRENT_LIMIT_AMPS);
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
-    
+
     // TODO: Tune the Arm KP value. Feedforward is provided below.
     Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0);
-    
+
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 
     rt = new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
@@ -53,8 +54,14 @@ public class ArmSubsystem extends SubsystemBase {
     TalonFXConfigurator ltConfig = lt.getConfigurator();
     TalonFXConfigurator lbConfig = lb.getConfigurator();
 
-    rtConfig.apply(moc); rbConfig.apply(moc); ltConfig.apply(moc); lbConfig.apply(moc);
-    rtConfig.apply(clc); rbConfig.apply(clc); ltConfig.apply(clc); lbConfig.apply(clc);
+    rtConfig.apply(moc);
+    rbConfig.apply(moc);
+    ltConfig.apply(moc);
+    lbConfig.apply(moc);
+    rtConfig.apply(clc);
+    rbConfig.apply(clc);
+    ltConfig.apply(clc);
+    lbConfig.apply(clc);
 
     master = lt;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
@@ -72,7 +79,8 @@ public class ArmSubsystem extends SubsystemBase {
         do {
           Thread.sleep(250);
         } while (!revEncoder.isConnected());
-        // Uses the Absolute Encoder to set the position of the Master motor, so that when the Master reads 0,
+        // Uses the Absolute Encoder to set the position of the Master motor, so that
+        // when the Master reads 0,
         // it represents the arm being at horizontal.
         master.setPosition((getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
         initialized = true;
@@ -84,16 +92,26 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public static ArmSubsystem getInstance() {
-    if (instance == null) { instance = new ArmSubsystem(); }
+    if (instance == null) {
+      instance = new ArmSubsystem();
+    }
     return instance;
   }
 
   private double getAbsolutePosition() {
-    return (revEncoder.get() - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
+    return (revEncoder.get() - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET
+        + 1d) % 1;
   }
 
-  // TODO: Design and implement the methods required to control the arm's position.
-  // Consider what your arm commands will need to function properly (e.g., setting angles, reading current angles, checking tolerances).
+  // TODO: Design and implement the methods required to control the arm's
+  // position.
+  // Consider what your arm commands will need to function properly (e.g., setting
+  // angles, reading current angles, checking tolerances).
+  public void setPosition(double angleDeg) {
+
+    PositionVoltage m_PositionVoltage = new PositionVoltage(pos);
+    master.setControl(m_PositionVoltage);
+  }
 
   @Override
   public void periodic() {
