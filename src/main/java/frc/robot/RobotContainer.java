@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commandGroups.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.OtherXBoxController;
@@ -38,7 +38,6 @@ public class RobotContainer {
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystick.getHID());
   // Logging
   private final Telemetry logger =
       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
@@ -111,15 +110,19 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
     driveTrain.registerTelemetry(logger::telemeterize);
 
-    // TODO: Bind your intake to the left trigger of the joystick
-    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
-    joystick.rightTrigger().whileTrue(new Shoot(peterSubsystem, armSubsystem));
+    leftTrigger.whileTrue(new Intake(peterSubsystem, armSubsystem));
 
-    // TODO: Bind your shot to the right trigger of the joystick
-    
+    // Tune the angle (degrees) and wheel speeds (RPS) for the 15-foot shot.
+    joystick.rightTrigger().whileTrue(new Shoot(peterSubsystem, armSubsystem,
+        Constants.Arm.BUNDT_ANGLE,
+        Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS,
+        Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS));
 
-    // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
-  
+    peterSubsystem.setDefaultCommand(peterSubsystem.run(() -> {
+      peterSubsystem.stopIntake();
+      peterSubsystem.stopPreShooterMotor();
+      peterSubsystem.stopShooter();
+    }));
 
     joystick
         .y()

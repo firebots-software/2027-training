@@ -19,11 +19,13 @@ public class PeterSubsystem extends SubsystemBase {
   private DigitalInput noteSensor;
   private LoggedTalonFX shooter1, shooter2, preShooterMotor, intakeMotor;
   private MotionMagicConfigs mmcPreShooter;
+  private double shooter1TargetRPS;
+  private double shooter2TargetRPS;
 
   public PeterSubsystem() {
     // === Shooter Setup ===
-    shooter2 = new LoggedTalonFX("shooter_left", Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
-    shooter1 = new LoggedTalonFX("shooter_right", Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter1 = new LoggedTalonFX("shooter_left", Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter2 = new LoggedTalonFX("shooter_right", Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
     
     MotorOutputConfigs mocshooter = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive);
     shooter1.getConfigurator().apply(mocshooter);
@@ -48,15 +50,14 @@ public class PeterSubsystem extends SubsystemBase {
     mmcPreShooter.MotionMagicJerk = 1600;
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
     
-    // TODO: Tune KP for the preshooter. Feedforward (KV) is provided.
-    Slot0Configs preshooterPID = new Slot0Configs().withKP(0.0).withKV(1);
+    // Starting gains from the Serrano reference; verify on the robot.
+    Slot0Configs preshooterPID = new Slot0Configs().withKP(3).withKV(1);
     preShooterMotor.getConfigurator().apply(preshooterPID);
     preShooterMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.PRESHOOTER.STATOR_CURRENT_LIMIT_AMPS));
 
     // === Intake Setup ===
-    // TODO: Tune KP for the intake.
-    Slot0Configs intakePid = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs intakePid = new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     intakeMotor = new LoggedTalonFX("intake", Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
@@ -77,12 +78,14 @@ public class PeterSubsystem extends SubsystemBase {
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
 
   public void stopShooter(){
+    shooter1TargetRPS = 0;
+    shooter2TargetRPS = 0;
     shooter1.stopMotor();
     shooter2.stopMotor();
   }
 
   public void runShooter(){
-     setShootersRPM(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS);
+    runShooter(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS, Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS);
   }
 
   public boolean notePresent() {
@@ -90,7 +93,12 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return Math.abs((shooter1.getVelocity().getValueAsDouble()) - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO)) < 10;
+    var velocity1 = shooter1.getVelocity();
+    var velocity2 = shooter2.getVelocity();
+    return shooter1TargetRPS != 0 && shooter2TargetRPS != 0
+        && velocity1.getStatus().isOK() && velocity2.getStatus().isOK()
+        && Math.abs(velocity1.getValueAsDouble() - shooter1TargetRPS) < 10
+        && Math.abs(velocity2.getValueAsDouble() - shooter2TargetRPS) < 10;
   }
 
   public void stopIntake(){
@@ -106,7 +114,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   private void runIntakeAtRPS(double speed) {
-    VelocityVoltage velocityControl = VelocityVoltage(speed * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO);
+    VelocityVoltage velocityControl = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO);
     velocityControl.withFeedForward(0.1);
     intakeMotor.setControl(velocityControl);
   }
@@ -123,17 +131,18 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void runIntake(double speed) {
-    VelocityVoltage m_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO);
-    intakeMotor.setControl(m_VelocityVoltage);
+    runIntakeAtRPS(speed);
   }
 
   public void runShooter1(double speed) {
-    VelocityVoltage m1_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    shooter1TargetRPS = speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO;
+    VelocityVoltage m1_VelocityVoltage = new VelocityVoltage(shooter1TargetRPS);
     shooter1.setControl(m1_VelocityVoltage);
   }
 
   public void runShooter2(double speed) {
-    VelocityVoltage m2_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO);
+    shooter2TargetRPS = speed * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO;
+    VelocityVoltage m2_VelocityVoltage = new VelocityVoltage(shooter2TargetRPS);
     shooter2.setControl(m2_VelocityVoltage);
   }
 
@@ -143,21 +152,19 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void runPreShooter(double speed) {
-    VelocityVoltage m_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO);
-    preShooterMotor.setControl(m_VelocityVoltage);
+    runPreShooterAtRPS(speed);
   }
 
   public boolean isNotePresent() {
-    return !noteSensor.get();
+    return notePresent();
   }
 
   public boolean isShooterAtTarget() {
-    return Math.abs(shooter1.getVelocity().getValueAsDouble()
-        - Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO) < 10;
+    return isShooterReady();
   }
 
-  public void resetPreshooterPos() {
-    preShooterMotor.setPosition(0);
+  public boolean resetPreshooterPos() {
+    return preShooterMotor.setPosition(0).isOK();
   }
 
   public void reversePreshooter(double count) {
@@ -165,11 +172,12 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void stopPreshooter() {
-    preShooterMotor.stopMotor();
+    stopPreShooterMotor();
   }
 
   public boolean isBackedUp(double count) {
-    return Math.abs(preShooterMotor.getPosition().getValueAsDouble()
+    var position = preShooterMotor.getPosition();
+    return position.getStatus().isOK() && Math.abs(position.getValueAsDouble()
         - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;
   }
 

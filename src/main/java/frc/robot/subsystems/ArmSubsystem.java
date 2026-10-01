@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,7 +18,7 @@ import frc.robot.util.LoggedTalonFX;
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
 
-  private double targetDeg;
+  private double targetDeg = Constants.Arm.DEFAULT_ARM_ANGLE;
   private LoggedTalonFX rt, rb, lt, lb;
   private LoggedTalonFX master;
   private DutyCycleEncoder revEncoder;
@@ -27,7 +26,8 @@ public class ArmSubsystem extends SubsystemBase {
   private MotionMagicConfigs mmc;
 
   private boolean initialized = false;
-  private double armHorizontalOffset;
+  private final double armHorizontalOffset =
+      Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR;
 
   public ArmSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
@@ -35,8 +35,8 @@ public class ArmSubsystem extends SubsystemBase {
             .withStatorCurrentLimit(Constants.Arm.ARM_STATOR_CURRENT_LIMIT_AMPS);
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
     
-    // TODO: Tune the Arm KP value. Feedforward is provided below.
-    Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0);
+    // Starting gain from the Serrano reference; verify on the robot.
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
     
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 
@@ -70,20 +70,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
 
-    new Thread(() -> {
-      try {
-        do {
-          Thread.sleep(250);
-        } while (!revEncoder.isConnected());
-        // Uses the Absolute Encoder to set the position of the Master motor, so that when the Master reads 0,
-        // it represents the arm being at horizontal.
-        master.setPosition((getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
-        initialized = true;
-        armHorizontalOffset = Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR;
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }).start();
   }
 
   public static ArmSubsystem getInstance() {
@@ -95,31 +81,35 @@ public class ArmSubsystem extends SubsystemBase {
     return (revEncoder.get() - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
   }
 
-  
-
-  // TODO: Design and implement the methods required to control the arm's position.
-  // Consider what your arm commands will need to function properly (e.g., setting angles, reading current angles, checking tolerances).
-
-  private double calculateIntegratedTargetRots(double deg) {
-    double armRots = deg / 360d + armHorizontalOffset;
-    return armRots * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
-  }
-
   public void setAngle(double angle){
-    master.setControl(new MotionMagicVoltage(calculateIntegratedTargetRots(angle)));
+    setTargetDegrees(angle);
   }
 
   public void reset(){
-    master.setPosition(getAbsolutePosition() * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    master.stopMotor();
+    initialized = revEncoder.isConnected()
+        && master.setPosition(getAbsolutePosition() * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR).isOK();
+  }
+
+  public boolean isInitialized() {
+    return initialized;
   }
 
   public void setPosition(double angleDeg) {
-    PositionVoltage m_PositionVoltage = new PositionVoltage(calcIntegrateTarRots(angleDeg));
+    setTargetDegrees(angleDeg);
+    if (!initialized) {
+      master.stopMotor();
+      return;
+    }
+    double currentRadians = (master.getPosition().getValueAsDouble()
+        / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR - armHorizontalOffset) * 2 * Math.PI;
+    PositionVoltage m_PositionVoltage = new PositionVoltage(calcIntegrateTarRots(targetDeg))
+        .withFeedForward(armff.calculate(currentRadians, 0));
     master.setControl(m_PositionVoltage);
   }
 
   public void resetPosition() {
-    master.setPosition(getAbsolutePosition() * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    reset();
   }
 
   private double calcIntegrateTarRots(double angleDeg) {
@@ -132,15 +122,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean atTarget(double tol) {
-    return Math.abs(
-        targetDeg - (master.getPosition().getValueAsDouble() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * 360d
+    var position = master.getPosition();
+    return initialized && position.getStatus().isOK() && Math.abs(
+        targetDeg - (position.getValueAsDouble() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * 360d
             - armHorizontalOffset * 360d)) < tol;
   }
 
   @Override
   public void periodic() {
-  
-    // TODO: Execute your control logic and any necessary logic here
-
+    if (!initialized) {
+      reset();
+    }
+    setPosition(targetDeg);
   }
 }

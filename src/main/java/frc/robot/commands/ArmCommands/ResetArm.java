@@ -4,25 +4,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ResetArm extends Command {
-  private ArmSubsystem armSubsystem;
+  private final ArmSubsystem armSubsystem;
 
   public ResetArm(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
+    addRequirements(armSubsystem);
   }
 
   @Override
-  public void initialize() {
+  public void execute() {
     armSubsystem.reset();
   }
 
   @Override
-  public void execute() {}
-
-  @Override
-  public void end(boolean interrupted) {}
-
-  @Override
   public boolean isFinished() {
-    return true;
+    return armSubsystem.isInitialized();
   }
 }
