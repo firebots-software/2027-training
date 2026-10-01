@@ -4,7 +4,10 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -72,6 +75,103 @@ public class PeterSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
+
+  public void stopShooter(){
+    shooter1.stopMotor();
+    shooter2.stopMotor();
+  }
+
+  public void runShooter(){
+     setShootersRPM(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS);
+  }
+
+  public boolean notePresent() {
+    return !noteSensor.get();
+  }
+
+  public boolean isShooterReady() {
+    return Math.abs((shooter1.getVelocity().getValueAsDouble()) - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO)) < 10;
+  }
+
+  public void stopIntake(){
+    intakeMotor.stopMotor();
+  }
+
+  public void stopPreShooterMotor(){
+    preShooterMotor.stopMotor();
+  }
+
+  public void spinUpIntake() {
+    runIntakeAtRPS(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS);
+  }
+
+  private void runIntakeAtRPS(double speed) {
+    VelocityVoltage velocityControl = VelocityVoltage(speed * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO);
+    velocityControl.withFeedForward(0.1);
+    intakeMotor.setControl(velocityControl);
+  }
+
+  public void spinUpPreShooterVelocity() {
+    runPreShooterAtRPS(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
+  }
+
+  private void runPreShooterAtRPS(double speed) {
+    VelocityVoltage m_velocityControl =
+        new VelocityVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO);
+    m_velocityControl.withFeedForward(0.1);
+    preShooterMotor.setControl(m_velocityControl);
+  }
+
+  public void runIntake(double speed) {
+    VelocityVoltage m_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO);
+    intakeMotor.setControl(m_VelocityVoltage);
+  }
+
+  public void runShooter1(double speed) {
+    VelocityVoltage m1_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    shooter1.setControl(m1_VelocityVoltage);
+  }
+
+  public void runShooter2(double speed) {
+    VelocityVoltage m2_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO);
+    shooter2.setControl(m2_VelocityVoltage);
+  }
+
+  public void runShooter(double speed1, double speed2) {
+    runShooter1(speed1);
+    runShooter2(speed2);
+  }
+
+  public void runPreShooter(double speed) {
+    VelocityVoltage m_VelocityVoltage = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO);
+    preShooterMotor.setControl(m_VelocityVoltage);
+  }
+
+  public boolean isNotePresent() {
+    return !noteSensor.get();
+  }
+
+  public boolean isShooterAtTarget() {
+    return Math.abs(shooter1.getVelocity().getValueAsDouble()
+        - Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO) < 10;
+  }
+
+  public void resetPreshooterPos() {
+    preShooterMotor.setPosition(0);
+  }
+
+  public void reversePreshooter(double count) {
+    preShooterMotor.setControl(new PositionVoltage(-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+  }
+
+  public void stopPreshooter() {
+    preShooterMotor.stopMotor();
+  }
+
+  public boolean isBackedUp(double count) {
+    return Math.abs(preShooterMotor.getPosition().getValueAsDouble()
+        - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;
+  }
 
   @Override
   public void periodic() {
