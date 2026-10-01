@@ -109,7 +109,7 @@ public class ArmSubsystem extends SubsystemBase {
   // Consider what your arm commands will need to function properly (e.g., setting
   // angles, reading current angles, checking tolerances).
   public void setPosition(double angleDeg) {
-    PositionVoltage m_PositionVoltage = new PositionVoltage(calculateIntegratedTargetRots(angleDeg));
+    PositionVoltage m_PositionVoltage = new PositionVoltage(calcIntegrateTarRots(angleDeg));
     master.setControl(m_PositionVoltage);
   }
 
@@ -117,8 +117,8 @@ public class ArmSubsystem extends SubsystemBase {
     master.setPosition(getAbsolutePosition() * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
   }
 
-  private double calculateIntegratedTargetRots(double angleDegrees) {
-    double armRots = angleDegrees / 360d + armHorizontalOffset;
+  private double calcIntegrateTarRots(double angleDeg) {
+    double armRots = angleDeg / 360d + armHorizontalOffset;
     return armRots * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
   }
 
@@ -134,6 +134,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // TODO: Execute your control logic and any necessary logic here
+    setPosition(targetDeg);
   }
 }
