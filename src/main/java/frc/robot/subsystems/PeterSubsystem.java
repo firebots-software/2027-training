@@ -128,6 +128,15 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.stopMotor();
   }
 
+  public void stopIntake() {
+    intakeMotor.stopMotor();
+  }
+
+  public void stopShooter() {
+    shooter1.stopMotor();
+    shooter2.stopMotor();
+  }
+
   public boolean isBackedUp(double count) {
     return Math.abs(preShooterMotor.getPosition().getValueAsDouble()
         - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;

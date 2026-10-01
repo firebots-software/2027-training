@@ -121,6 +121,13 @@ public class RobotContainer {
 
     // TODO: When no Commands are being issued, Peter motors should not be moving
     // (set the peterSubsystem default command)
+    peterSubsystem.setDefaultCommand(
+        new InstantCommand(
+            () -> {
+              peterSubsystem.stopIntake();
+              peterSubsystem.stopShooter();
+              peterSubsystem.stopPreshooter();
+            }, peterSubsystem));
 
     joystick
         .y()
