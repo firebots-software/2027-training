@@ -28,6 +28,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private boolean initialized = false;
   private double armHorizontalOffset;
+  private double targetDeg;
+  
 
   public ArmSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
@@ -106,8 +108,19 @@ public class ArmSubsystem extends SubsystemBase {
     master.setControl(new MotionMagicVoltage(deg));
   }
 
+  public void setTargetDeg(double deg) {
+    targetDeg = deg;
+  }
+
+  public boolean atTarget(double tol) {
+    return Math.abs(
+        targetDeg - (master.getPosition().getValueAsDouble() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * 360d
+            - armHorizontalOffset * 360d)) < tol;
+  }
+
   @Override
   public void periodic() {
     // TODO: Execute your control logic and any necessary logic here
+    setArmToPos(targetDeg);
   }
 }

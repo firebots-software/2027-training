@@ -5,9 +5,11 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -74,9 +76,9 @@ public class PeterSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
-  public void shootAtRPM(double RPM) {
-    shooter1.setControl(new VelocityVoltage(RPM * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
-    shooter2.setControl(new VelocityVoltage(RPM * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO));
+  public void shootAtRPM(double RPM1, double RPM2) {
+    shooter1.setControl(new VelocityVoltage(RPM1 * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    shooter2.setControl(new VelocityVoltage(RPM2 * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO));
   }
 
   public boolean isShooterAtSpeed() {
@@ -86,6 +88,18 @@ public class PeterSubsystem extends SubsystemBase {
   public void stopShooter() {
     shooter1.stopMotor();
     shooter2.stopMotor();
+  }
+
+  public boolean isShooterReady() {
+    boolean shootSlow = SmartDashboard.getBoolean("ShootSlow", false);
+    double fullSpeed = Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS;
+    double slowSpeed = fullSpeed * 0.4;
+    double targetSpeed = shootSlow ? slowSpeed : fullSpeed;
+
+    return Math.abs(
+        (shooter1.getVelocity().getValueAsDouble())
+            - (targetSpeed
+                * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO)) < 10;
   }
 
   public void spinUpIntake() {
@@ -100,8 +114,24 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO * RPM));
   }
 
+  public void resetPreshooter() {
+    preShooterMotor.setPosition(0);
+  }
+
+  public void reversePreshooterRotations(double count) {
+    preShooterMotor.setControl(
+      new PositionVoltage(-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+  }
+
   public void stopPreshooter() {
     preShooterMotor.stopMotor();
+  }
+
+  public boolean isBackedUp(double count) {
+    return Math.abs(
+        preShooterMotor.getPosition().getValueAsDouble()
+            - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;
+
   }
 
   public boolean noteDetected() {
