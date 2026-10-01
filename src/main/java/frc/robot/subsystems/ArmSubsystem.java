@@ -126,8 +126,16 @@ public class ArmSubsystem extends SubsystemBase {
     return Math.abs(targetDegrees - getCorrectedDegrees()) <= tolerance;
   }
 
+  public void resetArmTarget() {
+    if (revEncoder.isConnected()) {
+      master.setPosition(
+          (getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    }
+  }
+
   @Override
   public void periodic() {
     // TODO: Execute your control logic and any necessary logic here
+    setArmPosition(targetDegrees);
   }
 }

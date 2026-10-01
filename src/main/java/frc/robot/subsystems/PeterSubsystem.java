@@ -5,8 +5,10 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -18,6 +20,7 @@ public class PeterSubsystem extends SubsystemBase {
   private LoggedTalonFX shooter1, shooter2, preShooterMotor, intakeMotor;
   private MotionMagicConfigs mmcPreShooter;
   private VelocityVoltage m_VelocityRequest;
+  private PositionVoltage m_PositionVoltage;
 
   public PeterSubsystem() {
     // === Shooter Setup ===
@@ -112,6 +115,30 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
 
+  public void reversePreshooter(double rotations) {
+    preShooterMotor.setControl(m_PositionVoltage.withPosition(-rotations * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+  }
+
+
+  // Spin ups
+
+  public void spinUpIntake() {
+    runIntake(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS);
+  }
+
+  public void spinUpPreshooter() {
+    runPreshooter(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
+  }
+
+  public void spinRightShooter() {
+    runRightShooter(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS);
+  }
+
+  public void spinLeftShooter() {
+    runLeftShooter(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS);
+  }
+
+
   // Speed checkers
   public boolean isShooter1AtSpeed(double rps, double tolerance) {
     return Math.abs(rps - shooter1.getVelocity().getValueAsDouble()) <= tolerance;
@@ -140,14 +167,36 @@ public class PeterSubsystem extends SubsystemBase {
   public void stopPreshooter() {
     preShooterMotor.stopMotor();
   }
+
+
+  // reset
+
+  public void resetPreshooter() {
+    preShooterMotor.setPosition(0);
+  }
+
   
   // note sensor
   public boolean noteDetected() {
     return !noteSensor.get();
   }
 
+
+  public boolean isBackedUp(double rotations) {
+    return Math.abs(preShooterMotor.getPosition().getValueAsDouble() - (-rotations * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) <=  0.1;
+  }
+
+  // Shooting fast
+  public boolean isShooterReady() {
+    return Math.abs(
+        (shooter1.getVelocity().getValueAsDouble())
+            - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO)) < 10;
+  }
+
   @Override
   public void periodic() {
     // TODO: Add logging
+    
   }
 }
