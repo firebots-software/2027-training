@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.commandGroups.Intake;
+import frc.robot.commandGroups.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
@@ -112,12 +113,11 @@ public class RobotContainer {
     driveTrain.registerTelemetry(logger::telemeterize);
 
     // TODO: Bind your intake to the left trigger of the joystick
-
+    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
     // TODO: Bind your shot to the right trigger of the joystick
-    
+    joystick.rightTrigger().whileTrue(new Shoot(peterSubsystem, armSubsystem, joystickSubsystem));
 
     // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
-  
 
     joystick
         .y()
