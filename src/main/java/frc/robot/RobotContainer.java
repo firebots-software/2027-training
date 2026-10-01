@@ -118,7 +118,7 @@ public class RobotContainer {
     joystick.rightTrigger().whileTrue(new Shoot(peterSubsystem, armSubsystem, joystickSubsystem));
 
     // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
-
+    peterSubsystem.setDefaultCommand(swerveJoystickCommand);
     joystick
         .y()
         .onTrue(
