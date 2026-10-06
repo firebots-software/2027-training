@@ -85,7 +85,7 @@ public class PeterSubsystem extends SubsystemBase {
 
   }
 
-  public void shootPeter(double speed, double angle) {
+  public void shootPeter(double speed) {
     preShooterMotor.set(speed);
   }
 

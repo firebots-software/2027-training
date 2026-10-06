@@ -8,6 +8,20 @@ public class MoveToIntake extends Command {
 
     public MoveToIntake(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem; 
+        addRequirements(armSubsystem);
     }
     
+    @Override
+    public void initialize() {}
+
+    @Override 
+    public void execute() {
+        armSubsystem.moveToIntake();
+    } 
+
+    @Override 
+    public void end(boolean interrupted) {
+        armSubsystem.goToNeutral();
+    }
+
 }

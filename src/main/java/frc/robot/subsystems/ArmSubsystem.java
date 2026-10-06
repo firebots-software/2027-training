@@ -106,6 +106,11 @@ public class ArmSubsystem extends SubsystemBase {
     master.setControl(new MotionMagicVoltage(Constants.Arm.INTAKE_ANGLE));
   }
 
+  public void goToNeutral() {
+    master.setControl(new MotionMagicVoltage(Constants.Arm.DEFAULT_ARM_ANGLE));
+
+  }
+
   @Override
   public void periodic() {
     // TODO: Execute your control logic and any necessary logic here

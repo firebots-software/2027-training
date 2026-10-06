@@ -8,6 +8,20 @@ public class MoveToPosition extends Command {
 
     public MoveToPosition(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem; 
+        addRequirements(armSubsystem);
     }
     
+    @Override
+    public void initialize() {}
+
+    @Override 
+    public void execute() {
+        armSubsystem.moveToIntake();
+    } 
+
+    @Override 
+    public void end(boolean interrupted) {
+        armSubsystem.goToNeutral();
+    }
+
 }

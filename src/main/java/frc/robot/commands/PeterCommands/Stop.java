@@ -8,6 +8,14 @@ public class Stop extends Command {
 
     public Stop(PeterSubsystem peterSubsystem) {
         this.peterSubsystem = peterSubsystem; 
+        addRequirements(peterSubsystem);
     }
     
+    @Override
+    public void initialize() {}
+
+    @Override
+    public void execute() {
+        peterSubsystem.stop();
+    }
 }
