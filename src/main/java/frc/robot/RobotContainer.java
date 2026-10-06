@@ -21,6 +21,7 @@ import frc.robot.util.OtherXBoxController;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import frc.robot.commandGroups.*;
 
 import dev.doglog.DogLog;
 
@@ -112,12 +113,17 @@ public class RobotContainer {
     driveTrain.registerTelemetry(logger::telemeterize);
 
     // TODO: Bind your intake to the left trigger of the joystick
+    joystick.leftTrigger().whileTrue(
+      new Intake(peterSubsystem, armSubsystem)
+    );
 
     // TODO: Bind your shot to the right trigger of the joystick
-    
+    joystick.rightTrigger().onTrue(
+      new Shoot(peterSubsystem, armSubsystem)
+    );
 
     // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
-  
+    peterSubsystem.setDefaultCommand(peterSubsystem.run(peterSubsystem::stopIntake).alongWith(peterSubsystem.run(peterSubsystem::stopPreshooter), peterSubsystem.run(peterSubsystem::stopShooter)));
 
     joystick
         .y()

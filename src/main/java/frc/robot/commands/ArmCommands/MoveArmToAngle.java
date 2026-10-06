@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 import java.util.function.Supplier;
+import frc.robot.Constants;
 
 
 public class MoveArmToAngle extends Command {
@@ -44,6 +45,10 @@ public class MoveArmToAngle extends Command {
 
   @Override
   public void end(boolean interrupted) {}
+
+  public static MoveArmToAngle toBundt (ArmSubsystem arm) {
+    return new MoveArmToAngle(() -> Constants.Arm.BUNDT_ANGLE, arm);
+  } 
 
   public MoveArmToAngle withTolerance(double degrees) {
     this.endToleranceDegrees = degrees;

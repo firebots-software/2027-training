@@ -17,7 +17,7 @@ import frc.robot.Constants;
 
 public class Intake extends SequentialCommandGroup {
   
-  public Intake(PeterSubsystem peter, ArmSubsystem arm, JoystickSubsystem joystick) {
+  public Intake(PeterSubsystem peter, ArmSubsystem arm) {
     // addCommands() takes a comma-separated list of commands and runs them in this case sequentially..
     addCommands(
         

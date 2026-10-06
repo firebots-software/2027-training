@@ -5,24 +5,24 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class SpinUpShooter extends Command {
 
-    private PeterSubsystem peterSubsystem;
+  private PeterSubsystem peterSubsystem;
 
-    public SpinUpShooter(PeterSubsystem peterSubsystem, boolean isAmp) {
-        this.peterSubsystem = peterSubsystem;
-        
-        addRequirements(peterSubsystem);
-    }
+  public SpinUpShooter(PeterSubsystem peterSubsystem, boolean isAmp) {
+      this.peterSubsystem = peterSubsystem;
+      
+      addRequirements(peterSubsystem);
+  }
 
-    @Override
-    public void initialize() {}
+  @Override
+  public void initialize() {}
 
-    @Override
-    public void execute() {
-      peterSubsystem.spinLeftShooter();
-      peterSubsystem.spinRightShooter();
-    }
+  @Override
+  public void execute() {
+    peterSubsystem.spinLeftShooter();
+    peterSubsystem.spinRightShooter();
+  }
 
-     // Called once the command ends or is interrupted.
+    // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
