@@ -20,6 +20,7 @@ public class SpinUpShooter extends Command {
   public void execute() {
     peterSubsystem.spinLeftShooter();
     peterSubsystem.spinRightShooter();
+    peterSubsystem.spinUpPreshooter();
   }
 
     // Called once the command ends or is interrupted.

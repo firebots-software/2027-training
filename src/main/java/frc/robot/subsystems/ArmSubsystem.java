@@ -27,7 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
   private MotionMagicConfigs mmc;
 
   private boolean initialized = false;
-  private double targetDegrees;
+  private double targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
   private double armHorizontalOffset;
 
   public ArmSubsystem() {
@@ -37,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
     
     // TODO: Tune the Arm KP value. Feedforward is provided below.
-    Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
     
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 
@@ -106,6 +106,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     master.setControl(
       new MotionMagicVoltage(calculateIntegratedTargetRots(ang))
+        .withFeedForward(armff.calculate((2 * Math.PI * (getCorrectedDegrees() + (armHorizontalOffset * 360d))) / 360d, 0))
     );
   }
 
