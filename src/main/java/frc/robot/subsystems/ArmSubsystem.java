@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
     
     // TODO: Tune the Arm KP value. Feedforward is provided below.
-    Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
     
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 

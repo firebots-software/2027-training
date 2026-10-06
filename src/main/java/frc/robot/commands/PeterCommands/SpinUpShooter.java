@@ -27,6 +27,7 @@ public class SpinUpShooter extends Command {
     @Override
     public void execute() {
         peterSubsystem.shootAtRPM(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS, Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS);
+        peterSubsystem.preshootAtRPM(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
     
     }
 
@@ -40,6 +41,6 @@ public class SpinUpShooter extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        
+        if (interrupted) peterSubsystem.stopShooter();
     }
 }

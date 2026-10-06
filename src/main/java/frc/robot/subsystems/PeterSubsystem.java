@@ -57,7 +57,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // === Intake Setup ===
     // TODO: Tune KP for the intake.
-    Slot0Configs intakePid = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs intakePid = new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     intakeMotor = new LoggedTalonFX("intake", Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
@@ -111,7 +111,9 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void preshootAtRPM(double RPM) {
-    preShooterMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO * RPM));
+    VelocityVoltage velocityVoltage = new VelocityVoltage(Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO * RPM);
+    velocityVoltage.withFeedForward(0.1);
+    preShooterMotor.setControl(velocityVoltage);
   }
 
   public void resetPreshooter() {
