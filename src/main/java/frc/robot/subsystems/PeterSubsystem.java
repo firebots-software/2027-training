@@ -4,6 +4,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -72,6 +74,27 @@ public class PeterSubsystem extends SubsystemBase {
 
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
+
+  public void runIntake(double speed) {
+    intakeMotor.setControl(new VelocityVoltage(speed * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR));
+  }
+
+  public void spinShooterUpTo(double speed) {
+    shooter1.setControl(new VelocityVoltage(speed * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR));
+    shooter2.setControl(new VelocityVoltage(speed * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR));
+
+  }
+
+  public void shootPeter(double speed, double angle) {
+    preShooterMotor.set(speed);
+  }
+
+  public void stop() {
+    shooter1.setControl(new VelocityVoltage(0));
+    shooter1.setControl(new VelocityVoltage(0));
+    preShooterMotor.set(0);
+    intakeMotor.setControl(new VelocityVoltage(0));
+  }
 
   @Override
   public void periodic() {
