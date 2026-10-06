@@ -116,7 +116,7 @@ public class RobotContainer {
     joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
   
     // TODO: Bind your shot to the right trigger of the joystick
-    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
+    joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
 
     // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
     peterSubsystem.setDefaultCommand(new Stop(peterSubsystem));

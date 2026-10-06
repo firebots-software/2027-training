@@ -96,6 +96,10 @@ public class PeterSubsystem extends SubsystemBase {
     intakeMotor.setControl(new VelocityVoltage(0));
   }
 
+  public boolean noNoteDetected() {
+    return noteSensor.get();
+  }
+
   @Override
   public void periodic() {
     // TODO: Add logging
