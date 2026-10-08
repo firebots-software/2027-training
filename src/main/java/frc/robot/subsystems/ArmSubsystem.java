@@ -91,7 +91,7 @@ public class ArmSubsystem extends SubsystemBase {
     return instance;
   }
 
-  private double getAbsolutePosition() {
+  public double getAbsolutePosition() {
     return (revEncoder.get() - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
   }
 

@@ -75,18 +75,18 @@ public class PeterSubsystem extends SubsystemBase {
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
 
-  public void runIntake(double speed) {
-    intakeMotor.setControl(new VelocityVoltage(speed * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR));
+  public void runIntake() {
+    intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_VOLTAGE));
   }
 
-  public void spinShooterUpTo(double speed) {
-    shooter1.setControl(new VelocityVoltage(speed * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR));
-    shooter2.setControl(new VelocityVoltage(speed * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR));
+  public void spinShooterUp() {
+    shooter1.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS));
+    shooter2.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS));
 
   }
 
-  public void shootPeter(double speed) {
-    preShooterMotor.set(speed);
+  public void shootPeter() {
+    preShooterMotor.set(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
   }
 
   public void stop() {

@@ -17,7 +17,7 @@ public class ShootPeter extends Command {
 
     @Override
     public void execute() {
-        peterSubsystem.shootPeter(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS);
+        peterSubsystem.shootPeter();
     }
 
     @Override

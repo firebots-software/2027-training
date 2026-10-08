@@ -1,6 +1,7 @@
 package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class MoveToIntake extends Command {
@@ -22,6 +23,11 @@ public class MoveToIntake extends Command {
     @Override 
     public void end(boolean interrupted) {
         armSubsystem.goToNeutral();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return ((armSubsystem.getAbsolutePosition() * Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR) == Constants.Arm.INTAKE_ANGLE);
     }
 
 }
