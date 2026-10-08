@@ -25,6 +25,8 @@ public class RunIntakeUntilDetection extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        peter.stopIntake();
+        peter.stopPreshooter();
     }
 
     @Override

@@ -51,14 +51,14 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
 
     // TODO: Tune KP for the preshooter. Feedforward (KV) is provided.
-    Slot0Configs preshooterPID = new Slot0Configs().withKP(0.0).withKV(1);
+    Slot0Configs preshooterPID = new Slot0Configs().withKP(3.0).withKV(1);
     preShooterMotor.getConfigurator().apply(preshooterPID);
     preShooterMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.PRESHOOTER.STATOR_CURRENT_LIMIT_AMPS));
 
     // === Intake Setup ===
     // TODO: Tune KP for the intake.
-    Slot0Configs intakePid = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs intakePid = new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     intakeMotor = new LoggedTalonFX("intake", Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
@@ -116,8 +116,8 @@ public class PeterSubsystem extends SubsystemBase {
         - Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO) < 10;
   }
 
-  public void resetPreshooterPos() {
-    preShooterMotor.setPosition(0);
+  public boolean resetPreshooterPos() {
+    return preShooterMotor.setPosition(0).isOK();
   }
 
   public void reversePreshooter(double count) {
@@ -138,7 +138,8 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean isBackedUp(double count) {
-    return Math.abs(preShooterMotor.getPosition().getValueAsDouble()
+    var position = preShooterMotor.getPosition();
+    return position.getStatus().isOK() && Math.abs(position.getValueAsDouble()
         - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;
   }
 

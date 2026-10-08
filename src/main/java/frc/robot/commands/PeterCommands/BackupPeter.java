@@ -6,18 +6,25 @@ import frc.robot.subsystems.PeterSubsystem;
 public class BackupPeter extends Command {
 
     private PeterSubsystem peter;
+    private boolean posReset;
 
     public BackupPeter(PeterSubsystem peter) {
         this.peter = peter;
+        addRequirements(peter);
     }
 
     @Override
     public void initialize() {
-        peter.resetPreshooterPos();
+        peter.stopPreshooter();
+        posReset = peter.resetPreshooterPos();
     }
 
     @Override
     public void execute() {
+        if (!posReset) {
+            posReset = peter.resetPreshooterPos();
+            return;
+        }
         peter.reversePreshooter(1.25);
     }
 
@@ -28,7 +35,7 @@ public class BackupPeter extends Command {
 
     @Override
     public boolean isFinished() {
-        return peter.isBackedUp(1.25);
+        return posReset && peter.isBackedUp(1.25);
     }
 
 }

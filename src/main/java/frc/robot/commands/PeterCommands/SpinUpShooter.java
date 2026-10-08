@@ -20,6 +20,7 @@ public class SpinUpShooter extends Command {
     @Override
     public void execute() {
         peter.runShooter(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS, Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS);
+        peter.runPreShooter(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
     }
 
     @Override

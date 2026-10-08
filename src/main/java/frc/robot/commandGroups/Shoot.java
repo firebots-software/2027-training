@@ -17,7 +17,8 @@ import frc.robot.subsystems.PeterSubsystem;
 public class Shoot extends SequentialCommandGroup {
     public Shoot(PeterSubsystem peter, ArmSubsystem arm) {
         addCommands(new ResetArm(arm),
-                new ParallelCommandGroup(new SpinUpShooter(peter), new ArmToAngleCmd(arm, Constants.Arm.BUNDT_ANGLE)),
+                new ParallelCommandGroup(new SpinUpShooter(peter),
+                        new ArmToAngleCmd(arm, Constants.Arm.BUNDT_ANGLE).withTol(1)),
                 new ArmToAngleCmd(arm, Constants.Arm.BUNDT_ANGLE));
     }
 }

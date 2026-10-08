@@ -17,7 +17,7 @@ public class Intake extends SequentialCommandGroup {
     public Intake(PeterSubsystem peter, ArmSubsystem arm) {
         addCommands(new ResetArm(arm),
                 new RunIntakeUntilDetection(peter).deadlineFor(new ArmToAngleCmd(arm, Constants.Arm.INTAKE_ANGLE)),
-                new ParallelCommandGroup(new ArmToAngleCmd(arm, Constants.Arm.DEFAULT_ARM_ANGLE),
+                new ParallelCommandGroup(new ArmToAngleCmd(arm, Constants.Arm.DEFAULT_ARM_ANGLE).withTol(1),
                         new BackupPeter(peter)));
     }
 }
