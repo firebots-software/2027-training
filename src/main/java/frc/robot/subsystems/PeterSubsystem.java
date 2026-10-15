@@ -55,7 +55,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // === Intake Setup ===
     // TODO: Tune KP for the intake.
-    Slot0Configs intakePid = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs intakePid = new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     intakeMotor = new LoggedTalonFX("intake", Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
@@ -76,22 +76,24 @@ public class PeterSubsystem extends SubsystemBase {
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
 
   public void runIntake() {
-    intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_VOLTAGE));
+    intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_VOLTAGE * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO));
+    preShooterMotor.setControl(new VelocityVoltage (Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+
   }
 
   public void spinShooterUp() {
-    shooter1.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS));
-    shooter2.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS));
-
+    shooter1.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    shooter2.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    preShooterMotor.setControl(new VelocityVoltage (Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
   }
 
   public void shootPeter() {
-    preShooterMotor.set(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
+    preShooterMotor.setControl(new VelocityVoltage (Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
   }
 
   public void stop() {
     shooter1.setControl(new VelocityVoltage(0));
-    shooter1.setControl(new VelocityVoltage(0));
+    shooter2.setControl(new VelocityVoltage(0));
     preShooterMotor.set(0);
     intakeMotor.setControl(new VelocityVoltage(0));
   }
