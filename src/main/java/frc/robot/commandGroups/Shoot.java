@@ -6,19 +6,15 @@
 
 package frc.robot.commandGroups;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmCommands.MoveToPosition;
-import frc.robot.commands.PeterCommands.ShootPeter;
 import frc.robot.commands.PeterCommands.SpinShooterUp;
-import frc.robot.commands.PeterCommands.Stop;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 public class Shoot extends SequentialCommandGroup {
     public Shoot(PeterSubsystem peter, ArmSubsystem arm) {
-        addCommands(new MoveToPosition(arm, 30), new SpinShooterUp(peter), new ShootPeter(peter), new Stop(peter), 
-        new Stop(peter).deadlineFor(new ShootPeter(peter).deadlineFor(new ParallelCommandGroup(new SpinShooterUp(peter), new MoveToPosition(arm, 30)))));
+        addCommands(new MoveToPosition(arm, 30), new SpinShooterUp(peter));
         
     }
 }

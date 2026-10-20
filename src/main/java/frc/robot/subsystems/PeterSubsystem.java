@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -87,10 +88,6 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.setControl(new VelocityVoltage (Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
   }
 
-  public void shootPeter() {
-    preShooterMotor.setControl(new VelocityVoltage (Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
-  }
-
   public void stop() {
     shooter1.setControl(new VelocityVoltage(0));
     shooter2.setControl(new VelocityVoltage(0));
@@ -100,6 +97,21 @@ public class PeterSubsystem extends SubsystemBase {
 
   public boolean noNoteDetected() {
     return noteSensor.get();
+  }
+
+  public boolean isBackedUp(double count) {
+    return Math.abs(
+      preShooterMotor.getPosition().getValueAsDouble()
+        - (-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO)) < 0.1;
+  }
+
+  public void reversePreshooterRotations(double count) {
+    preShooterMotor.setControl(
+      new PositionVoltage(-count * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+  }
+
+  public void resetPreshooter() {
+    preShooterMotor.setPosition(0);
   }
 
   @Override
