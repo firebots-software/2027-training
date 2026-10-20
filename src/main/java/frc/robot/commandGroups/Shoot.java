@@ -17,8 +17,8 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class Shoot extends SequentialCommandGroup {
     public Shoot(PeterSubsystem peter, ArmSubsystem arm) {
-        addCommands(new MoveToPosition(arm, 30), new SpinShooterUp(peter), new ShootPeter(peter), new Stop(peter));
-        new Stop(peter).deadlineFor(new ShootPeter(peter).deadlineFor(new ParallelCommandGroup(new SpinShooterUp(peter), new MoveToPosition(arm, 30)))); 
+        addCommands(new MoveToPosition(arm, 30), new SpinShooterUp(peter), new ShootPeter(peter), new Stop(peter), 
+        new Stop(peter).deadlineFor(new ShootPeter(peter).deadlineFor(new ParallelCommandGroup(new SpinShooterUp(peter), new MoveToPosition(arm, 30)))));
         
     }
 }
