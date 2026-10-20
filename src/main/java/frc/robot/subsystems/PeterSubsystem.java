@@ -30,7 +30,7 @@ public class PeterSubsystem extends SubsystemBase {
     shooter2.getConfigurator().apply(mocshooter);
 
     // TODO: Tune KP for the shooter. Feedforward (KV) is provided.
-    Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.SHOOTER_1.STATOR_CURRENT_LIMIT_AMPS);
 
@@ -49,14 +49,14 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
     
     // TODO: Tune KP for the preshooter. Feedforward (KV) is provided.
-    Slot0Configs preshooterPID = new Slot0Configs().withKP(0.0).withKV(1);
+    Slot0Configs preshooterPID = new Slot0Configs().withKP(3).withKV(1);
     preShooterMotor.getConfigurator().apply(preshooterPID);
     preShooterMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.PRESHOOTER.STATOR_CURRENT_LIMIT_AMPS));
 
     // === Intake Setup ===
     // TODO: Tune KP for the intake.
-    Slot0Configs intakePid = new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
+    Slot0Configs intakePid = new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     intakeMotor = new LoggedTalonFX("intake", Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
