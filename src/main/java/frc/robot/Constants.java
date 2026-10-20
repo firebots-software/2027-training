@@ -170,7 +170,7 @@ public final class Constants {
 
   public static final class Arm {
     public static final double BUNDT_ANGLE = 12d;
-    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 5.0;
     public static final double DEFAULT_ARM_ANGLE = 20.0;
     public static final double INTAKE_ANGLE = 3; // subject to change
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0

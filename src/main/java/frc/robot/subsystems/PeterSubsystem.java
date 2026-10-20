@@ -4,8 +4,14 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -27,7 +33,7 @@ public class PeterSubsystem extends SubsystemBase {
     shooter2.getConfigurator().apply(mocshooter);
 
     // TODO: Tune KP for the shooter. Feedforward (KV) is provided.
-    Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(0.4).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.SHOOTER_1.STATOR_CURRENT_LIMIT_AMPS);
 
@@ -46,14 +52,14 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
     
     // TODO: Tune KP for the preshooter. Feedforward (KV) is provided.
-    Slot0Configs preshooterPID = new Slot0Configs().withKP(0.0).withKV(1);
+    Slot0Configs preshooterPID = new Slot0Configs().withKP(0.4).withKV(1);
     preShooterMotor.getConfigurator().apply(preshooterPID);
     preShooterMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.PRESHOOTER.STATOR_CURRENT_LIMIT_AMPS));
 
     // === Intake Setup ===
     // TODO: Tune KP for the intake.
-    Slot0Configs intakePid = new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs intakePid = new Slot0Configs().withKP(0.4).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     intakeMotor = new LoggedTalonFX("intake", Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
@@ -73,6 +79,52 @@ public class PeterSubsystem extends SubsystemBase {
   // TODO: Design and implement the methods required to run the intake, pre-shooter, and shooter.
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
 
+  public void runIntake(){
+    intakeMotor.setControl(new MotionMagicVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO));
+  }
+
+  public void spinShooterUpTo(){
+    shooter1.setControl(new MotionMagicVoltage(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    shooter2.setControl(new MotionMagicVoltage(Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO));
+  }
+
+  public void stop(){
+    shooter1.setControl(new VelocityVoltage(0));
+    shooter2.setControl(new VelocityVoltage(0));
+    preShooterMotor.setControl(new VelocityVoltage(0));
+  }
+
+  public void preshooter(double speed){
+    preShooterMotor.setControl(new MotionMagicVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+  }
+
+  public void preshooterAndIntake(double speed){
+    preShooterMotor.setControl(new MotionMagicVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
+    intakeMotor.setControl(new MotionMagicVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO));
+  }
+
+  public boolean isNotePresent() {
+    return !noteSensor.get();
+  }
+
+  public Command runIntakeUntilDetection(){
+    return this.runOnce(() -> preshooterAndIntake(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS)).until(() -> isNotePresent());
+
+  }
+  
+
+  public Command runShooter(){
+
+    return Commands.run(() -> spinShooterUpTo(), this).until(() -> !isNotePresent());
+  }
+
+  public Command Stop(){
+    return Commands.runOnce(this::stop, this);
+  }
+
+  public Command PreShooter(){
+    return Commands.run(() -> preshooter(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS), this);
+  }
   @Override
   public void periodic() {
     // TODO: Add logging
