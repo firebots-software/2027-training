@@ -26,6 +26,6 @@ public class SpinShooterUp extends Command {
 
     @Override
     public boolean isFinished() {
-        return peterSubsystem.noNoteDetected();
+        return peterSubsystem.isShooterReady();
     }
 }

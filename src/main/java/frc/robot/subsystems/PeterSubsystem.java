@@ -114,6 +114,13 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.setPosition(0);
   }
 
+  public boolean isShooterReady() {
+    var velocity1 = shooter1.getVelocity();
+    var velocity2 = shooter2.getVelocity();
+    return Math.abs(velocity1.getValueAsDouble() - Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS) < 10 
+    && Math.abs(velocity2.getValueAsDouble() - Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS) < 10;
+  }
+
   @Override
   public void periodic() {
     // TODO: Add logging
