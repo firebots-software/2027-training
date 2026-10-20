@@ -78,8 +78,6 @@ public class PeterSubsystem extends SubsystemBase {
 
   public void runIntake() {
     intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_VOLTAGE * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO));
-    preShooterMotor.setControl(new VelocityVoltage (Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO));
-
   }
 
   public void spinShooterUp() {
