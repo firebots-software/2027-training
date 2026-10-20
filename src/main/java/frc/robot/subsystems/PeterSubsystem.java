@@ -77,7 +77,7 @@ public class PeterSubsystem extends SubsystemBase {
   // Consider what commands will need (e.g., setting speeds, checking if the shooter is up to speed, checking the IR sensor).
 
   public void runIntake() {
-    intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_VOLTAGE * Constants.Pooer.SHOOTER.INTAKE.GEAR_RATIO));
+    intakeMotor.setControl(new VelocityVoltage(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS));
   }
 
   public void spinShooterUp() {
