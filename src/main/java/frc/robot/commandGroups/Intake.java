@@ -15,7 +15,6 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class Intake extends SequentialCommandGroup {
     public Intake(PeterSubsystem peter, ArmSubsystem arm) {
-        addCommands(new MoveToIntake(arm), new RunIntake(peter), 
-            new ParallelCommandGroup(new MoveToPosition(arm, Constants.Arm.DEFAULT_ARM_ANGLE), new BackupPeter(peter)));
+        addCommands(new RunIntake(peter), new BackupPeter(peter));
     }
 }
