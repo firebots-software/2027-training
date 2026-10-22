@@ -249,7 +249,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  //Custom Autons
+  // Custom Autons
   public AutoRoutine YamalRightCenter() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory traj = routine.trajectory("rightCenterBump.traj");
@@ -270,7 +270,7 @@ public class AutoRoutines {
     routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
     return routine;
   }
-  
+
   public AutoRoutine YamalLeftTurn() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory traj = routine.trajectory("startLeftIntake.traj");

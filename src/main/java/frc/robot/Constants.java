@@ -470,10 +470,10 @@ public final class Constants {
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
         DEPOT_TO_OUTPOST("Depot to Outpost"),
-        MOVE_LEFT_TURN("Left Turning Intake"), 
-        MOVE_RIGHT_TURN("Right Turning Intake"), 
-        MOVE_LEFT("Move Left"), 
-        MOVE_RIGHT("Move Right"), 
+        MOVE_LEFT_TURN("Left Turning Intake"),
+        MOVE_RIGHT_TURN("Right Turning Intake"),
+        MOVE_LEFT("Move Left"),
+        MOVE_RIGHT("Move Right"),
 
         CENTER("We are genuinely the worst robot on the field");
 

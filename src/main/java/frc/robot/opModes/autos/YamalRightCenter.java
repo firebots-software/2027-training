@@ -1,4 +1,3 @@
-
 package frc.robot.opModes.autos;
 
 import frc.robot.Constants.Swerve.Auto.AutoList;
