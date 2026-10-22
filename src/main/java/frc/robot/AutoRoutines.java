@@ -49,6 +49,34 @@ public class AutoRoutines {
     addCommandstoAutoChooser();
   }
 
+  public AutoRoutine asdfghjkl() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("startLeftIntake.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine qwertyuiop() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("startRightIntake.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine snehin()) {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("moveToLeftBump.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine zxcvbnm() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("moveToRightBump.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
   private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
     if (type == null) return null;
 
@@ -785,6 +813,11 @@ public class AutoRoutines {
     autoChooser.addRoutine("Just Depot", () -> DrakeDepotShort());
     autoChooser.addRoutine("Outpost to Depot", () -> DrakeOutpostLong());
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
+
+    autoChooser.addRoutine("Move left", () -> asdfghjkl());
+    autoChooser.addRoutine("Move right", () -> qwertyuiop());
+    autoChooser.addRoutine("Move left to bump", () -> snehin());
+    autoChooser.addRoutine("Move right to bump", () -> zxcvbnm());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
   }
