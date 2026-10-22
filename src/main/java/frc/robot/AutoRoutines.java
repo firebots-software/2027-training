@@ -161,6 +161,32 @@ public class AutoRoutines {
                     new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
   }
 
+  public Command driveLeft(double time) {
+    return Commands.run(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(0, -3, 0), new Feedforwards(4)),
+            swerveSubsystem)
+        .withTimeout(time)
+        .andThen(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
+  }
+
+  public Command driveRight(double time) {
+    return Commands.run(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(0, 3, 0), new Feedforwards(4)),
+            swerveSubsystem)
+        .withTimeout(time)
+        .andThen(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
+  }
+
   public Command driveBackward(double time) {
     return Commands.run(
             () ->
@@ -220,6 +246,35 @@ public class AutoRoutines {
 
     move.done().onTrue(returnBasicShoot(redSide));
 
+    return routine;
+  }
+
+  //Custom Autons
+  public AutoRoutine YamalRightCenter() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("rightCenterBump.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine YamalLeftCenter() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("leftCenterBump.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine YamalRightTurn() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("startRightIntake.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+  
+  public AutoRoutine YamalLeftTurn() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("startLeftIntake.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
     return routine;
   }
 
