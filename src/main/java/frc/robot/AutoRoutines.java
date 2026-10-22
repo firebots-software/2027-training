@@ -63,7 +63,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine snehin()) {
+  public AutoRoutine snehin() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory traj = routine.trajectory("moveToLeftBump.traj");
     routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
