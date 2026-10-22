@@ -1,0 +1,171 @@
+package frc.robot.subsystems;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.controls.EmptyAnimation;
+import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.RainbowAnimation;
+import com.ctre.phoenix6.controls.SingleFadeAnimation;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.AnimationDirectionValue;
+import com.ctre.phoenix6.signals.RGBWColor;
+import dev.doglog.DogLog;
+import java.util.function.BooleanSupplier;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.system.Timer;
+import org.wpilib.util.Color;
+
+public class LEDSubsystem extends SubsystemBase {
+  // left strip is [8, 23]
+  // middle strip is [24, 53] (center of middle is 38)
+  // right strip is [51, 76]
+  private static final int START_OF_STRIP = 8;
+  private static final int END_OF_STRIP = 53;
+
+  private static CANdle candle = new CANdle(5, new CANBus(CANPort.CAN_S0));
+  private LEDState currentState = LEDState.NONE;
+  private BooleanSupplier active, inRange;
+  private boolean seesTagCached;
+
+  public enum LEDState {
+    NONE,
+    ACTIVE,
+    ACTIVE_IN_RANGE,
+    FLAME,
+    RAINBOW
+  }
+
+  public LEDSubsystem(BooleanSupplier activeSupplier, BooleanSupplier inRangeSupplier) {
+    active = activeSupplier;
+    inRange = inRangeSupplier;
+  }
+
+  public void periodic() {
+    LEDState computedState = computeState();
+    if (computedState != currentState) {
+      currentState = computedState;
+      applyState(computedState);
+    }
+    if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
+
+    DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
+  }
+
+  public LEDState computeState() {
+    if (RobotState.isDisabled()) return LEDState.FLAME;
+    if (RobotState.isAutonomousEnabled()) return LEDState.RAINBOW;
+
+    if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
+    else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
+    return LEDState.NONE;
+  }
+
+  public void applyState(LEDState state) {
+    clearAll();
+    // active in range animation handled in periodic
+    switch (state) {
+      case ACTIVE -> candle.setControl(activeAnimation());
+      case FLAME -> {
+        candle.setControl(flame(START_OF_STRIP, 38, 0, false));
+        candle.setControl(flame(39, END_OF_STRIP, 1, true));
+      }
+      case RAINBOW -> candle.setControl(new RainbowAnimation(START_OF_STRIP, END_OF_STRIP));
+      case NONE -> setColor(START_OF_STRIP, END_OF_STRIP, Color.BLACK);
+      default -> clearAll();
+    }
+  }
+
+  public void visionStatusIndicators(
+      VisionSubsystem frontLeft,
+      VisionSubsystem frontRight,
+      VisionSubsystem rearLeft,
+      VisionSubsystem rearRight) {
+
+    if (RobotState.isDisabled()) {
+      DogLog.log("Subsystems/LEDs/VisionIndicatorsEnabled", true);
+      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.GREEN : Color.RED, 3));
+      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.GREEN : Color.RED, 4));
+      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.GREEN : Color.RED, 2));
+      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.GREEN : Color.RED, 5));
+
+      boolean seesTag =
+          frontLeft.seesTags()
+              || frontRight.seesTags()
+              || rearLeft.seesTags()
+              || rearRight.seesTags();
+      if (seesTag != seesTagCached) {
+        clearSlots(2, 5);
+        seesTagCached = seesTag;
+      }
+
+      if (seesTag) {
+        candle.setControl(solidColor(Color.GREEN, 7));
+        candle.setControl(solidColor(Color.GREEN, 0));
+        candle.setControl(solidColor(Color.GREEN, 6));
+        candle.setControl(solidColor(Color.GREEN, 1));
+      } else {
+        candle.setControl(strobe(Color.RED, 6, 7, 2));
+        candle.setControl(strobe(Color.RED, 6, 0, 3));
+        candle.setControl(strobe(Color.RED, 6, 6, 4));
+        candle.setControl(strobe(Color.RED, 6, 1, 5));
+      }
+    } else {
+      DogLog.log("Subsystems/LEDs/VisionIndicatorsEnabled", false);
+      setColor(0, 7, Color.BLACK);
+      seesTagCached = false;
+    }
+  }
+
+  private static void setColor(int start, int end, Color color) {
+    candle.setControl(new SolidColor(start, end).withColor(new RGBWColor(color)));
+  }
+
+  // helper methods
+  public static void clearSlots(int start, int end) {
+    for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
+  }
+
+  public void clearAll() {
+    clearSlots(0, 7);
+  }
+
+  private SingleFadeAnimation activeAnimation() {
+    return new SingleFadeAnimation(START_OF_STRIP, END_OF_STRIP)
+        .withColor(new RGBWColor(Color.RED));
+  }
+
+  private SolidColor solidColor(Color color) {
+    return new SolidColor(START_OF_STRIP, END_OF_STRIP).withColor(new RGBWColor(color));
+  }
+
+  private SolidColor solidColor(Color color, int ledIndex) {
+    return new SolidColor(ledIndex, ledIndex).withColor(new RGBWColor(color));
+  }
+
+  private StrobeAnimation strobe(Color color, int frameRate, int ledIndex, int slot) {
+    return new StrobeAnimation(ledIndex, ledIndex)
+        .withColor(new RGBWColor(color))
+        .withFrameRate(frameRate)
+        .withSlot(slot);
+  }
+
+  private void activeInRangeAnimation() {
+    boolean red = ((int) (Timer.getTimestamp() * 10)) % 2 == 0;
+    candle.setControl(solidColor(red ? Color.RED : Color.WHITE));
+  }
+
+  private FireAnimation flame(int startIndex, int endIndex, int slot, boolean backward) {
+    return new FireAnimation(startIndex, endIndex)
+        .withSparking(0.5)
+        .withCooling(0.2)
+        .withFrameRate(40)
+        .withDirection(
+            backward ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
+        .withSlot(slot);
+  }
+}
