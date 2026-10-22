@@ -470,7 +470,11 @@ public final class Constants {
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
         DEPOT_TO_OUTPOST("Depot to Outpost"),
-        CENTER("We are genuinely the worst robot on the field");
+        CENTER("We are genuinely the worst robot on the field"),
+        MOVE_RIGHT_BUMP("Aligned Center Right Bump"),
+        MOVE_LEFT_BUMP("Aligned Center Left Bump"),
+        TURN_INTAKE_RIGHT_HUB("Aligned Intake Hub Right Bump"),
+        TURN_INTAKE_LEFT_HUB("Aligned Intake Hub Left Bump");
 
         private String internalName;
 

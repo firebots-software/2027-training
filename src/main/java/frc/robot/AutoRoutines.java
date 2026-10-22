@@ -654,6 +654,34 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine IkonomidisRightCenterBump() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("RightAlignedBumpCenter.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine; 
+  }
+
+  public AutoRoutine IkonomidisLeftCenterBump() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("LeftAlignedBumpCenter.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine; 
+  }
+
+  public AutoRoutine HaalandRightBumpIntakeHub() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("RightBumpIntakeHub.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine HaalandLeftBumpIntakeHub() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("LeftBumpIntakeHub.traj");
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
   public AutoRoutine PedriShortRightHub() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -787,6 +815,12 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
+
+    autoChooser.addRoutine("Aligned Center Right Bump", () -> IkonomidisRightCenterBump());
+    autoChooser.addRoutine("Aligned Center Left Bump", () -> IkonomidisLeftCenterBump());
+
+    autoChooser.addRoutine("Aligned Intake Hub Left Bump", () -> HaalandLeftBumpIntakeHub());
+    autoChooser.addRoutine("Aligned Intake Hub Right Bump", () -> HaalandRightBumpIntakeHub());
   }
 
   public AutoChooser getAutoChooser() {
