@@ -1,6 +1,7 @@
 package frc.robot.peterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.PeterSubsystem;
 
 public class spinUpShooter extends Command {
@@ -21,13 +22,8 @@ public class spinUpShooter extends Command {
 
     @Override
     public void execute() {
-    if (isAmp) {
-      peterSubsystem.spinLeftShooterForAmp();
-      peterSubsystem.spinRightShooterForAmp();
-    } else {
-      peterSubsystem.spinLeftShooter();
-      peterSubsystem.spinRightShooter();
-    }
+        peterSubsystem.runShooter(Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS, Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS);
+        peterSubsystem.runPreShooter(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
     }
     
     
@@ -36,11 +32,7 @@ public class spinUpShooter extends Command {
 
     @Override
     public boolean isFinished() {
-        if (isAmp) {
-            return peterSubsystem.isShooterReadyAmp();
-        } else {
-            return peterSubsystem.isShooterReady();
-        }
+        return peterSubsystem.isShooterAtTarget();
 
     }
 

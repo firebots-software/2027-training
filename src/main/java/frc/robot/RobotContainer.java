@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.commandGroups.Intake;
+import frc.robot.commandGroups.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
@@ -21,6 +22,8 @@ import frc.robot.util.OtherXBoxController;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import javax.net.ssl.SNIHostName;
 
 import dev.doglog.DogLog;
 
@@ -70,6 +73,10 @@ public class RobotContainer {
     //     * Left joystick = translation
     //     * Right joystick = rotation
     //     * Right shoulder = speed increase
+    
+
+
+
     // Speed is determined by
     // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
     // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
@@ -113,12 +120,24 @@ public class RobotContainer {
 
     // TODO: Bind your intake to the left trigger of the joystick
 
-    // TODO: Bind your shot to the right trigger of the joystick
+    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
     
 
+    // TODO: Bind your shot to the right trigger of the joystick
+    
+    joystick.rightTrigger().whileTrue(new Shoot(peterSubsystem, armSubsystem, joystickSubsystem));
+      
     // TODO: When no Commands are being issued, Peter motors should not be moving (set the peterSubsystem default command)
   
+    peterSubsystem.setDefaultCommand(peterSubsystem.run(() -> {
+      peterSubsystem.stopIntake();
+      peterSubsystem.stopPreshooter();
+      peterSubsystem.stopShooter();
+    }));
 
+    
+    
+    
     joystick
         .y()
         .onTrue(

@@ -25,18 +25,20 @@ public class runIntakeUntilDetected extends Command {
     @Override
     public void execute() {
         peterSubsystem.runIntake(Constants.Pooer.SHOOTER.INTAKE.SPEED_RPS);
-        peterSubsystem.runIntake(Constants.Pooer.SHOOTER.INTAKE.SPEED_VOLTAGE);
+        peterSubsystem.runPreShooter(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
 
 
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return peterSubsystem.isNoteThere();
     }
     
     @Override
     public void end(boolean interrupted) {
+        peterSubsystem.stopIntake();
+        peterSubsystem.stopPreshooter();
 
     }
 }

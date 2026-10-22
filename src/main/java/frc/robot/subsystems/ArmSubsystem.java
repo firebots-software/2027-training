@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -17,6 +18,9 @@ import frc.robot.util.LoggedTalonFX;
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
 
+
+
+  private double targetDeg = Constants.Arm.DEFAULT_ARM_ANGLE;
   private LoggedTalonFX rt, rb, lt, lb;
   private LoggedTalonFX master;
   private DutyCycleEncoder revEncoder;
@@ -24,7 +28,9 @@ public class ArmSubsystem extends SubsystemBase {
   private MotionMagicConfigs mmc;
 
   private boolean initialized = false;
-  private double armHorizontalOffset;
+  private double armHorizontalOffset = Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR;
+
+  
 
   public ArmSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
@@ -33,7 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
     
     // TODO: Tune the Arm KP value. Feedforward is provided below.
-    Slot0Configs s0c = new Slot0Configs().withKP(0.0).withKI(0).withKD(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
     
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 
@@ -95,8 +101,35 @@ public class ArmSubsystem extends SubsystemBase {
   // TODO: Design and implement the methods required to control the arm's position.
   // Consider what your arm commands will need to function properly (e.g., setting angles, reading current angles, checking tolerances).
 
+  private double calcIntegrateTarRots(double angleDeg) {
+    double armRots = angleDeg / 360d + armHorizontalOffset;
+    return armRots * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+  }
+
+
+
+  public void setPosition(double angleDeg) {
+    PositionVoltage m_PositionVoltage = new PositionVoltage(calcIntegrateTarRots(angleDeg));
+    master.setControl(m_PositionVoltage);
+  }
+
+  public void resetPosition() {
+    master.setPosition(getAbsolutePosition() * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+  }
+
+  public void setTargetDegrees(double deg) {
+    this.targetDeg = deg;   
+  }
+
+  public boolean atTarget(double tol) {
+    return Math.abs(
+        targetDeg - (master.getPosition().getValueAsDouble() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * 360d
+            - armHorizontalOffset * 360d)) < tol;
+  }
+
   @Override
   public void periodic() {
-    // TODO: Execute your control logic and any necessary logic here
+    setPosition(targetDeg);    
   }
+
 }
