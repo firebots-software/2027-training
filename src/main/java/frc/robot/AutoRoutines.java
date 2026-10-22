@@ -842,6 +842,11 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
+
+    autoChooser.addRoutine("Move Left", () -> YamalLeftCenter());
+    autoChooser.addRoutine("Move Right", () -> YamalRightCenter());
+    autoChooser.addRoutine("Left Turning Intake", () -> YamalLeftTurn());
+    autoChooser.addRoutine("Right Turning Intake", () -> YamalRightTurn());
   }
 
   public AutoChooser getAutoChooser() {
