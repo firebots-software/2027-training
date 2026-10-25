@@ -658,14 +658,14 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory traj = routine.trajectory("RightAlignedBumpCenter.traj");
     routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
-    return routine; 
+    return routine;
   }
 
   public AutoRoutine IkonomidisLeftCenterBump() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory traj = routine.trajectory("LeftAlignedBumpCenter.traj");
     routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
-    return routine; 
+    return routine;
   }
 
   public AutoRoutine HaalandRightBumpIntakeHub() {

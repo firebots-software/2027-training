@@ -128,7 +128,6 @@ spotless {
             include '**/*.gradle'
             exclude '**/build/**', '**/build-*/**'
         }
-        greclipse()
         indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
@@ -136,7 +135,7 @@ spotless {
     format 'xml', {
         target fileTree('.') {
             include '**/*.xml'
-            exclude '**/build/**', '**/build-*/**'
+            exclude     '**/build/**', '**/build-*/**'
         }
         eclipseWtp('xml')
         trimTrailingWhitespace()
