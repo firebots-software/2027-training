@@ -24,7 +24,8 @@
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"16.541 m", "val":16.541}, "h":{"exp":"8.0692 m", "val":8.0692}}}, "enabled":false},
     {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":{"exp":"5 m / s", "val":5.0}}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"7 m / s ^ 2", "val":7.0}}}, "enabled":true},
-    {"from":0, "to":1, "data":{"type":"MaxAngularVelocity", "props":{"max":{"exp":"5.5 rad / s", "val":5.5}}}, "enabled":true}],
+    {"from":0, "to":1, "data":{"type":"MaxAngularVelocity", "props":{"max":{"exp":"5.5 rad / s", "val":5.5}}}, "enabled":true},
+    {"from":0, "to":0, "data":{"type":"MaxAngularVelocity", "props":{"max":{"exp":"0 rad / s", "val":0.0}}}, "enabled":true}],
   "targetDt":{
    "exp":"0.05 s",
    "val":0.05

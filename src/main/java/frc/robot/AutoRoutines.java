@@ -11,6 +11,7 @@ import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.IntakeToBumpDTP;
+import frc.robot.commandGroups.ShootCommandGroups.ShootBasic;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -58,6 +59,19 @@ public class AutoRoutines {
 
   // Trajectory loading and specific cmds
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
+    if (type == null) return null;
+
+    AutoTrajectory traj = routine.trajectory(type + ".traj");
+
+    if (traj != null) {
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
+    }
+    return traj;
+  }
+
+   // Trajectory loading and specific cmds
+  private AutoTrajectory intakeBetter(AutoRoutine routine, String type) {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
@@ -208,6 +222,90 @@ public class AutoRoutines {
   public Command driveToBumpAfterShoot(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
     // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
     return new ShootToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
+  }
+
+  public AutoRoutine YamalShootStill() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory traj = routine.trajectory("ShootStill.traj");
+
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    traj.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine MessiRightBumpIntake() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intakeBetter(routine, "RightBumpIntake");
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+
+    return routine;
+  }
+
+  public AutoRoutine MessiLeftBumpIntake() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intakeBetter(routine, "LeftBumpIntake");
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+
+    return routine;
+  }
+
+  public AutoRoutine KaneRightIntakeShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intakeBetter(routine, "RightBumpIntake");
+    AutoTrajectory spin = routine.trajectory("ShootRightBump.traj");
+    
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    spin.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine KaneLeftIntakeShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intakeBetter(routine, "LeftBumpIntake");
+    AutoTrajectory spin = routine.trajectory("ShootLeftBump.traj");
+    
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    spin.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine LendeborgRightIntakeReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intakeBetter(routine, "RightBumpIntake");
+    AutoTrajectory hub = routine.trajectory("RightReturn");
+    AutoTrajectory spin = routine.trajectory("RightHubSpin");
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(Commands.sequence(hub.resetOdometry(), hub.cmd()));
+    hub.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    return routine;
+  }
+
+  public AutoRoutine LendeborgLeftIntakeReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intakeBetter(routine, "LeftBumpIntake");
+    AutoTrajectory hub = routine.trajectory("LeftReturn");
+    AutoTrajectory spin = routine.trajectory("LeftHubSpin");
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(Commands.sequence(hub.resetOdometry(), hub.cmd()));
+    hub.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    return routine;
   }
 
   // Middle
