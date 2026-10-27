@@ -226,10 +226,8 @@ public class AutoRoutines {
 
   public AutoRoutine YamalShootStill() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory traj = routine.trajectory("ShootStill.traj");
 
-    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
-    traj.done().onTrue(returnBasicShoot(redSide));
+    routine.active().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
