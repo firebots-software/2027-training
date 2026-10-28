@@ -462,6 +462,34 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine MoveRightAuto(){
+    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoTrajectory move = routine.trajectory("MoveRightAuto");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine MoveLeftAuto(){
+    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoTrajectory move = routine.trajectory("MoveLeftAuto");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine RightBumpIntake(){
+    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoTrajectory move = routine.trajectory("RightBumpIntake");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine LeftBumpIntake(){
+    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoTrajectory move = routine.trajectory("LeftBumpIntake");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    return routine;
+  }
+
   public AutoRoutine HubSweepRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -777,6 +805,10 @@ public class AutoRoutines {
     autoChooser.addRoutine("Right Wait", () -> PedriShortRightWait());
     autoChooser.addRoutine("Left Wait", () -> PedriShortLeftWait());
     // autoChooser.addRoutine("Right then Hub", () -> PedriShortRightHub());
+    autoChooser.addRoutine("moveRightAuto", () -> MoveRightAuto());
+    autoChooser.addRoutine("moveLeftAuto", () -> MoveLeftAuto());
+    autoChooser.addRoutine("RightBumpIntake", () -> RightBumpIntake());
+    autoChooser.addRoutine("LeftBumpIntake", () -> LeftBumpIntake());
     // autoChooser.addRoutine("Left then Hub", () -> PedriShortLeftHub());
     autoChooser.addRoutine("Hub Sweep Left Wait", () -> HubSweepLeft());
     autoChooser.addRoutine("Hub Sweep Right Wait", () -> HubSweepRight());
