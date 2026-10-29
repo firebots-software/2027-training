@@ -462,31 +462,31 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine MoveRightAuto(){
+  public AutoRoutine MoveRightAuto() {
     AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
     AutoTrajectory move = routine.trajectory("MoveRightAuto");
-    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
 
-  public AutoRoutine MoveLeftAuto(){
+  public AutoRoutine MoveLeftAuto() {
     AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
     AutoTrajectory move = routine.trajectory("MoveLeftAuto");
-    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
 
-  public AutoRoutine RightBumpIntake(){
+  public AutoRoutine RightBumpIntake() {
     AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
     AutoTrajectory move = routine.trajectory("RightBumpIntake");
-    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
 
-  public AutoRoutine LeftBumpIntake(){
+  public AutoRoutine LeftBumpIntake() {
     AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
     AutoTrajectory move = routine.trajectory("LeftBumpIntake");
-    routine.active().onTrue(Commands.sequence(move.resetOdometry(),move.cmd()));
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
 
