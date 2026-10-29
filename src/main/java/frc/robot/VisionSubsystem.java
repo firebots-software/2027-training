@@ -16,11 +16,12 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class VisionSubsystem {
     private Optional<EstimatedRobotPose> visionEst;
-    PhotonCamera camera;
+    private PhotonCamera camera;
     private static AprilTagFieldLayout kTagLayout;
     private static Transform3d kRobotToCam;
     private PhotonPoseEstimator photonEstimator;
     public VisionSubsystem (){
+        visionEst = Optional.empty();
         camera = new PhotonCamera("photonvision2");
         kTagLayout = 
                 AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -30,13 +31,14 @@ public class VisionSubsystem {
     }
 
     public Pose2d get2dPose() { 
-        EstimatedRobotPose estimate = visionEst.get();
-        Pose2d finalPose2d = estimate.estimatedPose.toPose2d();
-        return finalPose2d;
+        if (visionEst.isEmpty()) {
+        return null;
+        }
+        return visionEst.get().estimatedPose.toPose2d();
     }
     
     public void calcPose() { 
-        Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        visionEst = Optional.empty();
         for (var result : camera.getAllUnreadResults()) {
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
             if (visionEst.isEmpty()) {
