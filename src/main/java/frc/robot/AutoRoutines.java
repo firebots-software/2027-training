@@ -917,6 +917,18 @@ public class AutoRoutines {
 
     autoChooser.addRoutine("Aligned Intake Hub Left Bump", () -> HaalandLeftBumpIntakeHub());
     autoChooser.addRoutine("Aligned Intake Hub Right Bump", () -> HaalandRightBumpIntakeHub());
+
+    autoChooser.addRoutine("Shoot Still", () -> YamalShootStill());
+
+    autoChooser.addRoutine("Right Bump Intake", () -> MessiRightBumpIntake());
+    autoChooser.addRoutine("Left Bump Intake", () -> MessiLeftBumpIntake());
+
+    autoChooser.addRoutine("Right Bump Intake Shoot", () -> KaneRightIntakeShoot());
+    autoChooser.addRoutine("Left Bump Intake Shoot", () -> KaneLeftIntakeShoot());
+    
+    autoChooser.addRoutine("Right Intake Return Shoot", () -> LendeborgRightIntakeReturnShoot());
+    autoChooser.addRoutine("Left Intake Return Shoot", () -> LendeborgLeftIntakeReturnShoot());
+    
   }
 
   public AutoChooser getAutoChooser() {

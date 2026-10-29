@@ -474,7 +474,15 @@ public final class Constants {
         MOVE_RIGHT_BUMP("Aligned Center Right Bump"),
         MOVE_LEFT_BUMP("Aligned Center Left Bump"),
         TURN_INTAKE_RIGHT_HUB("Aligned Intake Hub Right Bump"),
-        TURN_INTAKE_LEFT_HUB("Aligned Intake Hub Left Bump");
+        TURN_INTAKE_LEFT_HUB("Aligned Intake Hub Left Bump"),
+        SHOOT_STILL("Shoot Still"),
+        RIGHT_BUMP_INTAKE("Right Bump Intake"),
+        LEFT_BUMP_INTAKE("Left Bump Intake"),
+        RIGHT_BUMP_INTAKE_SHOOT("Right Bump Intake Shoot"),
+        LEFT_BUMP_INTAKE_SHOOT("Left Bump Intake Shoot"),
+        RIGHT_INTAKE_RETURN_SHOOT("Right Intake Return Shoot"),
+        LEFT_INTAKE_RETURN_SHOOT("Left Intake Return Shoot");
+
 
         private String internalName;
 
