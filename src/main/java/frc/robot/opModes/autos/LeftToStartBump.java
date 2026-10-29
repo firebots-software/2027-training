@@ -14,7 +14,7 @@ public class LeftToStartBump extends BaseOpMode {
 
   public LeftToStartBump(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_HUB_SWEEP_WAIT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT_TO_START_BUMP);
   }
 
 

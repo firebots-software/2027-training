@@ -14,7 +14,7 @@ public class RightToCenterBump extends BaseOpMode {
 
   public RightToCenterBump(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_HUB_SWEEP_WAIT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_TO_CENTER_BUMP);
   }
 
 

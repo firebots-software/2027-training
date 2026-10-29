@@ -249,10 +249,6 @@ public class AutoRoutines {
 
   
 
-  }
-  
-
-
   // Middle
 
   public AutoRoutine Nike() {

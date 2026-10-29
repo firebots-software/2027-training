@@ -8,13 +8,13 @@ import frc.robot.Constants.Swerve.Auto.AutoList;
 import frc.robot.Robot;
 import frc.robot.opModes.BaseOpMode;
 
-@Autonomous(name = "right to center bump", group = "Normal")
+@Autonomous(name = "right to start bump", group = "Normal")
 public class RightToStartBump extends BaseOpMode {
   private Command m_autoCommand;
 
   public RightToStartBump(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_HUB_SWEEP_WAIT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_TO_START_BUMP);
   }
 
 
