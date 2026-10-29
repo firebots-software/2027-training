@@ -8,7 +8,7 @@ import frc.robot.Constants.Swerve.Auto.AutoList;
 import frc.robot.Robot;
 import frc.robot.opModes.BaseOpMode;
 
-@Autonomous(name = "left to center bump", group = "Normal")
+@Autonomous(name = "right to center bump", group = "Normal")
 public class RightToStartBump extends BaseOpMode {
   private Command m_autoCommand;
 
