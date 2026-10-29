@@ -7,7 +7,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 @Autonomous
-public class MoveLefttAuto extends BaseOpMode{
+public class MoveLeftAuto extends BaseOpMode{
     private Command m_autoCommand;
 
     public MoveLeftAuto(Robot robot){
