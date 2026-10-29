@@ -474,6 +474,11 @@ public final class Constants {
         MOVE_RIGHT_TURN("Right Turning Intake"),
         MOVE_LEFT("Move Left"),
         MOVE_RIGHT("Move Right"),
+        LEFT_INTAKE_SHOOT("Intake Left Shoot"), 
+        RIGHT_INTAKE_SHOOT("Intake Right Shoot"), 
+        LEFT_INTAKE_RETURN_SHOOT("Intake Left Return Shoot"), 
+        RIGHT_INTAKE_RETURN_SHOOT("Intake Right Return Shoot"), 
+        JUST_SHOOT("Just Shoot"), 
 
         CENTER("We are genuinely the worst robot on the field");
 

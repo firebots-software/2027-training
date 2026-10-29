@@ -69,6 +69,18 @@ public class AutoRoutines {
     return traj;
   }
 
+  private AutoTrajectory intake(AutoRoutine routine, String type) {
+    if (type == null) return null;
+
+    AutoTrajectory traj = routine.trajectory(type + ".traj");
+
+    if (traj != null) {
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
+    }
+    return traj;
+  }
+
   private AutoTrajectory depot(AutoRoutine routine, Depot type) {
     if (type == null) return null;
 
@@ -275,6 +287,59 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory traj = routine.trajectory("startLeftIntake.traj");
     routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine KaneShootStill() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    Command shoot = returnBasicShoot(redSide);
+    routine.active().onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine KaneRightIntakeShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intake(routine, "rightBumpIntake");
+    Command shoot = returnBasicShoot(redSide);
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake
+        .done()
+        .onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine KaneLeftIntakeShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intake(routine, "leftBumpIntake");
+    Command shoot = returnBasicShoot(redSide);
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake
+        .done()
+        .onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine KaneRightIntakeReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intake(routine, "rightBumpIntake");
+    AutoTrajectory returnBack = routine.trajectory("rightReturn");
+    Command shoot = returnBasicShoot(redSide); 
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.resetOdometry(), returnBack.cmd()));
+    returnBack
+        .done()
+        .onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine KaneLeftIntakeReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intake(routine, "leftBumpIntake");
+    AutoTrajectory returnBack = routine.trajectory("leftReturn");
+    Command shoot = returnBasicShoot(redSide); 
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.resetOdometry(), returnBack.cmd()));
+    returnBack
+        .done()
+        .onTrue(shoot);
     return routine;
   }
 
@@ -847,6 +912,13 @@ public class AutoRoutines {
     autoChooser.addRoutine("Move Right", () -> YamalRightCenter());
     autoChooser.addRoutine("Left Turning Intake", () -> YamalLeftTurn());
     autoChooser.addRoutine("Right Turning Intake", () -> YamalRightTurn());
+    autoChooser.addRoutine("Intake Left Shoot", () -> KaneLeftIntakeShoot());
+    autoChooser.addRoutine("Intake Right Shoot", () -> KaneRightIntakeShoot());
+    autoChooser.addRoutine("Intake Left Return Shoot", () -> KaneLeftIntakeReturnShoot());
+    autoChooser.addRoutine("Intake Right Return Shoot", () -> KaneRightIntakeReturnShoot());
+    autoChooser.addRoutine("Just Shoot", () -> KaneShootStill());
+
+
   }
 
   public AutoChooser getAutoChooser() {
