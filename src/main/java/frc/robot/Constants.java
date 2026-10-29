@@ -456,7 +456,8 @@ public final class Constants {
         LeftShootToBump,
         RightShootToBump,
         Nike,
-        anthony
+        anthony,
+        MoveRight
       }
 
       public static enum AutoList {

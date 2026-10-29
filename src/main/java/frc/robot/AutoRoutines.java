@@ -464,7 +464,8 @@ public class AutoRoutines {
 
   public AutoRoutine MoveRightAuto() {
     AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
-    AutoTrajectory move = routine.trajectory("MoveRightAuto");
+    AutoTrajectory move = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.MoveRight);
+    //routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
