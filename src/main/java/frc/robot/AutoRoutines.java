@@ -770,6 +770,42 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine TrainingA() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.TrainingA);
+
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+
+    return routine;
+  }
+
+  public AutoRoutine TrainingB() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.TrainingB);
+
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+
+    return routine;
+  }
+
+  public AutoRoutine TrainingC() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.TrainingC);
+
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+
+    return routine;
+  }
+
+  public AutoRoutine TrainingD() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.TrainingD);
+
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+
+    return routine;
+  }
+
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
     autoChooser.addRoutine("Right", () -> PedriShortRight());
@@ -787,6 +823,11 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
+
+    autoChooser.addRoutine("Training A", this::TrainingA);
+    autoChooser.addRoutine("Training B", this::TrainingB);
+    autoChooser.addRoutine("Training C", this::TrainingC);
+    autoChooser.addRoutine("Training D", this::TrainingD);
   }
 
   public AutoChooser getAutoChooser() {

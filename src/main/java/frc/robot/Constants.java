@@ -456,7 +456,11 @@ public final class Constants {
         LeftShootToBump,
         RightShootToBump,
         Nike,
-        anthony
+        anthony,
+        TrainingA,
+        TrainingB,
+        TrainingC,
+        TrainingD
       }
 
       public static enum AutoList {
@@ -470,7 +474,11 @@ public final class Constants {
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
         DEPOT_TO_OUTPOST("Depot to Outpost"),
-        CENTER("We are genuinely the worst robot on the field");
+        CENTER("We are genuinely the worst robot on the field"),
+        TRAINING_A("Training A"),
+        TRAINING_B("Training B"),
+        TRAINING_C("Training C"),
+        TRAINING_D("Training D");
 
         private String internalName;
 
