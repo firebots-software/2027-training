@@ -7,6 +7,26 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-public class RightBumpIntake {
-    
+public class RightBumpIntake extends BaseOpMode{
+    private Command m_autoCommand;
+
+    public RightBumpIntake(Robot robot){
+        super(robot);
+        m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT);
+    }
+
+    @Override
+  public void start() {
+    super.start();
+    if (m_autoCommand != null) {
+      CommandScheduler.getInstance().schedule(m_autoCommand);
+    }
+  }
+
+  @Override
+  public void end() {
+    if (m_autoCommand != null) {
+      CommandScheduler.getInstance().cancel(m_autoCommand);
+    }
+  }
 }
