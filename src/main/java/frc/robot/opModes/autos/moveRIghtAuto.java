@@ -6,7 +6,7 @@ import frc.robot.opModes.BaseOpMode;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
-
+@Autonomous
 public class MoveRightAuto extends BaseOpMode{
     private Command m_autoCommand;
 
