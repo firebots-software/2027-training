@@ -9,6 +9,7 @@ import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
+import frc.robot.Constants.Swerve.Auto.PracticePaths;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.IntakeToBumpDTP;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
@@ -98,6 +99,14 @@ public class AutoRoutines {
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
     return traj;
+  }
+
+  private AutoTrajectory practicePaths(AutoRoutine routine, PracticePaths type) {
+    if (type == null) return null;
+
+    AutoTrajectory traj = routine.trajectory(type + ".traj");
+    return traj;
+  
   }
 
   public Command returnBasicShoot(BooleanSupplier isRedSide) {
@@ -210,7 +219,38 @@ public class AutoRoutines {
     return new ShootToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
   }
 
+  public AutoRoutine LeftToCenterBump(){
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = practicePaths(routine, Constants.Swerve.Auto.PracticePaths.LeftToCenterBump);
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine RightToCenterBump(){
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = practicePaths(routine, Constants.Swerve.Auto.PracticePaths.RightToCenterBump);
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    return routine;
+  } 
+
+  public AutoRoutine LeftToStartBump(){
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = practicePaths(routine, Constants.Swerve.Auto.PracticePaths.LeftToStartBump);
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine RightToStartBump(){
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = practicePaths(routine, Constants.Swerve.Auto.PracticePaths.RightToStartBump);
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    return routine;
+  }
+  
+
+
   // Middle
+
   public AutoRoutine Nike() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -787,6 +827,12 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
+    autoChooser.addRoutine("left to center bump", () -> LeftToCenterBump());
+    autoChooser.addRoutine("right to center bump", () -> RightToCenterBump());
+    autoChooser.addRoutine("left to start bump", () -> LeftToStartBump());
+    autoChooser.addRoutine("right to start bump", () -> RightToStartBump());
+    
+
   }
 
   public AutoChooser getAutoChooser() {

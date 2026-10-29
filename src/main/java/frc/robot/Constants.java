@@ -422,6 +422,7 @@ public final class Constants {
       public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
       public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
       public static final double WAIT_TIME_FOR_ALLIANCE = 4.0;
+      
 
       public static enum Intake {
         LeftIntakeSweepShort,
@@ -459,6 +460,15 @@ public final class Constants {
         anthony
       }
 
+      public static enum PracticePaths {
+        LeftToCenterBump,
+        LeftToStartBump,
+        RightToCenterBump,
+        RightToStartBump
+      }
+
+    
+
       public static enum AutoList {
         RIGHT("Right"),
         LEFT("Left"),
@@ -470,7 +480,13 @@ public final class Constants {
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
         DEPOT_TO_OUTPOST("Depot to Outpost"),
-        CENTER("We are genuinely the worst robot on the field");
+        CENTER("We are genuinely the worst robot on the field"),
+        LEFT_TO_CENTER_BUMP("left to center bump"),
+        RIGHT_TO_CENTER_BUMP("right to center bump"),
+        LEFT_TO_START_BUMP("left to start bump"),
+        RIGHT_TO_START_BUMP("right to start bump");
+        
+
 
         private String internalName;
 
