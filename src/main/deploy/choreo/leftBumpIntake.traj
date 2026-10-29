@@ -92,6 +92,6 @@
   "splits":[0]
  },
  "events":[
-   {"name":"IntakeDown", "from":{"target":1, "targetTimestamp":null, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
-   {"name":"IntakeUp", "from":{"target":3, "targetTimestamp":null, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
+   {"name":"IntakeDown", "from":{"target":1, "targetTimestamp":0.42302, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"IntakeUp", "from":{"target":3, "targetTimestamp":1.20478, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }
