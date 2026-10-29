@@ -1,12 +1,11 @@
 package frc.robot.opModes.autos;
 
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
-import org.wpilib.opmode.Autonomous;
-
 import frc.robot.Constants.Swerve.Auto.AutoList;
 import frc.robot.Robot;
 import frc.robot.opModes.BaseOpMode;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.opmode.Autonomous;
 
 @Autonomous(name = "left to center bump", group = "Normal")
 public class LeftToCenterBump extends BaseOpMode {
@@ -16,7 +15,6 @@ public class LeftToCenterBump extends BaseOpMode {
     super(robot);
     m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT_TO_CENTER_BUMP);
   }
-
 
   @Override
   public void start() {

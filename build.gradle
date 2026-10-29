@@ -12,7 +12,7 @@ java {
 
 def ROBOT_MAIN_CLASS = "first.Main"
 
-// Define my targets (SystemCore) and artifacts (deployable files)
+// Define my targetsfspozf (SystemCore) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
     targets {
@@ -128,7 +128,7 @@ spotless {
             include '**/*.gradle'
             exclude '**/build/**', '**/build-*/**'
         }
-        greclipse()
+        // greclipse()
         indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()

@@ -422,7 +422,6 @@ public final class Constants {
       public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
       public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
       public static final double WAIT_TIME_FOR_ALLIANCE = 4.0;
-      
 
       public static enum Intake {
         LeftIntakeSweepShort,
@@ -467,8 +466,6 @@ public final class Constants {
         RightToStartBump
       }
 
-    
-
       public static enum AutoList {
         RIGHT("Right"),
         LEFT("Left"),
@@ -485,8 +482,6 @@ public final class Constants {
         RIGHT_TO_CENTER_BUMP("right to center bump"),
         LEFT_TO_START_BUMP("left to start bump"),
         RIGHT_TO_START_BUMP("right to start bump");
-        
-
 
         private String internalName;
 

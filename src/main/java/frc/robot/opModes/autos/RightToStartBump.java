@@ -1,12 +1,11 @@
 package frc.robot.opModes.autos;
 
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
-import org.wpilib.opmode.Autonomous;
-
 import frc.robot.Constants.Swerve.Auto.AutoList;
 import frc.robot.Robot;
 import frc.robot.opModes.BaseOpMode;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.opmode.Autonomous;
 
 @Autonomous(name = "right to start bump", group = "Normal")
 public class RightToStartBump extends BaseOpMode {
@@ -16,7 +15,6 @@ public class RightToStartBump extends BaseOpMode {
     super(robot);
     m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_TO_START_BUMP);
   }
-
 
   @Override
   public void start() {
