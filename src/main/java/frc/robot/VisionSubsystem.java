@@ -17,8 +17,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 public class VisionSubsystem {
     private Optional<EstimatedRobotPose> visionEst;
     PhotonCamera camera;
-    private static final AprilTagFieldLayout kTagLayout;
-    private static final Transform3d kRobotToCam;
+    private static AprilTagFieldLayout kTagLayout;
+    private static Transform3d kRobotToCam;
     private PhotonPoseEstimator photonEstimator;
     public VisionSubsystem (){
         camera = new PhotonCamera("photonvision2");
@@ -29,9 +29,10 @@ public class VisionSubsystem {
         photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     }
 
-    public Optional<EstimatedRobotPose> getVisionEst() { 
+    public Pose2d get2dPose() { 
         EstimatedRobotPose estimate = visionEst.get();
         Pose2d finalPose2d = estimate.estimatedPose.toPose2d();
+        return finalPose2d;
     }
     
     public void calcPose() { 
@@ -41,6 +42,7 @@ public class VisionSubsystem {
             if (visionEst.isEmpty()) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
             }
+        }
     }
 
 }
