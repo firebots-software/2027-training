@@ -471,21 +471,21 @@ public class AutoRoutines {
   }
 
   public AutoRoutine MoveLeftAuto() {
-    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory move = routine.trajectory("MoveLeftAuto");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
 
   public AutoRoutine RightBumpIntake() {
-    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory move = routine.trajectory("RightBumpIntake");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
 
   public AutoRoutine LeftBumpIntake() {
-    AutoRoutine routine = autoFactory.newRoutine("Paths.chor");
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory move = routine.trajectory("LeftBumpIntake");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
