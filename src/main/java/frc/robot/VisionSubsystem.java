@@ -9,6 +9,7 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,12 +28,18 @@ public class VisionSubsystem extends SubsystemBase{
     private final Transform3d robotToCam;
     private Optional<EstimatedRobotPose> visionEstimate;
     private Pose2d pose;
+    
+    private final String loggingPath;
+    private final String cameraTitle;
+
 
     public VisionSubsystem(){
         fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
         robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
         photonEstimator = new PhotonPoseEstimator(fieldLayout, robotToCam);
-        rightCamera = new PhotonCamera("rightcamera");      
+        rightCamera = new PhotonCamera("camera");
+        cameraTitle = "rightCam"; //cameraID.getLoggingName();
+        loggingPath = "Subsystems/Vision/" + cameraTitle;
     }
 
     public void visionMeasurement(List<PhotonPipelineResult> results){
@@ -52,14 +59,17 @@ public class VisionSubsystem extends SubsystemBase{
         }
     }
 
-    public Pose2d calculateFilteredPose() {
+    public void calculateFilteredPose() {
+        if (visionEstimate.isEmpty()) return;
         EstimatedRobotPose estimatedPose = visionEstimate.get();
         pose = estimatedPose.estimatedPose.toPose2d();
-        return pose;
+        DogLog.log(loggingPath + "/MeasuredPose", pose);
     }
 
     @Override
     public void periodic(){
         visionMeasurement(rightCamera.getAllUnreadResults());
+        calculatePose();
+        calculateFilteredPose();
     }
 }
