@@ -431,7 +431,13 @@ public final class Constants {
         LeftSecondDipLong, // inside out
         RightSecondDipLong,
         HubLeft,
-        HubRight
+        HubRight,
+        TrainingAIntake,
+        TrainingBIntake,
+        TrainingAShoot,
+        TrainingBShoot,
+        TrainingAShootEnd,
+        TrainingBShootEnd
       }
 
       public static enum ShootPos {
@@ -478,7 +484,14 @@ public final class Constants {
         TRAINING_A("Training A"),
         TRAINING_B("Training B"),
         TRAINING_C("Training C"),
-        TRAINING_D("Training D");
+        TRAINING_D("Training D"),
+        TRAINING_A_INTAKE("Training A (intake)"),
+        TRAINING_B_INTAKE("Training B (intake)"),
+        TRAINING_A_SHOOT("Training A (shoot)"),
+        TRAINING_B_SHOOT("Training B (shoot)"),
+        TRAINING_A_SHOOT_END("Training A (shoot at end)"),
+        TRAINING_B_SHOOT_END("Training B (shoot at end)"),
+        SHOOT_ONLY("Shoot only");
 
         private String internalName;
 

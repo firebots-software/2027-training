@@ -806,6 +806,92 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine ShootOnly() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    routine.active().whileTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine TrainingAIntake() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = routine.trajectory("TrainingAIntake.traj");
+
+    routine.active().onTrue(Commands.sequence(
+       move.resetOdometry(),
+       move.cmd(),
+       intake(routine, Constants.Swerve.Auto.Intake.TrainingAIntake).cmd()
+    ));
+    return routine;
+  }
+
+  public AutoRoutine TrainingBIntake() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = routine.trajectory("TrainingBIntake.traj");
+    
+    routine.active().onTrue(Commands.sequence(
+       move.resetOdometry(),
+       move.cmd(),
+       intake(routine, Constants.Swerve.Auto.Intake.TrainingBIntake).cmd()
+    ));
+    return routine;
+  }
+
+  public AutoRoutine TrainingAShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = routine.trajectory("TrainingAShoot.traj");
+
+    routine.active().onTrue(Commands.sequence(
+       move.resetOdometry(),
+       move.cmd(),
+       intake(routine, Constants.Swerve.Auto.Intake.TrainingAShoot).cmd()
+    ));
+    move.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine TrainingBShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = routine.trajectory("TrainingBShoot.traj");
+
+    routine.active().onTrue(Commands.sequence(
+       move.resetOdometry(),
+       move.cmd(),
+       intake(routine, Constants.Swerve.Auto.Intake.TrainingBShoot).cmd()
+    ));
+    move.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine TrainingAShootEnd() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = routine.trajectory("TrainingAShootEnd.traj");
+    AutoTrajectory returnToStart = routine.trajectory("RightReturn.traj");
+    
+    routine.active().onTrue(Commands.sequence(
+       move.resetOdometry(),
+       move.cmd(),
+       intake(routine, Constants.Swerve.Auto.Intake.TrainingAShootEnd).cmd(),
+       returnToStart.cmd()
+    ));
+    returnToStart.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine TrainingBShootEnd() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = routine.trajectory("TrainingBShootEnd.traj");
+    AutoTrajectory returnToStart = routine.trajectory("LeftReturn.traj");
+
+    routine.active().onTrue(Commands.sequence(
+       move.resetOdometry(),
+       move.cmd(),
+       intake(routine, Constants.Swerve.Auto.Intake.TrainingBShootEnd).cmd(),
+       returnToStart.cmd()
+    ));
+    returnToStart.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
     autoChooser.addRoutine("Right", () -> PedriShortRight());
@@ -828,6 +914,17 @@ public class AutoRoutines {
     autoChooser.addRoutine("Training B", this::TrainingB);
     autoChooser.addRoutine("Training C", this::TrainingC);
     autoChooser.addRoutine("Training D", this::TrainingD);
+
+    autoChooser.addRoutine("Training A (intake)", this::TrainingAIntake);
+    autoChooser.addRoutine("Training B (intake)", this::TrainingBIntake);
+
+    autoChooser.addRoutine("Training A (shoot)", this::TrainingAShoot);
+    autoChooser.addRoutine("Training B (shoot)", this::TrainingBShoot);
+
+    autoChooser.addRoutine("Training A (shoot at end)", this::TrainingAShootEnd);
+    autoChooser.addRoutine("Training B (shoot at end)", this::TrainingBShootEnd);
+
+    autoChooser.addRoutine("Shoot only", this::ShootOnly);
   }
 
   public AutoChooser getAutoChooser() {
