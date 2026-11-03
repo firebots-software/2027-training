@@ -472,7 +472,7 @@ public class AutoRoutines {
 
   public AutoRoutine MoveLeftAuto() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = routine.trajectory("MoveLeftAuto");
+    AutoTrajectory move = routine.trajectory("MoveLeft");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
   }
