@@ -13,7 +13,7 @@ public class MoveRightAuto extends BaseOpMode {
 
   public MoveRightAuto(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVERIGHTAUTO);
   }
 
   @Override
