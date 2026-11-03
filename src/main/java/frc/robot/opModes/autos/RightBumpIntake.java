@@ -13,7 +13,7 @@ public class RightBumpIntake extends BaseOpMode {
 
   public RightBumpIntake(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHTBUMPINTAKE);
   }
 
   @Override
