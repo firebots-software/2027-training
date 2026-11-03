@@ -324,7 +324,7 @@ public class AutoRoutines {
     AutoTrajectory intake = intake(routine, "rightBumpIntake");
     AutoTrajectory returnBack = routine.trajectory("rightReturn");
     Command shoot = returnBasicShoot(redSide); 
-    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.resetOdometry(), returnBack.cmd()));
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.cmd()));
     returnBack
         .done()
         .onTrue(shoot);
@@ -336,7 +336,7 @@ public class AutoRoutines {
     AutoTrajectory intake = intake(routine, "leftBumpIntake");
     AutoTrajectory returnBack = routine.trajectory("leftReturn");
     Command shoot = returnBasicShoot(redSide); 
-    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.resetOdometry(), returnBack.cmd()));
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.cmd()));
     returnBack
         .done()
         .onTrue(shoot);
