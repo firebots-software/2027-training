@@ -6,7 +6,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
-
+import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,22 +14,26 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class VisionSubsystem {
+
+public class VisionSubsystem extends SubsystemBase {
     private Optional<EstimatedRobotPose> visionEst;
-    private PhotonCamera camera;
+    private PhotonCamera rightCamera;
     private static AprilTagFieldLayout kTagLayout;
     private static Transform3d kRobotToCam;
     private PhotonPoseEstimator photonEstimator;
     public VisionSubsystem (){
         visionEst = Optional.empty();
-        camera = new PhotonCamera("photonvision2");
+        rightCamera = new PhotonCamera("photonvision2");
         kTagLayout = 
                 AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-        kRobotToCam = // update later
-                new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));
+        kRobotToCam = Constants.RightCamera.transform;
         photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     }
+
+    
 
     public Pose2d get2dPose() { 
         if (visionEst.isEmpty()) {
@@ -37,15 +41,18 @@ public class VisionSubsystem {
         }
         return visionEst.get().estimatedPose.toPose2d();
     }
+
     
-    public void calcPose() { 
+    @Override
+    public void periodic() {
         visionEst = Optional.empty();
-        for (var result : camera.getAllUnreadResults()) {
+        for (var result : rightCamera.getAllUnreadResults()) {
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
             if (visionEst.isEmpty()) {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
             }
         }
+        DogLog.log("Pose2D", get2dPose());
     }
 
 }
