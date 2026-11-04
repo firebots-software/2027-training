@@ -491,6 +491,28 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine ShootStill(){
+    AutoRoutine routine = autoFactory.newRoutine("ChristianaRonaldo.chor");
+    routine.active().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine MoveRightAutoIntake() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVERIGHTAUTOINTAKE);
+    //routine.trajectory("MoveRightAuto.traj");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine MoveLeftAutoIntake() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE);
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd() ));
+
+    return routine;
+  }
+
   public AutoRoutine HubSweepRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 

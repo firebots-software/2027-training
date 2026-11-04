@@ -3,6 +3,8 @@ package frc.robot;
 import static org.wpilib.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
+
+import frc.robot.opModes.autos.MoveRightAuto;
 import frc.robot.util.VisionCameraConstants;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -431,6 +433,8 @@ public final class Constants {
         LeftSecondDipLong, // inside out
         RightSecondDipLong,
         HubLeft,
+        MOVERIGHTAUTOINTAKE,
+        MOVELEFTAUTOINTAKE,
         HubRight
       }
 
@@ -465,7 +469,7 @@ public final class Constants {
         LEFT("Left"),
         RIGHT_WAIT("Right Wait"),
         LEFT_WAIT("Left Wait"),
-        RIGHT_HUB_SWEEP_WAIT("Hub Sweep Right Wait"),
+        RIGHT_HUB_SWEET_WAIT("Hub Sweep Right Wait"),
         LEFT_HUB_SWEEP_WAIT("Hub Sweep Left Wait"),
         OUTPOST("Just Outpost"),
         DEPOT("Just Depot"),
@@ -475,7 +479,10 @@ public final class Constants {
         MOVELEFTAUTO("moveLeftAuto"),
         RIGHTBUMPINTAKE("RightBumpIntake"),
         LEFTBUMPINTAKE("LeftBumpIntake"),
-        MOVERIGHTAUTO("moveRightAuto");
+        MOVERIGHTAUTO("moveRightAuto"),
+        MOVELEFTAUTOINTAKE("Move left and intake"),
+        MOVERIGHTAUTOINTAKE("Move right and intake");
+        // MOVERIGHTAUTOINTAKE("MoveRightAutoIntake");
 
         private String internalName;
 
