@@ -1,18 +1,10 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.button.Trigger;
-import org.wpilib.math.kinematics.ChassisVelocities;
-
-import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
@@ -20,12 +12,17 @@ import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.PracticePaths;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.IntakeToBumpDTP;
-import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
+import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import java.util.function.BooleanSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.Trigger;
+import org.wpilib.math.kinematics.ChassisVelocities;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -84,7 +81,6 @@ public class AutoRoutines {
     }
     return traj;
   }
-
 
   private AutoTrajectory depot(AutoRoutine routine, Depot type) {
     if (type == null) return null;
@@ -266,15 +262,14 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine StayAndShoot(){
+  public AutoRoutine StayAndShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     routine.active().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
 
-
-  public AutoRoutine RightAndIntake(){
+  public AutoRoutine RightAndIntake() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intakeBetter(routine, "RightAndIntake");
 
@@ -283,7 +278,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine LeftAndIntake(){
+  public AutoRoutine LeftAndIntake() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intakeBetter(routine, "LeftAndIntake");
 
@@ -292,66 +287,56 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine LeftAndIntakeAndShoot(){
+  public AutoRoutine LeftAndIntakeAndShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "LeftAndIntakeAndShoot");
-    AutoTrajectory spin = routine.trajectory("LeftAndIntakeAndShoot.traj");
-    
+
+
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(spin.cmd()));
-    spin.done().onTrue(returnBasicShoot(redSide));
+    intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
 
     return routine;
-
   }
 
-  public AutoRoutine RightAndIntakeAndShoot(){
+  public AutoRoutine RightAndIntakeAndShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "RightAndIntakeAndShoot");
-    AutoTrajectory spin = routine.trajectory("RightAndIntakeAndShoot.traj");
-    
+
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(spin.cmd()));
-    spin.done().onTrue(returnBasicShoot(redSide));
+    intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
 
     return routine;
-    
   }
 
-  public AutoRoutine LeftAndIntakeAndBack(){
+  public AutoRoutine LeftAndIntakeAndBack() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "LeftAndIntakeAndBack");
     AutoTrajectory hub = routine.trajectory("LeftAndIntakeAndBack");
-    AutoTrajectory spin = routine.trajectory("LeftAndIntakeAndBack");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(hub.cmd()));
-    hub.done().onTrue(Commands.sequence(spin.cmd()));
-    spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+    hub.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
     return routine;
-
   }
 
-  public AutoRoutine RightAndIntakeAndBack(){
+  public AutoRoutine RightAndIntakeAndBack() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "RightAndIntakeAndBack");
     AutoTrajectory hub = routine.trajectory("RightAndIntakeAndBack");
-    AutoTrajectory spin = routine.trajectory("RightAndIntakeAndBack");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(hub.cmd()));
-    hub.done().onTrue(Commands.sequence(spin.cmd()));
-    spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+    hub.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
     return routine;
-
   }
-
 
   // Middle
 
@@ -935,8 +920,6 @@ public class AutoRoutines {
     autoChooser.addRoutine("right to center bump", () -> RightToCenterBump());
     autoChooser.addRoutine("left to start bump", () -> LeftToStartBump());
     autoChooser.addRoutine("right to start bump", () -> RightToStartBump());
-
-
   }
 
   public AutoChooser getAutoChooser() {
