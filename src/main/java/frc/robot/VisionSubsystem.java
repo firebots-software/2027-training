@@ -24,13 +24,17 @@ public class VisionSubsystem extends SubsystemBase {
     private static AprilTagFieldLayout kTagLayout;
     private static Transform3d kRobotToCam;
     private PhotonPoseEstimator photonEstimator;
+    private String loggingPath = "Robot/Vision/";
+
     public VisionSubsystem (){
         visionEst = Optional.empty();
-        rightCamera = new PhotonCamera("photonvision2");
+        rightCamera = new PhotonCamera("yes");
         kTagLayout = 
                 AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
         kRobotToCam = Constants.RightCamera.transform;
         photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
+
+        DogLog.log("its running", true);
     }
 
     
@@ -39,6 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (visionEst.isEmpty()) {
         return null;
         }
+        DogLog.log(loggingPath + "GotPose", visionEst.get().estimatedPose.toPose2d());
         return visionEst.get().estimatedPose.toPose2d();
     }
 
@@ -52,7 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
             }
         }
-        DogLog.log("Pose2D", get2dPose());
+        DogLog.log(loggingPath + "Pose2D", get2dPose());
     }
 
 }
