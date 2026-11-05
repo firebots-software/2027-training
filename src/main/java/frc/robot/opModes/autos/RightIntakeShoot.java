@@ -13,7 +13,7 @@ public class RightIntakeShoot extends BaseOpMode {
 
   public RightIntakeShoot(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVERIGHTAUTO);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHTINTAKESHOOT);
   }
 
   @Override

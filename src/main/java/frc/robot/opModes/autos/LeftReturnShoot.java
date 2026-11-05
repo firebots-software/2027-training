@@ -13,7 +13,7 @@ public class LeftReturnShoot extends BaseOpMode {
 
   public LeftReturnShoot(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVELEFTAUTOINTAKE1);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFTRETURNSHOOT);
   }
 
   @Override
