@@ -77,6 +77,22 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine remainCalmAndShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("ChristianoRonaldo.chor");
+    Command shoot = returnBasicShoot(redSide);
+    routine.active().onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine rightToIntakeAndShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("ChristianoRonaldo.chor");
+    AutoTrajectory traj = Intake(routine, "rightToIntake");
+    Command shoot = returnBasicShoot(redSide);
+    routine.active().onTrue(Commands.sequence(traj.resetOdometry(), traj.cmd()));
+    traj.done().onTrue(shoot);
+    return routine;
+  }
+
   private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
     if (type == null) return null;
 
@@ -84,8 +100,40 @@ public class AutoRoutines {
     return traj;
   }
 
+  public AutoRoutine RightIntakeReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("ChristianoRonaldo.chor");
+    AutoTrajectory intake = Intake(routine, "rightToIntake");
+    AutoTrajectory retur = routine.trajectory("RightReturn.traj");
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(retur.cmd());
+    retur.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine LeftIntakeReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("ChristianoRonaldo.chor");
+    AutoTrajectory intake = Intake(routine, "leftToIntake");
+    AutoTrajectory retur = routine.trajectory("LeftReturn.traj");
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(retur.cmd());
+    retur.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
   // Trajectory loading and specific cmds
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
+    if (type == null) return null;
+
+    AutoTrajectory traj = routine.trajectory(type + ".traj");
+
+    if (traj != null) {
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
+    }
+    return traj;
+  }
+
+  private AutoTrajectory Intake(AutoRoutine routine, String type) {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
@@ -818,6 +866,9 @@ public class AutoRoutines {
     autoChooser.addRoutine("Move right", () -> qwertyuiop());
     autoChooser.addRoutine("Move left to bump", () -> snehin());
     autoChooser.addRoutine("Move right to bump", () -> zxcvbnm());
+    autoChooser.addRoutine("Remain calm and shoot", () -> remainCalmAndShoot());
+    autoChooser.addRoutine("Right to shoot", () -> RightIntakeReturnShoot());
+    autoChooser.addRoutine("Left to shoot", () -> LeftIntakeReturnShoot());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
   }
@@ -826,3 +877,5 @@ public class AutoRoutines {
     return autoChooser;
   }
 }
+
+// snehin shankar dasgupta (ssd) was present hahahaha

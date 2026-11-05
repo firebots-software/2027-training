@@ -7,13 +7,14 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous(name = "Move right to bump", group = "thingy")
-public class zxcvbnm extends BaseOpMode {
+@Autonomous(name = "Remain calm and shoot", group = "thingy")
+public class remainCalmAndShoot extends BaseOpMode {
+
   private Command m_autoCommand;
 
-  public zxcvbnm(Robot robot) {
+  public remainCalmAndShoot(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVE_RIGHT_TO_BUMP);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.REMAIN_CALM_AND_SHOOT);
   }
 
   @Override

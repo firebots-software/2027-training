@@ -7,13 +7,13 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous(name = "Move left to bump", group = "thingy")
-public class snehin extends BaseOpMode {
+@Autonomous(name = "Move right", group = "thingy")
+public class toRightNow extends BaseOpMode {
   private Command m_autoCommand;
 
-  public snehin(Robot robot) {
+  public toRightNow(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVE_LEFT_TO_BUMP);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVE_RIGHT);
   }
 
   @Override

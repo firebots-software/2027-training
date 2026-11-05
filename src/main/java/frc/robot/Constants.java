@@ -470,11 +470,14 @@ public final class Constants {
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
         DEPOT_TO_OUTPOST("Depot to Outpost"),
-        CENTER("We are genuinely the worst robot on the field");
-        MOVE_LEFT("Move left");
-        MOVE_RIGHT("Move right");
-        MOVE_LEFT_TO_BUMP("Move left to bump");
-        MOVE_RIGHT_TO_BUMP("Move right to bump");
+        CENTER("We are genuinely the worst robot on the field"),
+        MOVE_LEFT("Move left"),
+        MOVE_RIGHT("Move right"),
+        MOVE_LEFT_TO_BUMP("Move left to bump"),
+        MOVE_RIGHT_TO_BUMP("Move right to bump"),
+        REMAIN_CALM_AND_SHOOT("Remain calm and shoot"),
+        RIGHT_TO_INTAKE("Right to shoot"),
+        LEFT_TO_INTAKE("Left to shoot");
 
         private String internalName;
 

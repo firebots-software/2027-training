@@ -7,13 +7,14 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous(name = "Move left", group = "thingy")
-public class asdfghjkl extends BaseOpMode {
+@Autonomous(name = "Left to shoot", group = "thingy")
+public class leftToIntake extends BaseOpMode {
+
   private Command m_autoCommand;
 
-  public asdfghjkl(Robot robot) {
+  public leftToIntake(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.MOVE_LEFT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT_TO_INTAKE);
   }
 
   @Override
