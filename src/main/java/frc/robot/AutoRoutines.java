@@ -505,13 +505,50 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine MoveLeftAutoIntake() {
+  public AutoRoutine MoveLeftAutoIntake1() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE1);
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd() ));
 
     return routine;
   }
+
+  public AutoRoutine RightIntakeShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVERIGHTAUTOINTAKE);
+    //routine.trajectory("MoveRightAuto.traj");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    move.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine LeftIntakeShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE1);
+    //routine.trajectory("MoveRightAuto.traj");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    move.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine RightReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVERIGHTAUTOINTAKE);
+    //routine.trajectory("MoveRightAuto.traj");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    move.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+
+  public AutoRoutine LeftReturnShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE1);
+    //routine.trajectory("MoveRightAuto.traj");
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+    move.done().onTrue(returnBasicShoot(redSide));
+    return routine;
+  }
+  
 
   public AutoRoutine HubSweepRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
@@ -832,6 +869,13 @@ public class AutoRoutines {
     autoChooser.addRoutine("moveLeftAuto", () -> MoveLeftAuto());
     autoChooser.addRoutine("RightBumpIntake", () -> RightBumpIntake());
     autoChooser.addRoutine("LeftBumpIntake", () -> LeftBumpIntake());
+    autoChooser.addRoutine("Move right and intake",() -> MoveRightAutoIntake());
+    autoChooser.addRoutine("Move left and intake",() -> MoveLeftAutoIntake1());
+    autoChooser.addRoutine("Move left, intake and shoot",() -> MoveLeftAutoIntake1());
+    autoChooser.addRoutine("Move right, intake and shoot",() -> MoveRightAutoIntake());
+    autoChooser.addRoutine("Move right, intake, return, shoot", ()-> MoveRightAutoIntake());
+    autoChooser.addRoutine("Move left, intake, return, shoot", ()-> MoveLeftAutoIntake1());
+    autoChooser.addRoutine("Shoot still", ()-> ShootStill());
     // autoChooser.addRoutine("Left then Hub", () -> PedriShortLeftHub());
     autoChooser.addRoutine("Hub Sweep Left Wait", () -> HubSweepLeft());
     autoChooser.addRoutine("Hub Sweep Right Wait", () -> HubSweepRight());

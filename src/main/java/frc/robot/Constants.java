@@ -434,7 +434,9 @@ public final class Constants {
         RightSecondDipLong,
         HubLeft,
         MOVERIGHTAUTOINTAKE,
-        MOVELEFTAUTOINTAKE,
+        MOVELEFTAUTOINTAKE1,
+        LeftIntakeShoot,
+        RightIntakeShoot,
         HubRight
       }
 
@@ -480,8 +482,9 @@ public final class Constants {
         RIGHTBUMPINTAKE("RightBumpIntake"),
         LEFTBUMPINTAKE("LeftBumpIntake"),
         MOVERIGHTAUTO("moveRightAuto"),
-        MOVELEFTAUTOINTAKE("Move left and intake"),
-        MOVERIGHTAUTOINTAKE("Move right and intake");
+        MOVELEFTAUTOINTAKE1("Move left and intake"),
+        MOVERIGHTAUTOINTAKE("Move right and intake"),
+        RIGHTINTAKESHOOT("Move right, intake and shoot");
         // MOVERIGHTAUTOINTAKE("MoveRightAutoIntake");
 
         private String internalName;
