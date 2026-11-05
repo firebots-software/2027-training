@@ -499,7 +499,7 @@ public class AutoRoutines {
 
   public AutoRoutine MoveRightAutoIntake() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVERIGHTAUTOINTAKE);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MoveRightIntake);
     //routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     return routine;
@@ -507,7 +507,7 @@ public class AutoRoutines {
 
   public AutoRoutine MoveLeftAutoIntake1() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE1);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MoveLeftIntake1);
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd() ));
 
     return routine;
@@ -515,7 +515,7 @@ public class AutoRoutines {
 
   public AutoRoutine RightIntakeShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVERIGHTAUTOINTAKE);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MoveRightIntake);
     //routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));
@@ -524,7 +524,7 @@ public class AutoRoutines {
 
   public AutoRoutine LeftIntakeShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE1);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MoveLeftIntake1);
     //routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));
@@ -533,7 +533,7 @@ public class AutoRoutines {
 
   public AutoRoutine RightReturnShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVERIGHTAUTOINTAKE);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MoveRightIntake);
     //routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));
@@ -542,7 +542,7 @@ public class AutoRoutines {
 
   public AutoRoutine LeftReturnShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MOVELEFTAUTOINTAKE1);
+    AutoTrajectory move = intake(routine,Constants.Swerve.Auto.Intake.MoveLeftIntake1);
     //routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));

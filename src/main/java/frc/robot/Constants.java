@@ -433,8 +433,8 @@ public final class Constants {
         LeftSecondDipLong, // inside out
         RightSecondDipLong,
         HubLeft,
-        MOVERIGHTAUTOINTAKE,
-        MOVELEFTAUTOINTAKE1,
+        MoveRightIntake,
+        MoveLeftIntake1,
         LeftIntakeShoot,
         RightIntakeShoot,
         HubRight
