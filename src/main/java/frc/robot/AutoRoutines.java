@@ -257,7 +257,7 @@ public class AutoRoutines {
     AutoTrajectory spin = routine.trajectory("ShootRightBump.traj");
     
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    intake.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
@@ -270,7 +270,7 @@ public class AutoRoutines {
     AutoTrajectory spin = routine.trajectory("ShootLeftBump.traj");
     
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    intake.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
@@ -284,8 +284,8 @@ public class AutoRoutines {
     AutoTrajectory spin = routine.trajectory("RightHubSpin");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(hub.resetOdometry(), hub.cmd()));
-    hub.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    intake.done().onTrue(Commands.sequence(hub.cmd()));
+    hub.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
     return routine;
@@ -299,8 +299,8 @@ public class AutoRoutines {
     AutoTrajectory spin = routine.trajectory("LeftHubSpin");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(hub.resetOdometry(), hub.cmd()));
-    hub.done().onTrue(Commands.sequence(spin.resetOdometry(), spin.cmd()));
+    intake.done().onTrue(Commands.sequence(hub.cmd()));
+    hub.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
     return routine;
