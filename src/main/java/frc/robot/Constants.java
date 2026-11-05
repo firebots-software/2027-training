@@ -463,7 +463,7 @@ public final class Constants {
         LeftToCenterBump,
         LeftToStartBump,
         RightToCenterBump,
-        RightToStartBump
+        RightToStartBump;
       }
 
       public static enum AutoList {
@@ -481,7 +481,14 @@ public final class Constants {
         LEFT_TO_CENTER_BUMP("left to center bump"),
         RIGHT_TO_CENTER_BUMP("right to center bump"),
         LEFT_TO_START_BUMP("left to start bump"),
-        RIGHT_TO_START_BUMP("right to start bump");
+        RIGHT_TO_START_BUMP("right to start bump"),
+        STAY_AND_SHOOT("stay in place and shoot"),
+        RIGHT_AND_INTAKE("move right and intake"),
+        LEFT_AND_INTAKE("move left and intake"),
+        RIGHT_AND_INTAKE_AND_SHOOT("move right and intake then shoot"),
+        LEFT_AND_INTAKE_AND_SHOOT("move left and intake then shoot"),
+        RIGHT_AND_INTAKE_AND_BACK("move right and intake and move back"),
+        LEFT_AND_INTAKE_AND_BACK("move left and intake and move back");
 
         private String internalName;
 
