@@ -515,7 +515,7 @@ public class AutoRoutines {
 
   public AutoRoutine RightIntakeShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.MoveRightIntake);
+    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeShoot);
     // routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));
@@ -524,7 +524,7 @@ public class AutoRoutines {
 
   public AutoRoutine LeftIntakeShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.MoveLeftIntake1);
+    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeShoot);
     // routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));
@@ -533,7 +533,7 @@ public class AutoRoutines {
 
   public AutoRoutine RightReturnShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.MoveRightIntake);
+    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.RightReturnShoot);
     // routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));
@@ -870,10 +870,10 @@ public class AutoRoutines {
     autoChooser.addRoutine("LeftBumpIntake", () -> LeftBumpIntake());
     autoChooser.addRoutine("Move right and intake", () -> MoveRightAutoIntake());
     autoChooser.addRoutine("Move left and intake", () -> MoveLeftAutoIntake1());
-    autoChooser.addRoutine("Move left, intake and shoot", () -> MoveLeftAutoIntake1());
-    autoChooser.addRoutine("Move right, intake and shoot", () -> MoveRightAutoIntake());
-    autoChooser.addRoutine("Move right, intake, return, shoot", () -> MoveRightAutoIntake());
-    autoChooser.addRoutine("Move left, intake, return, shoot", () -> MoveLeftAutoIntake1());
+    autoChooser.addRoutine("Move left, intake and shoot", () -> LeftIntakeShoot());
+    autoChooser.addRoutine("Move right, intake and shoot", () -> RightIntakeShoot());
+    autoChooser.addRoutine("Move right, intake, return, shoot", () -> RightReturnShoot());
+    autoChooser.addRoutine("Move left, intake, return, shoot", () -> LeftReturnShoot());
     autoChooser.addRoutine("Shoot still", () -> ShootStill());
     // autoChooser.addRoutine("Left then Hub", () -> PedriShortLeftHub());
     autoChooser.addRoutine("Hub Sweep Left Wait", () -> HubSweepLeft());
