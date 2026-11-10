@@ -479,6 +479,7 @@ public final class Constants {
         LEFT_INTAKE_RETURN_SHOOT("Intake Left Return Shoot"), 
         RIGHT_INTAKE_RETURN_SHOOT("Intake Right Return Shoot"), 
         JUST_SHOOT("Just Shoot"), 
+        SELECTABLE_AUTO("Selectable Auto"), 
 
         CENTER("We are genuinely the worst robot on the field");
 

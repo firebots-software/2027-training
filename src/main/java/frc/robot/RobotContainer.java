@@ -36,6 +36,8 @@ import org.wpilib.command2.button.CommandGamepad;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.RobotController;
+import org.wpilib.tunable.Selectable;
+import org.wpilib.tunable.Tunables;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -56,6 +58,9 @@ public class RobotContainer {
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
+
+  public Selectable<String> intakeChooser = new Selectable<>();
+  public Selectable<String> shootChooser = new Selectable<>();
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
@@ -95,13 +100,14 @@ public class RobotContainer {
   //   private double shooterSpeed = 58.0;
 
   public RobotContainer() {
-    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
+    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside, this);
     autoChooser = autoRoutines.getAutoChooser();
     // Tunables.publish("Auto", autoChooser);
     configureBindings();
+    setUpChooser();
   }
 
-  //   public void doTelemetry() {
+  //   public void doTelemetry() { 
   //     logger.telemeterize(drivetrain.getCurrentState());
 
   //     String commandName = "nah";
@@ -244,6 +250,28 @@ public class RobotContainer {
     leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
+  String theAuto;
+
+  public void setUpChooser() {
+    intakeChooser.addDefault("Intake Left", "leftIntake");
+    intakeChooser.add("Intake Right", "rightIntake");
+    intakeChooser.add("Intake Center", "centerIntake");
+    shootChooser.addDefault("Shoot Left", "ShootLeft");
+    shootChooser.add("Shoot Right", "ShootRight");
+    shootChooser.add("Shoot Center", "ShootCenter");
+    //theAuto = intakeChooser.getSelected() + shootChooser.getSelected();
+
+    //intakeChooser.onChange(choice -> {
+      //String otherChoice = shootChooser.getSelected();
+      //theAuto = choice + otherChoice;
+    //});
+
+    //shootChooser.onChange(choice -> {
+      //String otherChoice = intakeChooser.getSelected();
+      //theAuto = otherChoice + choice;
+    //});
+  }
+
   public boolean inAllianceSide() {
     return redside.getAsBoolean()
         ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()
@@ -257,6 +285,13 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(AutoList auto) {
     String selected = autoChooser.select(auto.getInternalName());
+    DogLog.log("Robot/selectedAuto", selected);
+    // if (!selected.equals(auto.getInternalName())) return null;
+    return autoChooser.selectedCommand();
+  }
+
+  public Command getAutonomousCommand(String auto) {
+    String selected = autoChooser.select(AutoList.SELECTABLE_AUTO.getInternalName());
     DogLog.log("Robot/selectedAuto", selected);
     // if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();

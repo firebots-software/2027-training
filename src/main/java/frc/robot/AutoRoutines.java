@@ -31,18 +31,20 @@ public class AutoRoutines {
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
   private final BooleanSupplier redSide;
+  private final RobotContainer robotContainer;
 
   public AutoRoutines(
       IntakeSubsystem intake,
       ShooterSubsystem lebron,
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
-      BooleanSupplier redSide) {
+      BooleanSupplier redSide, RobotContainer robotContainer) {
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
     this.redSide = redSide;
+    this.robotContainer = robotContainer;
 
     autoFactory = swerveSubsystem.createAutoFactory();
     autoChooser = new AutoChooser();
@@ -297,6 +299,11 @@ public class AutoRoutines {
     return routine;
   }
 
+  public void AssembleAuto(String auto) {
+    String[] names = auto.split("_");
+    //return VariableIntakeReturnShoot(names[0], names[1]);
+  }
+
   public AutoRoutine KaneRightIntakeShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intake(routine, "rightBumpIntake");
@@ -340,6 +347,38 @@ public class AutoRoutines {
     returnBack
         .done()
         .onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine VariableIntakeReturnShoot() {
+    String auto = robotContainer.intakeChooser.getSelected() + robotContainer.shootChooser.getSelected();
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intake(routine, auto);
+    Command shoot = returnBasicShoot(redSide); 
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake
+        .done()
+        .onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine VariableIntakeReturnShootBetter(String direction, String shootPos) {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    AutoTrajectory intake = intake(routine, direction);
+    AutoTrajectory returnBack = routine.trajectory(shootPos);
+    BooleanSupplier endLocationSame = () -> shootPos.endsWith(direction.substring("intake".length()));
+    AutoTrajectory doneCondition = endLocationSame.getAsBoolean() ? intake : returnBack;
+    Command shoot = returnBasicShoot(redSide); 
+    Command running = Commands.either(Commands.sequence(intake.resetOdometry(), intake.cmd()), Commands.sequence(intake.resetOdometry(), intake.cmd(), returnBack.cmd()), endLocationSame);
+    routine.active().onTrue(running);
+    doneCondition
+        .done()
+        .onTrue(shoot);
+    return routine;
+  }
+
+  public AutoRoutine SelectableAuto() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     return routine;
   }
 
@@ -917,6 +956,7 @@ public class AutoRoutines {
     autoChooser.addRoutine("Intake Left Return Shoot", () -> KaneLeftIntakeReturnShoot());
     autoChooser.addRoutine("Intake Right Return Shoot", () -> KaneRightIntakeReturnShoot());
     autoChooser.addRoutine("Just Shoot", () -> KaneShootStill());
+    autoChooser.addRoutine("Selectable Auto", () -> VariableIntakeReturnShoot());
 
 
   }
