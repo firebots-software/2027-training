@@ -431,7 +431,8 @@ public final class Constants {
         LeftSecondDipLong, // inside out
         RightSecondDipLong,
         HubLeft,
-        HubRight
+        HubRight,
+        moveLeft
       }
 
       public static enum ShootPos {
@@ -470,7 +471,8 @@ public final class Constants {
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
         DEPOT_TO_OUTPOST("Depot to Outpost"),
-        CENTER("We are genuinely the worst robot on the field");
+        CENTER("We are genuinely the worst robot on the field"),
+        MOVE_LEFT("move Left");
 
         private String internalName;
 

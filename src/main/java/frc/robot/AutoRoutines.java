@@ -770,6 +770,18 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine moveLeft() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory moveLeft = intake(routine, Constants.Swerve.Auto.Intake.moveLeft);
+
+    routine.active().onTrue(Commands.sequence(moveLeft.resetOdometry(), moveLeft.cmd()));
+
+    moveLeft.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
     autoChooser.addRoutine("Right", () -> PedriShortRight());
@@ -787,6 +799,10 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
+
+    //
+
+    autoChooser.addRoutine("move Left", () -> moveLeft());
   }
 
   public AutoChooser getAutoChooser() {
