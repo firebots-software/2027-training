@@ -24,32 +24,30 @@ public class VisionSubsystem extends SubsystemBase {
     private static AprilTagFieldLayout kTagLayout;
     private static Transform3d kRobotToCam;
     private PhotonPoseEstimator photonEstimator;
-    private String loggingPath = "Robot/Vision/";
+    private String loggingPath = "Vision/";
 
     public VisionSubsystem (){
         visionEst = Optional.empty();
-        rightCamera = new PhotonCamera("yes");
+        rightCamera = new PhotonCamera("camera1");
         kTagLayout = 
                 AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
         kRobotToCam = Constants.RightCamera.transform;
         photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
 
-        DogLog.log("its running", true);
+        DogLog.log(loggingPath + "its running", true);
     }
-
-    
 
     public Pose2d get2dPose() { 
         if (visionEst.isEmpty()) {
         return null;
         }
-        DogLog.log(loggingPath + "GotPose", visionEst.get().estimatedPose.toPose2d());
+        
+        DogLog.log(loggingPath + "in get2dPose", true);
+        
         return visionEst.get().estimatedPose.toPose2d();
     }
 
-    
-    @Override
-    public void periodic() {
+    public void recurrent() {
         visionEst = Optional.empty();
         for (var result : rightCamera.getAllUnreadResults()) {
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
@@ -57,7 +55,10 @@ public class VisionSubsystem extends SubsystemBase {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
             }
         }
-        DogLog.log(loggingPath + "Pose2D", get2dPose());
+
+        Pose2d pose = get2dPose();
+        DogLog.log(loggingPath + "Pose2D", pose);
+        DogLog.log(loggingPath + "inside periodic", true);
     }
 
 }

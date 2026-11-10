@@ -21,6 +21,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private final RobotContainer m_robotContainer;
+  private final VisionSubsystem visionSubsystem;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
         new DogLogOptions().withCaptureDs(true).withLogExtras(false).withNtTunables(false));
 
     m_robotContainer = new RobotContainer();
+    visionSubsystem = new VisionSubsystem();
   }
 
   /**
@@ -47,6 +49,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     DogLog.log("Inside Robot.java", true);
+
+    visionSubsystem.recurrent();
+
   }
 
   /**
