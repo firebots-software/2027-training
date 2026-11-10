@@ -459,6 +459,30 @@ public final class Constants {
         anthony
       }
 
+      public static enum IntakeDropdown {
+        RIGHT_INTAKE("RightEndIntake"),
+        LEFT_INTAKE("LeftEndIntake"),
+        CENTER_INTAKE("CenterIntake");
+
+        public String mapping;
+
+        IntakeDropdown(String mapping) {
+          this.mapping = mapping;
+        }
+      }
+
+      public static enum ShootDropdown {
+        RIGHT_SHOOT("Right Shoot"),
+        LEFT_SHOOT("Left Shoot"),
+        CENTER_SHOOT("Center Shoot");
+
+        public String mapping;
+
+        ShootDropdown(String mapping) {
+          this.mapping = mapping;
+        }
+      }
+
       public static enum AutoList {
         RIGHT("Right"),
         LEFT("Left"),

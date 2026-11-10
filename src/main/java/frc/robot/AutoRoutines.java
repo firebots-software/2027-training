@@ -23,6 +23,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.button.Trigger;
 import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.tunable.Selectable;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -47,6 +48,7 @@ public class AutoRoutines {
 
     autoFactory = swerveSubsystem.createAutoFactory();
     autoChooser = new AutoChooser();
+    Selectable<Command> selectableChooser = new Selectable<>();
     addCommandstoAutoChooser();
   }
 

@@ -29,6 +29,9 @@ import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
 import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
+import frc.robot.Constants;
+
+import java.lang.invoke.ConstantCallSite;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.wpilib.command2.Command;
@@ -36,6 +39,10 @@ import org.wpilib.command2.button.CommandGamepad;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.RobotController;
+import org.wpilib.tunable.Selectable;
+import org.wpilib.tunable.Tunables;
+
+
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -53,6 +60,9 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron =
       Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
+
+  private Selectable<Constants.Swerve.Auto.IntakeDropdown> intakeChooser = new Selectable<Constants.Swerve.Auto.IntakeDropdown>();
+  private Selectable<Constants.Swerve.Auto.ShootDropdown> shootChooser = new Selectable<Constants.Swerve.Auto.ShootDropdown>();
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
@@ -260,6 +270,31 @@ public class RobotContainer {
     DogLog.log("Robot/selectedAuto", selected);
     // if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();
+  }
+
+  public void initiailizeSelectable() {
+
+    // intake dropdown
+    intakeChooser.add("Right Intake", Constants.Swerve.Auto.IntakeDropdown.RIGHT_INTAKE);
+    intakeChooser.add("Left Intake", Constants.Swerve.Auto.IntakeDropdown.LEFT_INTAKE);
+    intakeChooser.addDefault("Center Intake", Constants.Swerve.Auto.IntakeDropdown.CENTER_INTAKE);
+
+    // shoot dropdown
+    shootChooser.add("Right Shoot", Constants.Swerve.Auto.ShootDropdown.RIGHT_SHOOT);
+    shootChooser.add("Left Shoot", Constants.Swerve.Auto.ShootDropdown.LEFT_SHOOT);
+    shootChooser.addDefault("Center Shoot", Constants.Swerve.Auto.ShootDropdown.CENTER_SHOOT);
+
+    Tunables.publish("Selectable Intake", intakeChooser);
+    Tunables.publish("Selectable Shoot", shootChooser);
+
+  }
+
+  public String getIntakeChooserMapping() {
+    return this.intakeChooser.getSelected().mapping;
+  }
+
+  public String getShootChooserMapping() {
+    return this.shootChooser.getSelected().mapping;
   }
 
   public void elasticLogging() {
