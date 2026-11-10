@@ -542,7 +542,7 @@ public class AutoRoutines {
 
   public AutoRoutine LeftReturnShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.MoveLeftIntake1);
+    AutoTrajectory move = intake(routine, Constants.Swerve.Auto.Intake.LeftReturnShoot);
     // routine.trajectory("MoveRightAuto.traj");
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
     move.done().onTrue(returnBasicShoot(redSide));

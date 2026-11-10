@@ -3,8 +3,6 @@ package frc.robot;
 import static org.wpilib.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
-
-import frc.robot.opModes.autos.RightReturnShoot;
 import frc.robot.util.VisionCameraConstants;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -440,7 +438,6 @@ public final class Constants {
         RightReturnShoot,
         LeftReturnShoot,
         HubRight
-
       }
 
       public static enum ShootPos {
