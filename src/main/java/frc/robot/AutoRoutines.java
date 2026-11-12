@@ -920,6 +920,14 @@ public class AutoRoutines {
     autoChooser.addRoutine("right to center bump", () -> RightToCenterBump());
     autoChooser.addRoutine("left to start bump", () -> LeftToStartBump());
     autoChooser.addRoutine("right to start bump", () -> RightToStartBump());
+    autoChooser.addRoutine("stay in place and shoot", () -> StayAndShoot());
+    autoChooser.addRoutine("move right and intake", () -> RightAndIntake());
+    autoChooser.addRoutine("move left and intake", () -> LeftAndIntake());
+    autoChooser.addRoutine("move right and intake then shoot", () -> RightAndIntakeAndShoot());
+    autoChooser.addRoutine("move left and intake then shoot", () -> LeftAndIntakeAndShoot());
+    autoChooser.addRoutine("move right and intake and move back", () -> RightAndIntakeAndBack());
+    autoChooser.addRoutine("move left and intake and move back", () -> LeftAndIntakeAndBack());
+
   }
 
   public AutoChooser getAutoChooser() {
