@@ -301,7 +301,7 @@ public class AutoRoutines {
   public AutoRoutine RightAndIntakeAndShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intakeBetter(routine, "RightAndIntakeAndShoot");
+    AutoTrajectory intake = intakeBetter(routine, "RightAndIntake");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
@@ -312,7 +312,7 @@ public class AutoRoutines {
   public AutoRoutine LeftAndIntakeAndBack() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intakeBetter(routine, "LeftAndIntakeAndBack");
+    AutoTrajectory intake = intakeBetter(routine, "LeftAndIntake");
     
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
