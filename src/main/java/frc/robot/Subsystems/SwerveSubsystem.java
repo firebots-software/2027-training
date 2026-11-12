@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
