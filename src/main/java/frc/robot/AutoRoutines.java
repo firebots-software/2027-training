@@ -292,10 +292,8 @@ public class AutoRoutines {
 
     AutoTrajectory intake = intakeBetter(routine, "LeftAndIntakeAndShoot");
 
-
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
-
 
     return routine;
   }
@@ -308,7 +306,6 @@ public class AutoRoutines {
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
-
     return routine;
   }
 
@@ -316,11 +313,11 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "LeftAndIntakeAndBack");
-    AutoTrajectory hub = routine.trajectory("LeftAndIntakeAndBack");
+    
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(hub.cmd()));
-    hub.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+    
+    intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
     return routine;
   }
@@ -329,11 +326,10 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "RightAndIntakeAndBack");
-    AutoTrajectory hub = routine.trajectory("RightAndIntakeAndBack");
 
-    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
-    intake.done().onTrue(Commands.sequence(hub.cmd()));
-    hub.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd())); 
+    intake.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
     return routine;
   }
@@ -927,7 +923,6 @@ public class AutoRoutines {
     autoChooser.addRoutine("move left and intake then shoot", () -> LeftAndIntakeAndShoot());
     autoChooser.addRoutine("move right and intake and move back", () -> RightAndIntakeAndBack());
     autoChooser.addRoutine("move left and intake and move back", () -> LeftAndIntakeAndBack());
-
   }
 
   public AutoChooser getAutoChooser() {
