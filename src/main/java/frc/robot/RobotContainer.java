@@ -259,6 +259,14 @@ public class RobotContainer {
     shootChooser.addDefault("Shoot Left", "ShootLeft");
     shootChooser.add("Shoot Right", "ShootRight");
     shootChooser.add("Shoot Center", "ShootCenter");
+    intakeChooser.onChange((newVal) -> {
+        DogLog.log("About to run", newVal + shootChooser.getSelected());
+    });
+    shootChooser.onChange((newVal) -> {
+        DogLog.log("About to run", intakeChooser.getSelected() + newVal);
+    });
+    Tunables.publish("Intake", intakeChooser);
+    Tunables.publish("Shoot", shootChooser);
     //theAuto = intakeChooser.getSelected() + shootChooser.getSelected();
 
     //intakeChooser.onChange(choice -> {

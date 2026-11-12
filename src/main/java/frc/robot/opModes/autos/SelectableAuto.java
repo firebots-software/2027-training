@@ -25,6 +25,7 @@ public class SelectableAuto extends BaseOpMode {
 
   @Override
   public void start() {
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.SELECTABLE_AUTO);
     super.start();
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
