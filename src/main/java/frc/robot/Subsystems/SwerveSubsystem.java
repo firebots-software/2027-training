@@ -1,5 +1,5 @@
 package frc.robot.Subsystems;
-// Nathan is our lord and savior. All 
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
