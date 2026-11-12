@@ -5,21 +5,27 @@ import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Rotations;
 
 public class Constants {
     public static class Swerve {
     public static final double FF_RADIUS_M2 = 0.1;
     public static final double MAX_TRANSLATIONAL_MOVEMENT_SQUARED = 0.0625;
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.PROTO;
     public static final CANBus CAN_BUS =
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
@@ -415,5 +421,257 @@ public class Constants {
             RightCameraVals.K4,
             RightCameraVals.K5,
             RightCameraVals.K6);
+  }
+
+  public static class Landmarks {
+    public static Pose2d BLUE_HUB =
+        new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
+    public static Pose2d RED_HUB =
+        new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
+
+    public static Pose2d RED_TOWER_R =
+        new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
+    public static Pose2d RED_TOWER_L =
+        new Pose2d(14.871597290039062, 3.892498254776001, new Rotation2d(0));
+    public static Pose2d BLUE_TOWER_R =
+        new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
+    public static Pose2d BLUE_TOWER_L =
+        new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
+
+    // public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(10.908942222595215, 2.54630184173584),
+    //         new Rotation2d(1.5707963267948966));
+    // public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(10.921140670776367, 5.613290309906006),
+    //         new Rotation2d(-1.5707963267948966));
+    // public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(5.6342058181762695, 5.505496978759766),
+    //         new Rotation2d(-1.5649821399611368));
+    // public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(5.624283313751221, 2.4593770503997803),
+    //         new Rotation2d(1.57873264137917));
+    public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.908942222595215, 2.2220301628112793),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.921140670776367, 5.914291858673096),
+            new Rotation2d(-1.5707963267948966));
+    public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.6342058181762695, 5.8613409996032715),
+            new Rotation2d(-1.5649821399611368));
+    public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.624283313751221, 2.281606435775757),
+            new Rotation2d(1.57873264137917));
+
+    public static Pose2d RED_LEFT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(12.9309492111206055, 2.3620588779449463),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d RED_RIGHT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(12.951465606689453, 5.671574592590332),
+            new Rotation2d(-1.5707963267948966));
+    public static Pose2d BLUE_LEFT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(3.60064959526062, 5.671574592590332),
+            new Rotation2d(-1.5649821399611368));
+    public static Pose2d BLUE_RIGHT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(3.60064959526062, 2.3620588779449463),
+            new Rotation2d(1.57873264137917));
+
+    public static Pose2d BLUE_PASSING_L = new Pose2d(2.111, 6.003, new Rotation2d());
+    public static Pose2d BLUE_PASSING_R = new Pose2d(2.111, 2.007, new Rotation2d());
+
+    public static Pose2d RED_PASSING_L = new Pose2d(14.27, 2.22, new Rotation2d());
+    public static Pose2d RED_PASSING_R = new Pose2d(14.27, 5.94, new Rotation2d());
+  }
+
+  public static final class Shooter {
+
+    // Launching Maps
+    public static final InterpolatingDoubleTreeMap HOOD_ANGLE_MAP =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap ROLLER_SPEED_MAP =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap TIME_OF_FLIGHT_MAP =
+        new InterpolatingDoubleTreeMap();
+
+    public static final InterpolatingDoubleTreeMap PASSING_ROLLER_SPEED_MAP =
+        new InterpolatingDoubleTreeMap();
+
+    public static void UPDATE_INTERMAPS() {
+      // TODO: not populated yet
+      HOOD_ANGLE_MAP.clear();
+      HOOD_ANGLE_MAP.put(1.77, Constants.Shooter.Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(2.21, Constants.Shooter.Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(2.78, 6.6);
+      HOOD_ANGLE_MAP.put(3.34, 9.0);
+      HOOD_ANGLE_MAP.put(3.90, 12.6);
+      HOOD_ANGLE_MAP.put(4.47, 16.8);
+      HOOD_ANGLE_MAP.put(5.02, 18.369);
+
+      ROLLER_SPEED_MAP.clear();
+      ROLLER_SPEED_MAP.put(1.77, 41.2); // 41.5
+      ROLLER_SPEED_MAP.put(2.21, 43.5);
+      ROLLER_SPEED_MAP.put(2.78, 46.5);
+      ROLLER_SPEED_MAP.put(3.34, 49.0);
+      ROLLER_SPEED_MAP.put(3.90, 51.50);
+      ROLLER_SPEED_MAP.put(4.47, 53.60);
+      ROLLER_SPEED_MAP.put(5.02, 58.2);
+      // Guesses
+      ROLLER_SPEED_MAP.put(7.0, 66.5);
+
+      TIME_OF_FLIGHT_MAP.clear();
+      TIME_OF_FLIGHT_MAP.put(0d, 0d);
+      TIME_OF_FLIGHT_MAP.put(1.97d, 1.5d);
+      TIME_OF_FLIGHT_MAP.put(2.47d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.01d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.59d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.83d, .875d);
+      // newly tuned
+      TIME_OF_FLIGHT_MAP.put(4.47, 1.1d);
+      TIME_OF_FLIGHT_MAP.put(5.02, 1.26d);
+
+      // Guesses
+      PASSING_ROLLER_SPEED_MAP.put(5.46, 60.0);
+      PASSING_ROLLER_SPEED_MAP.put(6.62, 63.0);
+      PASSING_ROLLER_SPEED_MAP.put(7.80, 66.0);
+      PASSING_ROLLER_SPEED_MAP.put(9.0, 74.6);
+    }
+
+    public static final class Hood {
+      public static final int HOOD_ID = 12;
+
+      public static final double KP = 2300;
+      public static final double KI = 7.0;
+      public static final double KV = 0.124;
+      public static final double KD = 40.0;
+      public static final double KS = 0.0;
+      public static final double KG = 0.4;
+
+      public static final double STATOR_CURRENT_LIMIT = 40.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+
+      public static final double MOTOR_ROTS_PER_HOOD_ROT = 996.0 / 5.0;
+      public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
+      public static final double HOOD_DEGREES_PER_MOTOR_ROT = HOOD_ROTS_PER_MOTOR_ROT * 360.0;
+      public static final double MOTOR_ROTS_PER_DEGREE = 1.0 / HOOD_DEGREES_PER_MOTOR_ROT;
+
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 12.0;
+      public static final double ENCODER_ROTS_PER_HOOD_ROT =
+          MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
+      public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
+
+      public static final double HOOD_TOLERANCE_DEG = 0.5;
+
+      public static final double MIN_HOOD_POSITION = 3.8;
+      public static final double MAX_HOOD_POSITION = 18.369;
+
+      public static double ENCODER_OFFSET = 0.296; // TODO
+      public static final int ENCODER_PORT = 18;
+
+      public static final double ZERO_STATOR_CURRENT_LIMIT = 15.0;
+      public static final double ZERO_SUPPLY_CURRENT_LIMIT = 15.0;
+      public static final double ZERO_VOLTAGE = -2.0;
+      public static final double ZERO_MAX_SUPPLY = 0;
+      public static final double ZERO_MAX_STATOR = 0;
+      public static final int MAX_TIMES_EXCEEDED = 10;
+    }
+
+    public static final class Rollers {
+      public static final double TOLERANCE_RPS = 1.0;
+      public static final boolean INTERMAP_TESTING = false;
+
+      public static final int WARMUP_1_ID = 10;
+      public static final int WARMUP_2_ID = 9;
+      public static final int WARMUP_3_ID = 11;
+
+      public static final double KP = 0.85;
+      public static final double KV = 0.124;
+      public static final double KS = 0.0;
+
+      public static final double STATOR_CURRENT_LIMIT = 120.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
+      public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
+      public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
+    }
+
+    public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
+    public static final boolean SHOOTS_BACKWARDS = true;
+    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = 0.1;
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
+
+    public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
+    public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
+    public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
+
+    public static final double PRECISION = 5; // TUNE
+    public static final double SHOOT_FOR_AUTO = 67.0;
+    public static final double SHOOT_FOR_AIM = 44.2;
+
+    static {
+      UPDATE_INTERMAPS();
+    }
+  }
+
+  public static class OI {
+    public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
+    public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
+    public static final int JOYSTICK_A_PORT = 0;
+
+    public enum XBoxButtonID {
+      A(1),
+      B(2),
+      X(3),
+      Y(4),
+      LeftBumper(5),
+      RightBumper(6),
+      LeftStick(9),
+      RightStick(10),
+      Back(7),
+      Start(8);
+
+      public final int value;
+
+      XBoxButtonID(int value) {
+        this.value = value;
+      }
+    }
+
+    public enum AxisID {
+      /** Left X. */
+      LeftX(0),
+      /** Right X. */
+      RightX(4),
+      /** Left Y. */
+      LeftY(1),
+      /** Right Y. */
+      RightY(5),
+      /** Left trigger. */
+      LeftTrigger(2),
+      /** Right trigger. */
+      RightTrigger(3);
+
+      /** Axis value. */
+      public final int value;
+
+      AxisID(int value) {
+        this.value = value;
+      }
+    }
   }
 }

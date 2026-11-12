@@ -1,8 +1,5 @@
-package frc.robot.subsystems;
-
-import choreo.Choreo.TrajectoryLogger;
-import choreo.auto.AutoFactory;
-import choreo.trajectory.SwerveSample;
+package frc.robot.Subsystems;
+// Nathan is our lord and savior. All 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -119,50 +116,15 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
   }
 
     // SmartDashboard.putData(field);
-  
-
-  public AutoFactory createAutoFactory() {
-    return createAutoFactory((sample, isStart) -> {});
+  @Override
+  public void addVisionMeasurement(Pose2d visionPoseMeasurement, double timeStamp) {
+    super.addVisionMeasurement(visionPoseMeasurement, timeStamp);
   }
 
-  public AutoFactory createAutoFactory(TrajectoryLogger<SwerveSample> trajLogger) {
-    return new AutoFactory(
-        () -> getCurrentState().Pose,
-        this::resetPose,
-        this::followPath,
-        true,
-        this,
-        trajLogger); // getState().pose
+  @Override
+  public void addVisionMeasurement(Pose2d visionPoseMeasurement, double timeStamp, Matrix<N3, N1> visionMeasurementStdDevs) {
+    super.addVisionMeasurement(visionPoseMeasurement, timeStamp, visionMeasurementStdDevs);
   }
-
-  public void followPath(SwerveSample sample) {
-    m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); // every run?
-
-    Pose2d pose = getCurrentState().Pose;
-
-    ChassisSpeeds targetSpeeds = sample.getChassisSpeeds();
-    targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
-    targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
-    targetSpeeds.omegaRadiansPerSecond +=
-        m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
-
-    setControl(
-        m_pathApplyFieldSpeeds
-            .withSpeeds(targetSpeeds)
-            .withWheelForceFeedforwardsX(sample.moduleForcesX())
-            .withWheelForceFeedforwardsY(sample.moduleForcesY()));
-
-    DogLog.log("Subsystems/Swerve/SampleX", sample.x);
-    DogLog.log("Subsystems/Swerve/SampleY", sample.y);
-    DogLog.log("Subsystems/Swerve/SampleHeading", sample.heading);
-    DogLog.log("Subsystems/Swerve/SampleVX", sample.vx);
-    DogLog.log("Subsystems/Swerve/SampleVY", sample.vy);
-    DogLog.log("Subsystems/Swerve/SampleAngularVelocity", sample.omega);
-    DogLog.log("Subsystems/Swerve/SampleAX", sample.ax);
-    DogLog.log("Subsystems/Swerve/SampleAY", sample.ay);
-    DogLog.log("Subsystems/Swerve/SampleAngularAcceleration", sample.alpha);
-  }
-
   /**
    * Returns a command that applies the specified control request to this swerve drivetrain.
    *

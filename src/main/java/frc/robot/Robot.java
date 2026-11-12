@@ -9,6 +9,7 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Subsystems.VisionSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
