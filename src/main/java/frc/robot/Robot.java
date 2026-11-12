@@ -17,6 +17,7 @@ public class Robot extends OpModeRobot { //
     RobotController.setBrownoutVoltages(6.0, 6.75);
 
     m_robotContainer = new RobotContainer();
+    m_robotContainer.initiailizeSelectable();
   }
 
   @Override

@@ -11,19 +11,18 @@ import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.IntakeToBumpDTP;
-import frc.robot.commandGroups.ShootCommandGroups.ShootBasic;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.button.Trigger;
 import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.tunable.Selectable;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -33,13 +32,28 @@ public class AutoRoutines {
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
   private final BooleanSupplier redSide;
+  private final Map<String[], String> ShootMap =
+      Map.of(
+          new String[] {"CenterIntake", "CenterShoot"}, "CenterCenter",
+          new String[] {"CenterIntake", "RightShoot"}, "CenterRightBump",
+          new String[] {"CenterIntake", "LeftShoot"}, "CenterLeftBump",
+          new String[] {"RightEndIntake", "CenterShoot"}, "RightEndCenter",
+          new String[] {"RightEndIntake", "RightShoot"}, "RightRightBump",
+          new String[] {"RightEndIntake", "LeftShoot"}, "RightLeftBump",
+          new String[] {"LeftEndIntake", "CenterShoot"}, "LeftEndCenter",
+          new String[] {"LeftEndIntake", "RightShoot"}, "LeftRightBump",
+          new String[] {"LeftEndIntake", "LeftShoot"}, "LeftLeftBump");
+  private final RobotContainer robot;
 
   public AutoRoutines(
       IntakeSubsystem intake,
       ShooterSubsystem lebron,
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
-      BooleanSupplier redSide) {
+      BooleanSupplier redSide,
+      RobotContainer robot) {
+
+    this.robot = robot;
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
@@ -48,7 +62,6 @@ public class AutoRoutines {
 
     autoFactory = swerveSubsystem.createAutoFactory();
     autoChooser = new AutoChooser();
-    Selectable<Command> selectableChooser = new Selectable<>();
     addCommandstoAutoChooser();
   }
 
@@ -72,7 +85,7 @@ public class AutoRoutines {
     return traj;
   }
 
-   // Trajectory loading and specific cmds
+  // Trajectory loading and specific cmds
   private AutoTrajectory intakeBetter(AutoRoutine routine, String type) {
     if (type == null) return null;
 
@@ -257,7 +270,7 @@ public class AutoRoutines {
 
     AutoTrajectory intake = intakeBetter(routine, "RightBumpIntake");
     AutoTrajectory spin = routine.trajectory("ShootRightBump.traj");
-    
+
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(returnBasicShoot(redSide));
@@ -270,7 +283,7 @@ public class AutoRoutines {
 
     AutoTrajectory intake = intakeBetter(routine, "LeftBumpIntake");
     AutoTrajectory spin = routine.trajectory("ShootLeftBump.traj");
-    
+
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(returnBasicShoot(redSide));
@@ -282,8 +295,8 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "RightBumpIntake");
-    AutoTrajectory hub = routine.trajectory("RightReturn");
-    AutoTrajectory spin = routine.trajectory("RightHubSpin");
+    AutoTrajectory hub = routine.trajectory("RightReturn.traj");
+    AutoTrajectory spin = routine.trajectory("RightHubSpin.traj");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(hub.cmd()));
@@ -297,13 +310,31 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intakeBetter(routine, "LeftBumpIntake");
-    AutoTrajectory hub = routine.trajectory("LeftReturn");
-    AutoTrajectory spin = routine.trajectory("LeftHubSpin");
+    AutoTrajectory hub = routine.trajectory("LeftReturn.traj");
+    AutoTrajectory spin = routine.trajectory("LeftHubSpin.traj");
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
     intake.done().onTrue(Commands.sequence(hub.cmd()));
     hub.done().onTrue(Commands.sequence(spin.cmd()));
     spin.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    return routine;
+  }
+
+  public AutoRoutine KyrieIrvingDynamic() {
+
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    String toIntake = robot.getIntakeChooserMapping();
+    String toShoot = robot.getShootChooserMapping();
+    toShoot = ShootMap.get(new String[] {toIntake, toShoot});
+
+    AutoTrajectory intake = intakeBetter(routine, toIntake);
+    AutoTrajectory toShootPos = routine.trajectory(toShoot + ".traj");
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), intake.cmd()));
+    intake.done().onTrue(toShootPos.cmd());
+    toShootPos.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -898,6 +929,7 @@ public class AutoRoutines {
 
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
+
     autoChooser.addRoutine("Right", () -> PedriShortRight());
     autoChooser.addRoutine("Left", () -> PedriShortLeft());
     autoChooser.addRoutine("Right Wait", () -> PedriShortRightWait());
@@ -927,10 +959,11 @@ public class AutoRoutines {
 
     autoChooser.addRoutine("Right Bump Intake Shoot", () -> KaneRightIntakeShoot());
     autoChooser.addRoutine("Left Bump Intake Shoot", () -> KaneLeftIntakeShoot());
-    
+
     autoChooser.addRoutine("Right Intake Return Shoot", () -> LendeborgRightIntakeReturnShoot());
     autoChooser.addRoutine("Left Intake Return Shoot", () -> LendeborgLeftIntakeReturnShoot());
-    
+
+    autoChooser.addRoutine("Dynamic Auto", () -> KyrieIrvingDynamic());
   }
 
   public AutoChooser getAutoChooser() {

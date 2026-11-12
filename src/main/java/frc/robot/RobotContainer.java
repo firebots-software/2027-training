@@ -29,9 +29,6 @@ import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
 import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
-import frc.robot.Constants;
-
-import java.lang.invoke.ConstantCallSite;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.wpilib.command2.Command;
@@ -41,8 +38,6 @@ import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.RobotController;
 import org.wpilib.tunable.Selectable;
 import org.wpilib.tunable.Tunables;
-
-
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -61,8 +56,10 @@ public class RobotContainer {
   public final ShooterSubsystem lebron =
       Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
 
-  private Selectable<Constants.Swerve.Auto.IntakeDropdown> intakeChooser = new Selectable<Constants.Swerve.Auto.IntakeDropdown>();
-  private Selectable<Constants.Swerve.Auto.ShootDropdown> shootChooser = new Selectable<Constants.Swerve.Auto.ShootDropdown>();
+  private Selectable<Constants.Swerve.Auto.IntakeDropdown> intakeChooser =
+      new Selectable<Constants.Swerve.Auto.IntakeDropdown>();
+  private Selectable<Constants.Swerve.Auto.ShootDropdown> shootChooser =
+      new Selectable<Constants.Swerve.Auto.ShootDropdown>();
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
@@ -105,7 +102,8 @@ public class RobotContainer {
   //   private double shooterSpeed = 58.0;
 
   public RobotContainer() {
-    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
+    autoRoutines =
+        new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside, this);
     autoChooser = autoRoutines.getAutoChooser();
     // Tunables.publish("Auto", autoChooser);
     configureBindings();
@@ -286,15 +284,14 @@ public class RobotContainer {
 
     Tunables.publish("Selectable Intake", intakeChooser);
     Tunables.publish("Selectable Shoot", shootChooser);
-
   }
 
   public String getIntakeChooserMapping() {
-    return this.intakeChooser.getSelected().mapping;
+    return intakeChooser.getSelected().mapping;
   }
 
   public String getShootChooserMapping() {
-    return this.shootChooser.getSelected().mapping;
+    return shootChooser.getSelected().mapping;
   }
 
   public void elasticLogging() {

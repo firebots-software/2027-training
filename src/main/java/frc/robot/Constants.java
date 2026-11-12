@@ -471,6 +471,7 @@ public final class Constants {
         }
       }
 
+
       public static enum ShootDropdown {
         RIGHT_SHOOT("Right Shoot"),
         LEFT_SHOOT("Left Shoot"),
@@ -505,8 +506,8 @@ public final class Constants {
         RIGHT_BUMP_INTAKE_SHOOT("Right Bump Intake Shoot"),
         LEFT_BUMP_INTAKE_SHOOT("Left Bump Intake Shoot"),
         RIGHT_INTAKE_RETURN_SHOOT("Right Intake Return Shoot"),
-        LEFT_INTAKE_RETURN_SHOOT("Left Intake Return Shoot");
-
+        LEFT_INTAKE_RETURN_SHOOT("Left Intake Return Shoot"),
+        DYNAMIC_AUTO("Dynamic Auto");
 
         private String internalName;
 
