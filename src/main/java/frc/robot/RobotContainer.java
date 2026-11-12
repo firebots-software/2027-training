@@ -36,6 +36,7 @@ import org.wpilib.command2.button.CommandGamepad;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.RobotController;
+import org.wpilib.tunable.Selectable;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -260,6 +261,10 @@ public class RobotContainer {
     DogLog.log("Robot/selectedAuto", selected);
     // if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();
+  }
+
+  public initSelectables() {
+     Selectable<> m_autoChooser = new Selectable<>();
   }
 
   public void elasticLogging() {

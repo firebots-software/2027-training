@@ -440,6 +440,17 @@ public final class Constants {
         HubRight
       }
 
+      public static enum IntakeChoices {
+        CENTER(""),
+        RIGHT(""),
+        LEFT("");
+
+        String mapping;
+        public IntakeChoices(String mapping) {
+          this.mapping = mapping;
+        }
+      }
+
       public static enum ShootPos {
         LeftShoot,
         RightShoot
